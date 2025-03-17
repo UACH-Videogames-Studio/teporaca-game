@@ -1,12 +1,9 @@
 using System;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
 
 namespace Stariluz
 {
-
     public class PlayerMovement : MonoBehaviour
     {
         public InputActionReference moveAction;
@@ -81,7 +78,6 @@ namespace Stariluz
                     velocity.x + movement.x * Time.deltaTime * aceleration,
                     velocity.y + movement.y * Time.deltaTime * aceleration
                 );
-                Debug.Log(("A",velocity));
             }
             else if (velocity.magnitude > 0)
             {
@@ -89,16 +85,15 @@ namespace Stariluz
                     Math.Sign(velocity.x) * Math.Max(Math.Abs(velocity.x) - Time.deltaTime * deaceleration, 0),
                     Math.Sign(velocity.y) * Math.Max(Math.Abs(velocity.y) - Time.deltaTime * deaceleration, 0)
                 );
-                Debug.Log(("B", movement.magnitude, velocity.magnitude));
             }
             else
             {
                 velocity = new Vector2(0, 0);
-                Debug.Log(("C", movement.magnitude, velocity.magnitude));
             }
             velocity = Vector2.ClampMagnitude(velocity, maxVelocity);
             transform.Rotate(0, velocity.x, 0);
-            rigidbody.linearVelocity = new Vector3(velocity.x, 0, velocity.y);
+            rigidbody.linearVelocity = new Vector3(transform.forward.y*velocity.x, 0, transform.forward.y*velocity.y);
+            // Debug.Log((rigidbody.linearVelocity));
             animator.SetFloat(ACxMovementHash, velocity.x);
             animator.SetFloat(ACyMovementHash, velocity.y);
         }
