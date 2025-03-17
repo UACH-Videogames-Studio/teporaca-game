@@ -1,102 +1,209 @@
-using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Stariluz
 {
+    /// <summary>
+    /// Based on EasyStart Third Person Controller from Conrado Saud
+    /// <br/>
+    ///  https://assetstore.unity.com/packages/tools/game-toolkits/easystart-third-person-controller-278977
+    /// </summary>
     public class PlayerMovement : MonoBehaviour
     {
-        public InputActionReference moveAction;
-        [SerializeField] protected float aceleration = 2f;
-        [SerializeField] protected float deaceleration = 3f;
-        [SerializeField] protected float maxVelocity = 5f;
-        [SerializeField] protected float rotationSpeed = 20.0f;
+        [Tooltip("Speed ​​at which the character moves. It is not affected by gravity or jumping.")]
+        [Space]
+        public float velocity = 1f;
+        [Tooltip("This value is added to the speed value while the character is sprinting.")]
+        public float sprintAdittion = 1.5f;
+        [Tooltip("The higher the value, the higher the character will jump.")]
+        public float jumpForce = 10f;
+        [Tooltip("Stay in the air. The higher the value, the longer the character floats before falling.")]
+        public float jumpTime = 0.85f;
+        [Space]
+        [Tooltip("Force that pulls the player down. Changing this value causes all movement, jumping and falling to be changed as well.")]
+        public float gravity = 9.8f;
 
-        private Vector2 _velocity;
-        protected Vector2 velocity
-        {
-            get
-            {
-                return _velocity;
-            }
-            set
-            {
-                _velocity = value;
-            }
-        }
-        private float _xVelocity = 0f;
-        protected float xVelocity
-        {
-            get
-            {
-                return _xVelocity;
-            }
-            set
-            {
-                _xVelocity = value;
-            }
-        }
-        private float _yVelocity = 0f;
-        protected float yVelocity
-        {
-            get
-            {
-                return _yVelocity;
-            }
-            set
-            {
-                _yVelocity = value;
-            }
-        }
 
+        protected float jumpElapsedTime = 0;
+
+        // Player states
+        protected bool isJumping = false;
+        protected bool isSprinting = false;
+        protected bool isCrouching = false;
+
+        // Inputs
+        bool inputJump;
+        bool inputCrouch;
+        bool inputSprint;
 
         protected Animator animator;
-        protected new Rigidbody rigidbody;
+        protected CharacterController characterController;
+        protected int ACzMovementHash;
 
+        protected Vector2 moveInput;
 
-        private Vector2 movement;
-        private int ACxMovementHash, ACyMovementHash;
+        protected InputActions inputActions;
+        protected InputActions.PlayerActions playerInput;
 
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
+        private void Awake()
+        {
+            inputActions = new InputActions();
+            playerInput = inputActions.Player;
+        }
+        private void OnEnable()
+        {
+            inputActions.Enable();
+        }
+        private void OnDisable()
+        {
+            inputActions.Disable();
+        }
+
         void Start()
         {
+            characterController = GetComponent<CharacterController>();
             animator = GetComponent<Animator>();
-            rigidbody = GetComponent<Rigidbody>();
-            ACxMovementHash = Animator.StringToHash("xMovement");
-            ACyMovementHash = Animator.StringToHash("yMovement");
+            ACzMovementHash = Animator.StringToHash("zMovement");
+
+            // Message informing the user that they forgot to add an animator
+            if (animator == null)
+                Debug.LogWarning("Hey buddy, you don't have the Animator component in your player. Without it, the animations won't work.");
         }
 
-        // Update is called once per frame
+
+        // Update is only being used here to identify keys and trigger animations
         void Update()
         {
-            movement = moveAction.action.ReadValue<Vector2>();
-            // float xDelta = movement.x * Time.deltaTime * rotationSpeed;
-            // float yDelta = movement.y * Time.deltaTime * aceleration;
-            if (movement.magnitude > 0)
+
+            // Input checkers
+            moveInput = playerInput.Move.ReadValue<Vector2>();
+            inputJump = playerInput.Jump.IsPressed();
+            inputSprint = playerInput.Sprint.IsPressed();
+            inputCrouch = playerInput.Crouch.IsPressed();
+
+            // Check if you pressed the crouch input key and change the player's state
+            if (inputCrouch)
+                isCrouching = !isCrouching;
+
+            if (characterController.isGrounded)
             {
-                velocity = new Vector2(
-                    velocity.x + movement.x * Time.deltaTime * aceleration,
-                    velocity.y + movement.y * Time.deltaTime * aceleration
-                );
+                // Run
+                float minimumSpeed = 0.9f;
+
+                // Sprint
+                isSprinting = characterController.velocity.magnitude > minimumSpeed && inputSprint;
             }
-            else if (velocity.magnitude > 0)
+
+            if (CanJump())
             {
-                velocity = new Vector2(
-                    Math.Sign(velocity.x) * Math.Max(Math.Abs(velocity.x) - Time.deltaTime * deaceleration, 0),
-                    Math.Sign(velocity.y) * Math.Max(Math.Abs(velocity.y) - Time.deltaTime * deaceleration, 0)
-                );
+                isJumping = true;
             }
-            else
-            {
-                velocity = new Vector2(0, 0);
-            }
-            velocity = Vector2.ClampMagnitude(velocity, maxVelocity);
-            transform.Rotate(0, velocity.x, 0);
-            rigidbody.linearVelocity = new Vector3(transform.forward.y*velocity.x, 0, transform.forward.y*velocity.y);
-            // Debug.Log((rigidbody.linearVelocity));
-            animator.SetFloat(ACxMovementHash, velocity.x);
-            animator.SetFloat(ACyMovementHash, velocity.y);
+
+            HeadHittingDetect();
         }
+        protected bool CanJump()
+        {
+            return inputJump && characterController.isGrounded;
+        }
+
+
+        // With the inputs and animations defined, FixedUpdate is responsible for applying movements and actions to the player
+        private void FixedUpdate()
+        {
+            // Direction movement
+            float directionY = -gravity * Time.deltaTime;
+
+            // Jump handler
+            if (isJumping)
+            {
+                directionY += JumpUpdate();
+            }
+
+            Vector3 verticalDirection = Vector3.up * directionY;
+            Vector3 horizontalDirection = CalcHoriziontalMovement();
+
+            Vector3 movement = verticalDirection + horizontalDirection;
+            characterController.Move(movement);
+            UpdateAnimation();
+        }
+        protected void UpdateAnimation()
+        {
+            Vector3 velocity = characterController.velocity;
+
+            animator.SetFloat(ACzMovementHash, new Vector2(velocity.x, velocity.z).magnitude);
+        }
+
+        protected float JumpUpdate()
+        {
+            // Apply inertia and smoothness when climbing the jump
+            // It is not necessary when descending, as gravity itself will gradually pulls
+            float directionY = Mathf.SmoothStep(jumpForce, jumpForce * 0.30f, jumpElapsedTime / jumpTime) * Time.deltaTime;
+
+            // Jump timer
+            jumpElapsedTime += Time.deltaTime;
+            if (jumpElapsedTime >= jumpTime)
+            {
+                isJumping = false;
+                jumpElapsedTime = 0;
+            }
+            return directionY;
+        }
+
+        protected Vector3 CalcHoriziontalMovement()
+        {
+            float velocityAdittion = CalcVelocittyAdition();
+            float directionX = moveInput.x * (velocity + velocityAdittion) * Time.deltaTime;
+            float directionZ = moveInput.y * (velocity + velocityAdittion) * Time.deltaTime;
+
+            Vector3 forward = Camera.main.transform.forward;
+            Vector3 right = Camera.main.transform.right;
+
+            forward.y = 0;
+            right.y = 0;
+
+            forward.Normalize();
+            right.Normalize();
+
+            // Relate the front with the Z direction (depth) and right with X (lateral movement)
+            forward *= directionZ;
+            right *= directionX;
+
+            if (directionX != 0 || directionZ != 0)
+            {
+                float angle = Mathf.Atan2(forward.x + right.x, forward.z + right.z) * Mathf.Rad2Deg;
+                Quaternion rotation = Quaternion.Euler(0, angle, 0);
+                transform.rotation = Quaternion.Slerp(transform.rotation, rotation, 0.15f);
+            }
+
+            return forward + right;
+        }
+
+        protected float CalcVelocittyAdition()
+        {
+            float velocityAdittion = 0;
+            if (isSprinting)
+                velocityAdittion = sprintAdittion;
+            if (isCrouching)
+                velocityAdittion = -(velocity * 0.50f); // -50% velocity
+            return velocityAdittion;
+        }
+
+        //This function makes the character end his jump if he hits his head on something
+        void HeadHittingDetect()
+        {
+            float headHitDistance = 1.1f;
+            Vector3 ccCenter = transform.TransformPoint(characterController.center);
+            float hitCalc = characterController.height / 2f * headHitDistance;
+
+            // Uncomment this line to see the Ray drawed in your characters head
+            // Debug.DrawRay(ccCenter, Vector3.up * headHeight, Color.red);
+
+            if (Physics.Raycast(ccCenter, Vector3.up, hitCalc))
+            {
+                jumpElapsedTime = 0;
+                isJumping = false;
+            }
+        }
+
     }
 
 }

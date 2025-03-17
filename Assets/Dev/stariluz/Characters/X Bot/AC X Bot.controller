@@ -31,6 +31,14 @@ BlendTree:
   m_Name: Blend Tree
   m_Childs:
   - serializedVersion: 2
+    m_Motion: {fileID: -203655887218126122, guid: db32d0c7abc17a64cb96878d88ca0818, type: 3}
+    m_Threshold: -2
+    m_Position: {x: 0, y: 1}
+    m_TimeScale: -1
+    m_CycleOffset: 0
+    m_DirectBlendParameter: Blend
+    m_Mirror: 0
+  - serializedVersion: 2
     m_Motion: {fileID: -203655887218126122, guid: 405745b3cde914f49a424b4546732943, type: 3}
     m_Threshold: 0
     m_Position: {x: 0, y: 0}
@@ -40,43 +48,19 @@ BlendTree:
     m_Mirror: 0
   - serializedVersion: 2
     m_Motion: {fileID: -203655887218126122, guid: db32d0c7abc17a64cb96878d88ca0818, type: 3}
-    m_Threshold: 0.2
-    m_Position: {x: 0, y: 1}
-    m_TimeScale: 1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: Blend
-    m_Mirror: 0
-  - serializedVersion: 2
-    m_Motion: {fileID: -203655887218126122, guid: db32d0c7abc17a64cb96878d88ca0818, type: 3}
-    m_Threshold: 0.4
+    m_Threshold: 2
     m_Position: {x: 0, y: -1}
-    m_TimeScale: -1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: Blend
-    m_Mirror: 0
-  - serializedVersion: 2
-    m_Motion: {fileID: -203655887218126122, guid: 4b481a1ef81e1d74f9359b7db9d6f444, type: 3}
-    m_Threshold: 0.6
-    m_Position: {x: 1, y: 0}
-    m_TimeScale: 1
-    m_CycleOffset: 0.5
-    m_DirectBlendParameter: Blend
-    m_Mirror: 1
-  - serializedVersion: 2
-    m_Motion: {fileID: -203655887218126122, guid: 4b481a1ef81e1d74f9359b7db9d6f444, type: 3}
-    m_Threshold: 0.8
-    m_Position: {x: -1, y: 0}
     m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: Blend
     m_Mirror: 0
-  m_BlendParameter: xMovement
-  m_BlendParameterY: yMovement
-  m_MinThreshold: 0
-  m_MaxThreshold: 0.8
-  m_UseAutomaticThresholds: 1
+  m_BlendParameter: zMovement
+  m_BlendParameterY: zMovement
+  m_MinThreshold: -2
+  m_MaxThreshold: 2
+  m_UseAutomaticThresholds: 0
   m_NormalizedBlendValues: 0
-  m_BlendType: 2
+  m_BlendType: 0
 --- !u!1102 &-966416500381252850
 AnimatorState:
   serializedVersion: 6
@@ -124,7 +108,7 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: yMovement
+  - m_Name: zMovement
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
