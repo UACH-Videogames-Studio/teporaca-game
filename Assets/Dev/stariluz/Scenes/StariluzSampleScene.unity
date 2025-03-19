@@ -583,10 +583,10 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fb05691169a4ef746a3b60fbf7d9e25d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1961556785}
+      addedObject: {fileID: 1961556788}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fb05691169a4ef746a3b60fbf7d9e25d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1961556788}
+      addedObject: {fileID: 1961556785}
   m_SourcePrefab: {fileID: 100100000, guid: fb05691169a4ef746a3b60fbf7d9e25d, type: 3}
 --- !u!1 &1961556780 stripped
 GameObject:
@@ -607,6 +607,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocity: 2
   sprintAdittion: 2
+  smoothTime: 4
   jumpForce: 10
   jumpTime: 0.85
   gravity: 9.8
