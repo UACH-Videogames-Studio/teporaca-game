@@ -7,7 +7,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Movement
+  m_Name: Axe Movement
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -150,7 +150,7 @@ AnimatorController:
   - serializedVersion: 5
     m_Name: Axe
     m_StateMachine: {fileID: 3174232719178299241}
-    m_Mask: {fileID: 31900000, guid: f53cd8281ddf555418991022719f5cb5, type: 2}
+    m_Mask: {fileID: 0}
     m_Motions:
     - serializedVersion: 2
       m_State: {fileID: -966416500381252850}
@@ -212,7 +212,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: -4942356298567466925}
-    m_Position: {x: 290, y: 140, z: 0}
+    m_Position: {x: 260, y: 120, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -240,7 +240,7 @@ BlendTree:
     m_DirectBlendParameter: Blend
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: -203655887218126122, guid: ba08babd4e7fa2c4890af317c5d575b9, type: 3}
+    m_Motion: {fileID: -203655887218126122, guid: be7b545e2dc8031429794b86e13c9f75, type: 3}
     m_Threshold: 0
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1

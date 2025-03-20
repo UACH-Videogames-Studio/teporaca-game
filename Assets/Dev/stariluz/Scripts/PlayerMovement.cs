@@ -42,21 +42,40 @@ namespace Stariluz
         protected bool inputCrouch;
         protected bool inputSprint;
 
-        protected Animator animator;
+        [HideInInspector]
+        protected Animator _animator;
+        public Animator animator{
+            get{
+                return _animator;
+            }
+        }
         protected CharacterController characterController;
         protected int ACzMovementHash;
 
         protected Vector2 moveInput;
 
-        protected InputActions inputActions;
-        protected InputActions.PlayerActions playerInput;
+        [HideInInspector]
+        protected InputActions _inputActions;
+        public InputActions inputActions{
+            get{
+                return _inputActions;
+            }
+        }
+
+        [HideInInspector]
+        protected InputActions.PlayerActions _playerInput;
+        public InputActions.PlayerActions playerInput{
+            get{
+                return _playerInput;
+            }
+        }
 
         protected float currentVelocity;
 
         private void Awake()
         {
-            inputActions = new InputActions();
-            playerInput = inputActions.Player;
+            _inputActions = new InputActions();
+            _playerInput = inputActions.Player;
         }
         private void OnEnable()
         {
@@ -70,7 +89,7 @@ namespace Stariluz
         void Start()
         {
             characterController = GetComponent<CharacterController>();
-            animator = GetComponent<Animator>();
+            _animator = GetComponent<Animator>();
             ACzMovementHash = Animator.StringToHash("zMovement");
 
             // Message informing the user that they forgot to add an animator
