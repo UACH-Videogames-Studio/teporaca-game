@@ -3,49 +3,51 @@ using Stariluz;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerWithAxeMovement : MonoBehaviour
+namespace Stariluz
 {
-    protected PlayerMovement player;
-    protected int AClayerIndex;
-    [SerializeField] protected bool hasAxeEquipped = false;
-    private float layerWeightVelocity = 0f;
-
-    private void OnEnable()
+    public class PlayerWithAxeMovement : MonoBehaviour
     {
-        player = GetComponent<PlayerMovement>();
-        player.playerInput.EquipWeapon.started += EquipAxe;
-    }
-    private void OnDisable()
-    {
-        player.playerInput.EquipWeapon.started -= EquipAxe;
-    }
+        protected PlayerMovement player;
+        protected int AClayerIndex;
+        [SerializeField] protected bool hasAxeEquipped = false;
+        private float layerWeightVelocity = 0f;
 
-    void Start()
-    {
-        AClayerIndex = player.animator.GetLayerIndex("Axe");
-    }
+        private void OnEnable()
+        {
+            player = GetComponent<PlayerMovement>();
+            player.playerInput.EquipWeapon.started += EquipAxe;
+        }
+        private void OnDisable()
+        {
+            player.playerInput.EquipWeapon.started -= EquipAxe;
+        }
 
-    void Update()
-    {
-        UpdateAnimation();
-    }
+        void Start()
+        {
+            AClayerIndex = player.animator.GetLayerIndex("Axe");
+        }
 
-    private void UpdateAnimation()
-    {
-        float targetWeight = hasAxeEquipped ? 1f : 0f;
-        float smoothedSpeed = Mathf.SmoothDamp(
-            player.animator.GetLayerWeight(AClayerIndex),
-            targetWeight,
-            ref layerWeightVelocity,
-            Time.deltaTime * player.smoothTime
-            );
+        void Update()
+        {
+            UpdateAnimation();
+        }
 
-        player.animator.SetLayerWeight(AClayerIndex, smoothedSpeed);
-    }
+        private void UpdateAnimation()
+        {
+            float targetWeight = hasAxeEquipped ? 1f : 0f;
+            float smoothedSpeed = Mathf.SmoothDamp(
+                player.animator.GetLayerWeight(AClayerIndex),
+                targetWeight,
+                ref layerWeightVelocity,
+                Time.deltaTime * player.smoothTime
+                );
 
-    private void EquipAxe(InputAction.CallbackContext context)
-    {
-        Debug.Log("Q pressed");
-        hasAxeEquipped = !hasAxeEquipped;
+            player.animator.SetLayerWeight(AClayerIndex, smoothedSpeed);
+        }
+
+        private void EquipAxe(InputAction.CallbackContext context)
+        {
+            hasAxeEquipped = !hasAxeEquipped;
+        }
     }
 }
