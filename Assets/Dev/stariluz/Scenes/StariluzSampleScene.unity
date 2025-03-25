@@ -614,7 +614,7 @@ PrefabInstance:
       addedObject: {fileID: 1961556785}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fb05691169a4ef746a3b60fbf7d9e25d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1961556791}
+      addedObject: {fileID: 1961556794}
   m_SourcePrefab: {fileID: 100100000, guid: fb05691169a4ef746a3b60fbf7d9e25d, type: 3}
 --- !u!1 &1961556780 stripped
 GameObject:
@@ -664,7 +664,7 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &1961556791
+--- !u!114 &1961556794
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -673,10 +673,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1961556780}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b9262fed6732124aa816934b6e3852b, type: 3}
+  m_Script: {fileID: 11500000, guid: 791962402edca6848baa97dbcea44df3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hasAxeEquipped: 0
+  isWeaponDrawn: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

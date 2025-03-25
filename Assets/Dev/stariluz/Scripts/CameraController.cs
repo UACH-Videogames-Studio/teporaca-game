@@ -122,7 +122,7 @@ namespace Stariluz
         private void UpdateRotation()
         {
             lookInput = _playerInput.Look.ReadValue<Vector2>();
-            Debug.Log(lookInput);
+            // Debug.Log(lookInput);
             viewDirection += adjustedSensivity * Time.deltaTime * lookInput;
             viewDirection.y = Mathf.Clamp(viewDirection.y, cameraLimit.x, cameraLimit.y);
             transform.rotation = Quaternion.Euler(-viewDirection.y, viewDirection.x, 0);
