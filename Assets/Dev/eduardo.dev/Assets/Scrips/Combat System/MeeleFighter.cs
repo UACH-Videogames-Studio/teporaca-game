@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using NUnit.Framework.Internal.Execution;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ public enum AttackState { Idle, Windup, Impact, Cooldown }
 
 public class MeeleFighter : MonoBehaviour
 {
-
+    [SerializeField] List<AttackData> attacks;
     [SerializeField] GameObject axe;
 
     BoxCollider axeCollider;
@@ -27,14 +28,19 @@ public class MeeleFighter : MonoBehaviour
         }
     } 
 
-    public AttackState attackState;
-
+    AttackState attackState;
+    bool doCombo;
+    int comboCount = 0;
     public bool InAction {get; private set;} = false;
     public void TryToAttack()
     {
         if (!InAction)
         {
             StartCoroutine(Attack());
+        }
+        else if (attackState == AttackState.Impact || attackState == AttackState.Cooldown)
+        {
+            doCombo = true;
         }
     }
 
@@ -43,11 +49,7 @@ public class MeeleFighter : MonoBehaviour
         InAction = true;
         attackState = AttackState.Windup;
 
-        float impactStartTime = 0.3f;
-        float impactEndTime = 0.5f;
-
-
-        animator.CrossFade("Horizontal attack", 0.2f);
+        animator.CrossFade(attacks[comboCount].AnimName, 0.2f);
         yield return null;
 
         var animState = animator.GetNextAnimatorStateInfo(1);
@@ -60,7 +62,7 @@ public class MeeleFighter : MonoBehaviour
 
             if (attackState == AttackState.Windup)
             {
-                if (normalizedTime >= impactStartTime)
+                if (normalizedTime >= attacks[comboCount].ImpactStartTime)
                 {
                     attackState = AttackState.Impact;
                     axeCollider.enabled = true;
@@ -68,7 +70,7 @@ public class MeeleFighter : MonoBehaviour
             }
             else if (attackState == AttackState.Impact)
             {
-                if (normalizedTime >= impactEndTime)
+                if (normalizedTime >= attacks[comboCount].ImpactEndTime)
                 {
                     attackState = AttackState.Cooldown;
                     axeCollider.enabled = false;
@@ -76,13 +78,21 @@ public class MeeleFighter : MonoBehaviour
             }
             else if (attackState == AttackState.Cooldown)
             {
-                // To do: Handle combos
+                if (doCombo)
+                {
+                    doCombo = false;
+                    comboCount = (comboCount + 1) % attacks.Count;
+
+                    StartCoroutine(Attack());
+                    yield break;
+                }
             }
 
             yield return null;
         }
 
         attackState = AttackState.Idle;
+        comboCount = 0;
         InAction = false;
     }
 
@@ -102,7 +112,7 @@ public class MeeleFighter : MonoBehaviour
 
         var animState = animator.GetNextAnimatorStateInfo(1);
 
-        yield return new WaitForSeconds(animState.length);
+        yield return new WaitForSeconds(animState.length * 0.8f);
 
         InAction = false;
     }

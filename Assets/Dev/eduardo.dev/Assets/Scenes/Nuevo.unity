@@ -235,8 +235,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b18c8d092fac9142b2706ed2e920d7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attacks:
+  - {fileID: 11400000, guid: f476ecf1ee597cd4bb3f63ff1d4e5356, type: 2}
+  - {fileID: 11400000, guid: 6b61d04f001d5de4e874d0728564eca6, type: 2}
+  - {fileID: 11400000, guid: d4fd4aa40c663644abf78a3552b59a76, type: 2}
+  - {fileID: 11400000, guid: 9a0b1b33a75294e41aa8ad33dc9694e6, type: 2}
   axe: {fileID: 177378621}
-  attackState: 0
 --- !u!114 &105693659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3709,8 +3713,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b18c8d092fac9142b2706ed2e920d7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attacks: []
   axe: {fileID: 0}
-  attackState: 0
 --- !u!4 &5901452234634975240
 Transform:
   m_ObjectHideFlags: 0
