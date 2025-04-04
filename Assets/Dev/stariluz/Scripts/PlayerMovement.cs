@@ -9,15 +9,23 @@ namespace Stariluz
     /// </summary>
     public class PlayerMovement : MonoBehaviour
     {
-        [Tooltip("Speed ​​at which the character moves. It is not affected by gravity or jumping.")]
+
         [Space]
+        [Tooltip("Speed ​​at which the character moves. It is not affected by gravity or jumping.")]
         public float velocity = 1f;
+
         [Tooltip("This value is added to the speed value while the character is sprinting.")]
         public float sprintAdittion = 1.5f;
+
+        [Tooltip("Animation smoth transition constant")]
+        public float smoothTime = 0.25f;
+
+        [Space]
         [Tooltip("The higher the value, the higher the character will jump.")]
         public float jumpForce = 10f;
         [Tooltip("Stay in the air. The higher the value, the longer the character floats before falling.")]
         public float jumpTime = 0.85f;
+
         [Space]
         [Tooltip("Force that pulls the player down. Changing this value causes all movement, jumping and falling to be changed as well.")]
         public float gravity = 9.8f;
@@ -30,24 +38,44 @@ namespace Stariluz
         protected bool isSprinting = false;
         protected bool isCrouching = false;
 
-        // Inputs
-        bool inputJump;
-        bool inputCrouch;
-        bool inputSprint;
+        protected bool inputJump;
+        protected bool inputCrouch;
+        protected bool inputSprint;
 
-        protected Animator animator;
+        [HideInInspector]
+        protected Animator _animator;
+        public Animator animator{
+            get{
+                return _animator;
+            }
+        }
         protected CharacterController characterController;
         protected int ACzMovementHash;
 
         protected Vector2 moveInput;
 
-        protected InputActions inputActions;
-        protected InputActions.PlayerActions playerInput;
+        [HideInInspector]
+        protected InputActions _inputActions;
+        public InputActions inputActions{
+            get{
+                return _inputActions;
+            }
+        }
+
+        [HideInInspector]
+        protected InputActions.PlayerActions _playerInput;
+        public InputActions.PlayerActions playerInput{
+            get{
+                return _playerInput;
+            }
+        }
+
+        protected float currentVelocity;
 
         private void Awake()
         {
-            inputActions = new InputActions();
-            playerInput = inputActions.Player;
+            _inputActions = new InputActions();
+            _playerInput = inputActions.Player;
         }
         private void OnEnable()
         {
@@ -61,7 +89,7 @@ namespace Stariluz
         void Start()
         {
             characterController = GetComponent<CharacterController>();
-            animator = GetComponent<Animator>();
+            _animator = GetComponent<Animator>();
             ACzMovementHash = Animator.StringToHash("zMovement");
 
             // Message informing the user that they forgot to add an animator
@@ -127,9 +155,17 @@ namespace Stariluz
         }
         protected void UpdateAnimation()
         {
-            Vector3 velocity = characterController.velocity;
+            // Vector3 velocity = characterController.velocity;
 
-            animator.SetFloat(ACzMovementHash, new Vector2(velocity.x, velocity.z).magnitude);
+            // animator.SetFloat(ACzMovementHash, new Vector2(velocity.x, velocity.z).magnitude);
+
+            Vector3 velocity = characterController.velocity;
+            float targetSpeed = new Vector2(velocity.x, velocity.z).magnitude;
+
+            // Suaviza la transición entre valores de velocidad
+            float smoothedSpeed = Mathf.SmoothDamp(animator.GetFloat(ACzMovementHash), targetSpeed, ref currentVelocity, Time.deltaTime * smoothTime);
+
+            animator.SetFloat(ACzMovementHash, smoothedSpeed);
         }
 
         protected float JumpUpdate()
