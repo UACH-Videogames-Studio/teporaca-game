@@ -110,9 +110,19 @@ namespace Stariluz
             inputSprint = playerInput.Sprint.IsPressed();
             inputCrouch = playerInput.Crouch.IsPressed();
 
-            if(moveInput.x > 0.1f){
-                cesped.Play();
+            float stepCooldown = 0.5f;
+            float stepTimer = 0f;
+            
+            void Update(){
+                stepTimer += Time.deltaTime;
+
+                if (moveInput.magnitude > 0.1f && stepTimer >= stepCooldown)
+                {
+                    cesped.Play();
+                    stepTimer = 0f;
+                }
             }
+
 
             // Check if you pressed the crouch input key and change the player's state
             if (inputCrouch)
