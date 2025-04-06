@@ -26,6 +26,10 @@ namespace Stariluz
         [SerializeField] private bool runOnStart = true;
 
 
+        [Tooltip("Canvas Rect Transform")]
+        [SerializeField] private RectTransform visibleArea; // Asigna esto en el inspector al viewport o al Canvas rect
+
+
         private RectTransform rectTransform;
         private float yStartPosition;
         private delegate void UpdateFunction();
@@ -84,7 +88,14 @@ namespace Stariluz
 
         protected bool IsOutOfScreen()
         {
-            return rectTransform.anchoredPosition.y >= yStartPosition + rectTransform.rect.height + Screen.height;
+
+            float scrollY = rectTransform.anchoredPosition.y;
+            float contentHeight = rectTransform.rect.height;
+            float visibleHeight = visibleArea.rect.height;
+
+            Debug.Log((scrollY, yStartPosition,contentHeight, visibleHeight));
+            
+            return scrollY >= yStartPosition + contentHeight + visibleHeight;
         }
 
         private void EndTransitionAfterDelay(float delay)
