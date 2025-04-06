@@ -12,17 +12,22 @@ namespace Stariluz
         protected int ACweaponDrawLayerIndex;
         protected int ACdrawWeaponHash;
         protected int ACsheathWeaponHash;
+        protected int ACchopHash;
+
         [SerializeField] protected bool isWeaponDrawn = false;
         private float layerWeightVelocity = 0f;
+        private bool isChopping=false;
 
         private void OnEnable()
         {
             player = GetComponent<PlayerMovement>();
             player.playerInput.EquipWeapon.started += EquipAxe;
+            player.playerInput.Attack.started += Chop;
         }
         private void OnDisable()
         {
             player.playerInput.EquipWeapon.started -= EquipAxe;
+            player.playerInput.Attack.started -= Chop;
         }
 
         void Start()
@@ -31,6 +36,7 @@ namespace Stariluz
             ACweaponDrawLayerIndex = player.animator.GetLayerIndex("WeaponDraw");
             ACdrawWeaponHash = Animator.StringToHash("drawWeapon");
             ACsheathWeaponHash = Animator.StringToHash("sheathWeapon");
+            ACchopHash = Animator.StringToHash("chop");
         }
 
         void Update()
@@ -77,6 +83,19 @@ namespace Stariluz
             {
                 player.animator.SetTrigger(ACsheathWeaponHash);
             }
+        }
+        private void Chop(InputAction.CallbackContext context)
+        {
+            if (isWeaponDrawn)
+            {
+                if(!isChopping){
+                    isChopping=true;
+                    player.animator.SetTrigger(ACchopHash);
+                }
+            }
+        }
+        public void EndChoping(){
+            isChopping=false;
         }
     }
 }
