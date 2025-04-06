@@ -289,7 +289,6 @@ public class MeeleFighter : MonoBehaviour
     // Detecta si este personaje es golpeado por otro (usando colliders con tag "Hitbox")
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("puta madre");
         if (other.tag == "Hitbox" && !InAction)
         {
             StartCoroutine(PlayHitReaction()); // Ejecuta animación de impacto
