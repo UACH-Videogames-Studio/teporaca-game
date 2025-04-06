@@ -241,7 +241,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2618311120446360135, guid: afc3aa03cb32e374e9f552b6651eacde, type: 3}
       propertyPath: onEndEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
-      value: Narrative3
+      value: FightScene
       objectReference: {fileID: 0}
     - target: {fileID: 2618311120446360135, guid: afc3aa03cb32e374e9f552b6651eacde, type: 3}
       propertyPath: onEndEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -661,7 +661,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46d234f001d95c84d89a1258d84a3561, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: Narrative3
+  sceneToLoad: FightScene
 --- !u!4 &812324535
 Transform:
   m_ObjectHideFlags: 0
