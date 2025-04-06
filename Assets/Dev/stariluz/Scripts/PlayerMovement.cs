@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -120,10 +121,6 @@ namespace Stariluz
             inputJump = playerInput.Jump.IsPressed();
             inputSprint = playerInput.Sprint.IsPressed();
             inputCrouch = playerInput.Crouch.IsPressed();
-
-            // if(moveInput.x > 0.1f){
-            //     cesped.Play();
-            // }
 
             // Check if you pressed the crouch input key and change the player's state
             if (inputCrouch)
@@ -268,11 +265,29 @@ namespace Stariluz
             {
                 isChopping = true;
                 animator.SetTrigger(ACchopHash);
+                StartCoroutine(EnableAxeColliderAtFrame(5, 16));
             }
         }
         public void EndChoping()
         {
             isChopping = false;
+        }
+        [SerializeField] private Collider axeCollider;
+        [SerializeField] private float frameRate = 24f; // Asume que el juego corre a 60 fps
+
+        private IEnumerator EnableAxeColliderAtFrame(int startFrame, int endFrame)
+        {
+            // Esperar hasta el frame 10
+            float startTime = startFrame / frameRate;
+            yield return new WaitForSeconds(startTime);
+
+            axeCollider.enabled = true;
+
+            // Esperar hasta el frame 20 (desde el frame 10 ya estamos esperando)
+            float duration = (endFrame - startFrame) / frameRate;
+            yield return new WaitForSeconds(duration);
+
+            axeCollider.enabled = false;
         }
     }
 
