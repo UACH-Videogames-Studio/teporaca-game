@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Stariluz
 {
@@ -45,8 +47,10 @@ namespace Stariluz
 
         [HideInInspector]
         protected Animator _animator;
-        public Animator animator{
-            get{
+        public Animator animator
+        {
+            get
+            {
                 return _animator;
             }
         }
@@ -57,21 +61,26 @@ namespace Stariluz
 
         [HideInInspector]
         protected InputActions _inputActions;
-        public InputActions inputActions{
-            get{
+        public InputActions inputActions
+        {
+            get
+            {
                 return _inputActions;
             }
         }
 
         [HideInInspector]
         protected InputActions.PlayerActions _playerInput;
-        public InputActions.PlayerActions playerInput{
-            get{
+        public InputActions.PlayerActions playerInput
+        {
+            get
+            {
                 return _playerInput;
             }
         }
 
         protected float currentVelocity;
+        private float layerWeightVelocity = 0f;
 
 
         private void Awake()
@@ -82,10 +91,12 @@ namespace Stariluz
         private void OnEnable()
         {
             inputActions.Enable();
+            playerInput.Attack.started += Chop;
         }
         private void OnDisable()
         {
             inputActions.Disable();
+            playerInput.Attack.started -= Chop;
         }
 
         void Start()
@@ -93,6 +104,7 @@ namespace Stariluz
             characterController = GetComponent<CharacterController>();
             _animator = GetComponent<Animator>();
             ACzMovementHash = Animator.StringToHash("zMovement");
+            ACchopHash = Animator.StringToHash("chop");
 
             // Message informing the user that they forgot to add an animator
             if (animator == null)
@@ -103,26 +115,12 @@ namespace Stariluz
         // Update is only being used here to identify keys and trigger animations
         void Update()
         {
-            
+
             // Input checkers
             moveInput = playerInput.Move.ReadValue<Vector2>();
             inputJump = playerInput.Jump.IsPressed();
             inputSprint = playerInput.Sprint.IsPressed();
             inputCrouch = playerInput.Crouch.IsPressed();
-
-            float stepCooldown = 0.5f;
-            float stepTimer = 0f;
-            
-            void Update(){
-                stepTimer += Time.deltaTime;
-
-                if (moveInput.magnitude > 0.1f && stepTimer >= stepCooldown)
-                {
-                    cesped.Play();
-                    stepTimer = 0f;
-                }
-            }
-
 
             // Check if you pressed the crouch input key and change the player's state
             if (inputCrouch)
@@ -256,6 +254,41 @@ namespace Stariluz
             }
         }
 
+        protected int ACchopHash;
+        private bool isChopping = false;
+
+        private void Chop(InputAction.CallbackContext context)
+        {
+            Debug.Log("Weapon");
+
+            if (!isChopping)
+            {
+                isChopping = true;
+                animator.SetTrigger(ACchopHash);
+                StartCoroutine(EnableAxeColliderAtFrame(5, 16));
+            }
+        }
+        public void EndChoping()
+        {
+            isChopping = false;
+        }
+        [SerializeField] private Collider axeCollider;
+        [SerializeField] private float frameRate = 24f; // Asume que el juego corre a 60 fps
+
+        private IEnumerator EnableAxeColliderAtFrame(int startFrame, int endFrame)
+        {
+            // Esperar hasta el frame 10
+            float startTime = startFrame / frameRate;
+            yield return new WaitForSeconds(startTime);
+
+            axeCollider.enabled = true;
+
+            // Esperar hasta el frame 20 (desde el frame 10 ya estamos esperando)
+            float duration = (endFrame - startFrame) / frameRate;
+            yield return new WaitForSeconds(duration);
+
+            axeCollider.enabled = false;
+        }
     }
 
 }

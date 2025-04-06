@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: HorizontalAttack
   m_EditorClassIdentifier: 
   <AnimName>k__BackingField: HorizontalAttack
+  <HitboxToUse>k__BackingField: 4
   <ImpactStartTime>k__BackingField: 0.3
   <ImpactEndTime>k__BackingField: 0.5

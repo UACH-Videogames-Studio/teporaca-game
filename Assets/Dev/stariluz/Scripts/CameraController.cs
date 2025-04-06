@@ -93,6 +93,9 @@ namespace Stariluz
             player = GameObject.FindWithTag("Player").transform;
             yOffset = transform.position.y;
 
+            // Obtener rotación Y inicial del jugador
+            viewDirection = new Vector2(player.eulerAngles.y, 0f);
+            
             // Lock and hide cursor with option isn't checked
             if (!clickToMoveCamera)
             {
