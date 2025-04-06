@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Hitbox
+  - Axe
   layers:
   - Default
   - TransparentFX
@@ -18,8 +19,8 @@ TagManager:
   - PlayerHitbox
   - EnemyHitbox
   - VisionSensor
-  - 
-  - 
+  - World Hitbox
+  - Axe Hitbox
   - 
   - 
   - 
