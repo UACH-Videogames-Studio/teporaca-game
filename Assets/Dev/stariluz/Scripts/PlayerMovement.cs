@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -268,11 +269,29 @@ namespace Stariluz
             {
                 isChopping = true;
                 animator.SetTrigger(ACchopHash);
+                StartCoroutine(EnableAxeColliderAtFrame(5, 16));
             }
         }
         public void EndChoping()
         {
             isChopping = false;
+        }
+        [SerializeField] private Collider axeCollider;
+        [SerializeField] private float frameRate = 24f; // Asume que el juego corre a 60 fps
+
+        private IEnumerator EnableAxeColliderAtFrame(int startFrame, int endFrame)
+        {
+            // Esperar hasta el frame 10
+            float startTime = startFrame / frameRate;
+            yield return new WaitForSeconds(startTime);
+
+            axeCollider.enabled = true;
+
+            // Esperar hasta el frame 20 (desde el frame 10 ya estamos esperando)
+            float duration = (endFrame - startFrame) / frameRate;
+            yield return new WaitForSeconds(duration);
+
+            axeCollider.enabled = false;
         }
     }
 
