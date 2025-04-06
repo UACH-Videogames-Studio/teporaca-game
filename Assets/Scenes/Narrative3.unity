@@ -1132,6 +1132,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneToLoad: Narrative4
+  manager: {fileID: 1278981597}
 --- !u!4 &1788279491
 Transform:
   m_ObjectHideFlags: 0

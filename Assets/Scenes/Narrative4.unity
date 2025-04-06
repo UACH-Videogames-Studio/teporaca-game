@@ -745,6 +745,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneToLoad: Credits
+  manager: {fileID: 1278981597}
 --- !u!4 &1037190325
 Transform:
   m_ObjectHideFlags: 0

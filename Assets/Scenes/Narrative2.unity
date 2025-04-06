@@ -662,6 +662,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneToLoad: FightScene
+  manager: {fileID: 400849810}
 --- !u!4 &812324535
 Transform:
   m_ObjectHideFlags: 0

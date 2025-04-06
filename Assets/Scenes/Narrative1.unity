@@ -1048,6 +1048,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneToLoad: ChopScene
+  manager: {fileID: 1278981597}
 --- !u!4 &1378158379
 Transform:
   m_ObjectHideFlags: 0
