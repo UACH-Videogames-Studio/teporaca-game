@@ -21,8 +21,6 @@
 //     }
     
 // }
-
-using UnityEditor.Rendering.LookDev; // (Parece que esta línea no se usa aquí; puede eliminarse si no es necesaria)
 using UnityEngine; // Importa las funciones básicas de Unity
 using UnityEngine.InputSystem; // Importa el nuevo sistema de entrada (Input System)
 using UnityEngine.UI; // Se usa para elementos UI, aunque no se utiliza en este script directamente
