@@ -1,5 +1,5 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
-# File Created: 03.04.2025 16:29:58
+# File Created: 05.04.2025 18:43:54
 
 newmtl piso
 	Ns 10.0000
@@ -40,8 +40,8 @@ newmtl techo
 	Kd 0.5882 0.5882 0.5882
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka C:\Users\Dvorak\Desktop\New folder\casa\techomecos.jpg
-	map_Kd C:\Users\Dvorak\Desktop\New folder\casa\techomecos.jpg
+	map_Ka C:\Users\Dvorak\Desktop\New folder\church\techomecos.jpg
+	map_Kd C:\Users\Dvorak\Desktop\New folder\church\techomecos.jpg
 
 newmtl maderalight
 	Ns 10.0000
@@ -54,8 +54,8 @@ newmtl maderalight
 	Kd 0.5882 0.5882 0.5882
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka C:\Users\Dvorak\Desktop\New folder\casa\troncosolight.jpg
-	map_Kd C:\Users\Dvorak\Desktop\New folder\casa\troncosolight.jpg
+	map_Ka C:\Users\Dvorak\Desktop\New folder\church\troncosolight.jpg
+	map_Kd C:\Users\Dvorak\Desktop\New folder\church\troncosolight.jpg
 
 newmtl ventana
 	Ns 10.0000
