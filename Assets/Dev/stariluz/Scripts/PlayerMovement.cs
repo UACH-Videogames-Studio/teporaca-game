@@ -30,6 +30,7 @@ namespace Stariluz
         [Tooltip("Force that pulls the player down. Changing this value causes all movement, jumping and falling to be changed as well.")]
         public float gravity = 9.8f;
 
+        public AudioSource cesped;
 
         protected float jumpElapsedTime = 0;
 
@@ -72,6 +73,7 @@ namespace Stariluz
 
         protected float currentVelocity;
 
+
         private void Awake()
         {
             _inputActions = new InputActions();
@@ -101,12 +103,16 @@ namespace Stariluz
         // Update is only being used here to identify keys and trigger animations
         void Update()
         {
-
+            
             // Input checkers
             moveInput = playerInput.Move.ReadValue<Vector2>();
             inputJump = playerInput.Jump.IsPressed();
             inputSprint = playerInput.Sprint.IsPressed();
             inputCrouch = playerInput.Crouch.IsPressed();
+
+            // if(moveInput.x > 0.1f){
+            //     cesped.Play();
+            // }
 
             // Check if you pressed the crouch input key and change the player's state
             if (inputCrouch)

@@ -207,6 +207,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2618311120446360135, guid: afc3aa03cb32e374e9f552b6651eacde, type: 3}
+      propertyPath: scrollSpeed
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 5292043134890731467, guid: afc3aa03cb32e374e9f552b6651eacde, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
@@ -621,7 +625,19 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: "Nos situamos en Chihuahua, en el a\xF1o de 1652.\n\nVarios a\xF1os han
+    pasado y el pueblo rar\xE1muri ha vivido bajo el peso de la conquista espa\xF1ola.\n\nLos
+    espa\xF1oles han tomado y profanado sus tierras con la cruz en una mano y la
+    espada en la otra, destruyendo sus costumbres, destrozando familias y oblig\xE1ndolos
+    a someterse.\n\nPoco a poco, la libertad se convierte en tan solo un recuerdo
+    difuso.\n\nMientras tanto, Gabriel Tep\xF3rame, rar\xE1muri nacido en la regi\xF3n
+    centro-occidental del estado de Chihuahua, cerca de San Francisco de Borja, fue
+    criado entre espa\xF1oles. Fue part\xEDcipe de incontables crueldades contra
+    su propio pueblo, atrocidades de las cuales ya est\xE1 harto. Ha decidido usar
+    su puesto de \u201Cindio auxiliar\u201D a su favor.\n\nAl ver c\xF3mo los suyos
+    sufr\xEDan, como su tierra era explotada y su cultura borrada, decidi\xF3 levantarse.\n\n
+    Aun sabiendo que se trata de una batalla casi imposible, esta es su pelea, esta
+    es su historia\u2026\n\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
