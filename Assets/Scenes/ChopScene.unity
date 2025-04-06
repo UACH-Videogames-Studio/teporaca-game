@@ -759,6 +759,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1bbfa840e6795354dadd98c32b18a439, type: 3}
+--- !u!114 &60937042 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5775604092254206108, guid: 1bbfa840e6795354dadd98c32b18a439, type: 3}
+  m_PrefabInstance: {fileID: 60937041}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 138598c8ba0d73c4c876c05b1f97725a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!54 &63198104
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -8413,6 +8424,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nextSceneName: Narrative2
+  manager: {fileID: 60937042}
 --- !u!54 &595959435
 Rigidbody:
   m_ObjectHideFlags: 0
