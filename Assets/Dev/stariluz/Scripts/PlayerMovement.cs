@@ -46,8 +46,10 @@ namespace Stariluz
 
         [HideInInspector]
         protected Animator _animator;
-        public Animator animator{
-            get{
+        public Animator animator
+        {
+            get
+            {
                 return _animator;
             }
         }
@@ -58,16 +60,20 @@ namespace Stariluz
 
         [HideInInspector]
         protected InputActions _inputActions;
-        public InputActions inputActions{
-            get{
+        public InputActions inputActions
+        {
+            get
+            {
                 return _inputActions;
             }
         }
 
         [HideInInspector]
         protected InputActions.PlayerActions _playerInput;
-        public InputActions.PlayerActions playerInput{
-            get{
+        public InputActions.PlayerActions playerInput
+        {
+            get
+            {
                 return _playerInput;
             }
         }
@@ -108,7 +114,7 @@ namespace Stariluz
         // Update is only being used here to identify keys and trigger animations
         void Update()
         {
-            
+
             // Input checkers
             moveInput = playerInput.Move.ReadValue<Vector2>();
             inputJump = playerInput.Jump.IsPressed();
@@ -252,20 +258,21 @@ namespace Stariluz
         }
 
         protected int ACchopHash;
-        private bool isChopping=false;
-        
+        private bool isChopping = false;
+
         private void Chop(InputAction.CallbackContext context)
         {
-            // if (isWeaponDrawn)
-            // {
-                if(!isChopping){
-                    isChopping=true;
-                    animator.SetTrigger(ACchopHash);
-                }
-            // }
+            Debug.Log("Weapon");
+
+            if (!isChopping)
+            {
+                isChopping = true;
+                animator.SetTrigger(ACchopHash);
+            }
         }
-        public void EndChoping(){
-            isChopping=false;
+        public void EndChoping()
+        {
+            isChopping = false;
         }
     }
 
