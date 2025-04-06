@@ -1,0 +1,156 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 05.04.2025 18:43:54
+
+newmtl piso
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Dvorak\Desktop\New folder\church\piso.jpg
+	map_Kd C:\Users\Dvorak\Desktop\New folder\church\piso.jpg
+
+newmtl concreto
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Dvorak\Desktop\New folder\casa\pared.jpg
+	map_Kd C:\Users\Dvorak\Desktop\New folder\casa\pared.jpg
+
+newmtl techo
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Dvorak\Desktop\New folder\church\techomecos.jpg
+	map_Kd C:\Users\Dvorak\Desktop\New folder\church\techomecos.jpg
+
+newmtl maderalight
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Dvorak\Desktop\New folder\church\troncosolight.jpg
+	map_Kd C:\Users\Dvorak\Desktop\New folder\church\troncosolight.jpg
+
+newmtl ventana
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Dvorak\Desktop\New folder\casa\ventana.jpg
+	map_Kd C:\Users\Dvorak\Desktop\New folder\casa\ventana.jpg
+
+newmtl metal
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Dvorak\Desktop\New folder\casa\metal.jpg
+	map_Kd C:\Users\Dvorak\Desktop\New folder\casa\metal.jpg
+
+newmtl rocas
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Dvorak\Desktop\New folder\church\rocas.jpg
+	map_Kd C:\Users\Dvorak\Desktop\New folder\church\rocas.jpg
+
+newmtl tronco
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Dvorak\Desktop\New folder\church\troncoso.jpg
+	map_Kd C:\Users\Dvorak\Desktop\New folder\church\troncoso.jpg
+
+newmtl colina
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Dvorak\Desktop\New folder\church\colina.jpg
+	map_Kd C:\Users\Dvorak\Desktop\New folder\church\colina.jpg
+
+newmtl hojas
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Dvorak\Desktop\New folder\church\hojas.jpg
+	map_Kd C:\Users\Dvorak\Desktop\New folder\church\hojas.jpg
+
+newmtl tipi
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\Dvorak\Desktop\New folder\church\tipi.jpg
+	map_Kd C:\Users\Dvorak\Desktop\New folder\church\tipi.jpg
