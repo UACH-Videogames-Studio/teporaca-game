@@ -18,6 +18,7 @@ public class NarrativeScenesManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    public SceneTransitionManager manager;
     public void LoadScene(string sceneName)
     {
         if (!sceneLoading)
@@ -25,7 +26,7 @@ public class NarrativeScenesManager : MonoBehaviour
             sceneLoading = true;
 
             // Llama a tu SceneTransitionManager
-            SceneTransitionManager.Instance.LoadScene(sceneName);
+            manager.LoadScene(sceneName);
         }
     }
 }

@@ -5,24 +5,9 @@ using UnityEngine.UI;
 
 public class SceneTransitionManager : MonoBehaviour
 {
-    public static SceneTransitionManager Instance;
-
     [SerializeField] private Image fadeImage;
     [SerializeField] private float fadeDuration = 1f;
 
-    private void Awake()
-    {
-        // Singleton
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
 
     private void Start()
     {
