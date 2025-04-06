@@ -50,10 +50,10 @@ public class TreeChop : MonoBehaviour
         yield return new WaitForSeconds(hitCooldown);
         canBeHit = true;
     }
-    
+    public ChopSceneManger manager;
     void NotifyTreeDestroyed()
     {
-        ChopSceneManger.Instance.TreeDestroyed(); // Llama al manejador
+        manager.TreeDestroyed(); // Llama al manejador
     }
 
 }
