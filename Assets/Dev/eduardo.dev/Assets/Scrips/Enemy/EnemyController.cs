@@ -18,11 +18,14 @@ public class EnemyController : MonoBehaviour
 
     public NavMeshAgent NavAgent { get; private set; }
     public Animator Animator { get; private set; }
+    public MeeleFighter Fighter { get; private set; }
+
 
     private void Start()
     {
         NavAgent = GetComponent<NavMeshAgent>();
         Animator = GetComponent<Animator>();
+        Fighter = GetComponent<MeeleFighter>();
 
         stateDict = new Dictionary<EnemyStates, State<EnemyController>>();
         stateDict[EnemyStates.Idle] = GetComponent<IdleState>();
