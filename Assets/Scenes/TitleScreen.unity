@@ -1058,6 +1058,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 65702495048144492, guid: c16f59615880ed84190c23b2e0e44c35, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1698836826}
+    - targetCorrespondingSourceObject: {fileID: 65702495048144492, guid: c16f59615880ed84190c23b2e0e44c35, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1698836830}
   m_SourcePrefab: {fileID: 100100000, guid: c16f59615880ed84190c23b2e0e44c35, type: 3}
 --- !u!4 &1193731699 stripped
 Transform:
@@ -1084,6 +1087,14 @@ MonoBehaviour:
   lookSensitivity: 0.05
   maxYawAngle: 2
   returnSpeed: 2
+--- !u!81 &1698836830
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1698836822}
+  m_Enabled: 1
 --- !u!1001 &1849053144
 PrefabInstance:
   m_ObjectHideFlags: 0
