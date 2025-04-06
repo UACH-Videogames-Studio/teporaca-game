@@ -5,13 +5,13 @@ using UnityEngine;
 public class EnemyManager : MonoBehaviour
 {
     [SerializeField] Vector2 timeRangeBetweenAttack = new Vector2(1,4);
-    public static EnemyManager i { get; private set; }
+    public static EnemyManager I { get; private set; }
     private void Awake()
     {
-        i = this;
+        I = this;
     }
-    List <EnemyController> enemiesInRange;
-    float notAttackingTimer;
+    List <EnemyController> enemiesInRange = new List<EnemyController>();
+    float notAttackingTimer = 2;
     
     public void AddEnemyInRange (EnemyController enemy)
     {
@@ -26,6 +26,7 @@ public class EnemyManager : MonoBehaviour
 
     private void Update()
     {
+        if (enemiesInRange.Count == 0) return;
         if (!enemiesInRange.Any(e => e.IsInState(EnemyStates.Attack)))
         {
             if (notAttackingTimer > 0)

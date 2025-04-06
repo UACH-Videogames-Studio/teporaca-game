@@ -203,7 +203,7 @@ public class MeeleFighter : MonoBehaviour
     } 
 
     // Estado actual del ataque (Idle, Windup, Impact o Cooldown)
-    AttackStates AttackStates;
+    public AttackStates AttackStates { get; private set; }
 
     bool doCombo; // Indica si el jugador presionó para hacer un combo
     int comboCount = 0; // Contador del combo actual
@@ -289,6 +289,7 @@ public class MeeleFighter : MonoBehaviour
     // Detecta si este personaje es golpeado por otro (usando colliders con tag "Hitbox")
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("puta madre");
         if (other.tag == "Hitbox" && !InAction)
         {
             StartCoroutine(PlayHitReaction()); // Ejecuta animación de impacto
@@ -337,10 +338,15 @@ public class MeeleFighter : MonoBehaviour
     // Desactiva todos los colliders de ataque
     void DisableHitboxes()
     {
-        axeCollider.enabled = false;
-        leftFootCollider.enabled = false;
-        rightFootCollider.enabled = false;
-        leftHandCollider.enabled = false;
-        rightHandCollider.enabled = false;
+        if (axeCollider != null)
+            axeCollider.enabled = false;
+        if (leftFootCollider != null)
+            leftFootCollider.enabled = false;
+        if (rightFootCollider != null)
+            rightFootCollider.enabled = false;
+        if (leftHandCollider != null)
+            leftHandCollider.enabled = false;
+        if (rightHandCollider != null)
+            rightHandCollider.enabled = false;
     }
 }
