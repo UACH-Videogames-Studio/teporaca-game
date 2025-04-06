@@ -654,19 +654,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Nos situamos en Chihuahua, en el a\xF1o de 1653.\n\nVarios a\xF1os han
-    pasado y el pueblo rar\xE1muri ha vivido bajo el peso de la conquista espa\xF1ola.\n\nLos
-    espa\xF1oles han tomado y profanado sus tierras con la cruz en una mano y la
-    espada en la otra, destruyendo sus costumbres, destrozando familias y oblig\xE1ndolos
-    a someterse.\n\nPoco a poco, la libertad se convierte en tan solo un recuerdo
-    difuso.\n\nMientras tanto, Gabriel Tep\xF3rame, rar\xE1muri nacido en la regi\xF3n
-    centro-occidental del estado de Chihuahua, cerca de San Francisco de Borja y
-    criado entre espa\xF1oles. Fue part\xEDcipe de incontables crueldades contra
-    su propio pueblo, atrocidades de las cuales ya est\xE1 harto. Ha decidido usar
-    su puesto de \u201Cindio auxiliar\u201D a su favor.\n\nAl ver c\xF3mo los suyos
-    sufr\xEDan, como su tierra era explotada y su cultura borrada, decidi\xF3 levantarse.\n\n
-    Aun sabiendo que se trata de una batalla casi imposible, esta es su pelea, esta
-    es su historia\u2026\n\n"
+  m_text: "El 4 de marzo de 1653, fue sentenciado a la horca.\n\nAl ofrecerle la
+    oportunidad de confesarse, Tep\xF3rame rechaz\xF3 arrepentirse, declarando: \n\n\"No,
+    no me arrepentir\xE9 hasta no ver a un espa\xF1ol entrar al cielo\".\n\n Su cuerpo
+    fue colgado del pino m\xE1s alto del lugar y dejado all\xED como advertencia
+    para su pueblo. Sin embargo, lejos de ser olvidado, su sacrificio se convirti\xF3
+    en s\xEDmbolo de la resistencia y el esp\xEDritu indomable de los rar\xE1muris.\n\n\n\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4dd046051cb2e7247881edc73e120c61, type: 2}
   m_sharedMaterial: {fileID: -5986000069129446806, guid: 4dd046051cb2e7247881edc73e120c61, type: 2}
