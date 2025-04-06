@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Stariluz
 {
@@ -72,6 +73,7 @@ namespace Stariluz
         }
 
         protected float currentVelocity;
+        private float layerWeightVelocity = 0f;
 
 
         private void Awake()
@@ -82,10 +84,12 @@ namespace Stariluz
         private void OnEnable()
         {
             inputActions.Enable();
+            playerInput.Attack.started += Chop;
         }
         private void OnDisable()
         {
             inputActions.Disable();
+            playerInput.Attack.started -= Chop;
         }
 
         void Start()
@@ -93,6 +97,7 @@ namespace Stariluz
             characterController = GetComponent<CharacterController>();
             _animator = GetComponent<Animator>();
             ACzMovementHash = Animator.StringToHash("zMovement");
+            ACchopHash = Animator.StringToHash("chop");
 
             // Message informing the user that they forgot to add an animator
             if (animator == null)
@@ -246,6 +251,22 @@ namespace Stariluz
             }
         }
 
+        protected int ACchopHash;
+        private bool isChopping=false;
+        
+        private void Chop(InputAction.CallbackContext context)
+        {
+            // if (isWeaponDrawn)
+            // {
+                if(!isChopping){
+                    isChopping=true;
+                    animator.SetTrigger(ACchopHash);
+                }
+            // }
+        }
+        public void EndChoping(){
+            isChopping=false;
+        }
     }
 
 }
