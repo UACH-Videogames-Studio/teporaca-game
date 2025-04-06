@@ -3,7 +3,7 @@
 // using NUnit.Framework.Internal.Execution;
 // using UnityEngine;
 
-// public enum AttackState { Idle, Windup, Impact, Cooldown }
+// public enum AttackStates { Idle, Windup, Impact, Cooldown }
 
 // public class MeeleFighter : MonoBehaviour
 // {
@@ -34,7 +34,7 @@
 //         }
 //     } 
 
-//     AttackState attackState;
+//     AttackStates AttackStates;
 //     bool doCombo;
 //     int comboCount = 0;
 //     public bool InAction {get; private set;} = false;
@@ -44,7 +44,7 @@
 //         {
 //             StartCoroutine(Attack());
 //         }
-//         else if (attackState == AttackState.Impact || attackState == AttackState.Cooldown)
+//         else if (AttackStates == AttackStates.Impact || AttackStates == AttackStates.Cooldown)
 //         {
 //             doCombo = true;
 //         }
@@ -53,7 +53,7 @@
 //     IEnumerator Attack()
 //     {
 //         InAction = true;
-//         attackState = AttackState.Windup;
+//         AttackStates = AttackStates.Windup;
 
 //         animator.CrossFade(attacks[comboCount].AnimName, 0.2f);
 //         yield return null;
@@ -66,23 +66,23 @@
 //             timer += Time.deltaTime;
 //             float normalizedTime = timer / animState.length;
 
-//             if (attackState == AttackState.Windup)
+//             if (AttackStates == AttackStates.Windup)
 //             {
 //                 if (normalizedTime >= attacks[comboCount].ImpactStartTime)
 //                 {
-//                     attackState = AttackState.Impact;
+//                     AttackStates = AttackStates.Impact;
 //                     EnableHitBox(attacks[comboCount]);
 //                 }
 //             }
-//             else if (attackState == AttackState.Impact)
+//             else if (AttackStates == AttackStates.Impact)
 //             {
 //                 if (normalizedTime >= attacks[comboCount].ImpactEndTime)
 //                 {
-//                     attackState = AttackState.Cooldown;
+//                     AttackStates = AttackStates.Cooldown;
 //                     DisableHitboxes();
 //                 }
 //             }
-//             else if (attackState == AttackState.Cooldown)
+//             else if (AttackStates == AttackStates.Cooldown)
 //             {
 //                 if (doCombo)
 //                 {
@@ -97,7 +97,7 @@
 //             yield return null;
 //         }
 
-//         attackState = AttackState.Idle;
+//         AttackStates = AttackStates.Idle;
 //         comboCount = 0;
 //         InAction = false;
 //     }
@@ -164,7 +164,7 @@ using NUnit.Framework.Internal.Execution; // Esta línea no se usa aquí y puede
 using UnityEngine;
 
 // Estado actual del ataque: reposo, preparación, impacto o recuperación
-public enum AttackState { Idle, Windup, Impact, Cooldown }
+public enum AttackStates { Idle, Windup, Impact, Cooldown }
 
 public class MeeleFighter : MonoBehaviour
 {
@@ -203,7 +203,7 @@ public class MeeleFighter : MonoBehaviour
     } 
 
     // Estado actual del ataque (Idle, Windup, Impact o Cooldown)
-    AttackState attackState;
+    AttackStates AttackStates;
 
     bool doCombo; // Indica si el jugador presionó para hacer un combo
     int comboCount = 0; // Contador del combo actual
@@ -219,7 +219,7 @@ public class MeeleFighter : MonoBehaviour
             StartCoroutine(Attack());
         }
         // Si ya está atacando pero en la fase correcta (impacto o recuperación), se activa el combo
-        else if (attackState == AttackState.Impact || attackState == AttackState.Cooldown)
+        else if (AttackStates == AttackStates.Impact || AttackStates == AttackStates.Cooldown)
         {
             doCombo = true;
         }
@@ -229,7 +229,7 @@ public class MeeleFighter : MonoBehaviour
     IEnumerator Attack()
     {
         InAction = true; // El personaje está ocupado
-        attackState = AttackState.Windup; // Empieza en fase de preparación
+        AttackStates = AttackStates.Windup; // Empieza en fase de preparación
 
         // Se inicia la animación del ataque actual según el combo
         animator.CrossFade(attacks[comboCount].AnimName, 0.2f);
@@ -247,25 +247,25 @@ public class MeeleFighter : MonoBehaviour
             float normalizedTime = timer / animState.length;
 
             // Transición de preparación a impacto
-            if (attackState == AttackState.Windup)
+            if (AttackStates == AttackStates.Windup)
             {
                 if (normalizedTime >= attacks[comboCount].ImpactStartTime)
                 {
-                    attackState = AttackState.Impact;
+                    AttackStates = AttackStates.Impact;
                     EnableHitBox(attacks[comboCount]); // Activar hitbox correspondiente
                 }
             }
             // Transición de impacto a recuperación
-            else if (attackState == AttackState.Impact)
+            else if (AttackStates == AttackStates.Impact)
             {
                 if (normalizedTime >= attacks[comboCount].ImpactEndTime)
                 {
-                    attackState = AttackState.Cooldown;
+                    AttackStates = AttackStates.Cooldown;
                     DisableHitboxes(); // Desactiva hitboxes después del golpe
                 }
             }
             // Durante la recuperación, verifica si hay combo
-            else if (attackState == AttackState.Cooldown)
+            else if (AttackStates == AttackStates.Cooldown)
             {
                 if (doCombo)
                 {
@@ -281,7 +281,7 @@ public class MeeleFighter : MonoBehaviour
         }
 
         // Cuando termina la animación del ataque
-        attackState = AttackState.Idle;
+        AttackStates = AttackStates.Idle;
         comboCount = 0; // Reinicia combo
         InAction = false; // Personaje libre para otras acciones
     }

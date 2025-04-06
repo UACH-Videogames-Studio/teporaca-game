@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public enum EnemyStates { Idle, CombatMovement }
+public enum EnemyStates { Idle, CombatMovement, Attack }
 
 public class EnemyController : MonoBehaviour
 {
@@ -10,6 +10,7 @@ public class EnemyController : MonoBehaviour
 
     public List<MeeleFighter> TargetsInRange {get; set;} = new List<MeeleFighter>();
     public MeeleFighter Target { get; set; }
+    public float CombatMovementTimer { get; set; } = 0f;
 
     public StateMachine<EnemyController> StateMachine { get; private set;}
 
@@ -26,6 +27,7 @@ public class EnemyController : MonoBehaviour
         stateDict = new Dictionary<EnemyStates, State<EnemyController>>();
         stateDict[EnemyStates.Idle] = GetComponent<IdleState>();
         stateDict[EnemyStates.CombatMovement] = GetComponent<CombatMovementState>();
+        stateDict[EnemyStates.Attack] = GetComponent<CombatMovementState>();
 
         StateMachine = new StateMachine<EnemyController>(this);
         StateMachine.ChangeState(stateDict[EnemyStates.Idle]);
@@ -34,6 +36,11 @@ public class EnemyController : MonoBehaviour
     public void ChangeState(EnemyStates state)
     {
         StateMachine.ChangeState(stateDict[state]);
+    }
+
+    public bool IsInState (EnemyStates state)
+    {
+        return StateMachine.CurrentState == stateDict[state];
     }
 
     Vector3 prevPos;
