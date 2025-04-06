@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: KickAttack
   m_EditorClassIdentifier: 
   <AnimName>k__BackingField: KickAttack
+  <HitboxToUse>k__BackingField: 3
   <ImpactStartTime>k__BackingField: 0.25
   <ImpactEndTime>k__BackingField: 0.31
