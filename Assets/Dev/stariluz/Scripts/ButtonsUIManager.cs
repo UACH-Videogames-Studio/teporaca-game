@@ -48,7 +48,7 @@ public class ButtonsUIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        ChangeDisplay();
     }
     string deviceLayout;
     string controlPath;
