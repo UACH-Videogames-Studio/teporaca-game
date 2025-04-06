@@ -153,7 +153,7 @@ public class PlayerControllerE : MonoBehaviour
         // Si el jugador está atacando, no se mueve
         if (meeleFighter.InAction)
         {
-            animator.SetFloat("moveAmount", 0);
+            animator.SetFloat("forwardSpeed", 0);
             return;
         }
 
@@ -183,7 +183,7 @@ public class PlayerControllerE : MonoBehaviour
         }
 
         // Calcular velocidad total (horizontal y vertical)
-        var velocity = moveDir * moveSpeed;
+        var velocity = moveDir * moveSpeed * moveAmount;
         velocity.y = ySpeed;
 
         // Mover al personaje
@@ -199,7 +199,7 @@ public class PlayerControllerE : MonoBehaviour
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 
         // Enviar valor a la animación
-        animator.SetFloat("moveAmount", moveAmount, 0.2f, Time.deltaTime);
+        animator.SetFloat("forwardSpeed", moveAmount, 0.2f, Time.deltaTime);
     }
 
     // Comprobar si el jugador está tocando el suelo usando una esfera

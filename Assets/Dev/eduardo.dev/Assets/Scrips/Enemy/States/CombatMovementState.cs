@@ -20,6 +20,7 @@ public class CombatMovementState : State<EnemyController>
         enemy = owner;
 
         enemy.NavAgent.stoppingDistance = distanceToStand;
+        enemy.CombatMovementTimer = 0f;
     }
 
     public override void Execute()
@@ -69,6 +70,8 @@ public class CombatMovementState : State<EnemyController>
         if (timer > 0)
             timer -= Time.deltaTime;
 
+        enemy.CombatMovementTimer += Time.deltaTime;
+
     }
 
     void StartIdle()
@@ -77,30 +80,26 @@ public class CombatMovementState : State<EnemyController>
         timer = Random.Range(idleTimeRange.x, idleTimeRange.y);
 
         enemy.Animator.SetBool("axeMode", true);
-        enemy.Animator.SetBool("circling", false);
-
     }
 
     void StartChase()
     {
         state = AICombatStates.Chase;
         enemy.Animator.SetBool("axeMode", false);
-        enemy.Animator.SetBool("circling", false);
     }
 
     void StartCircling()
     {
         state = AICombatStates.Circling;
+
+        enemy.NavAgent.ResetPath();
         timer = Random.Range(circlingTimeRange.x, circlingTimeRange.y);
 
-        circlingDir = Random.Range(0, 2) == 0 ? 1 : -1;
-
-        enemy.Animator.SetBool("circling", true);
-        enemy.Animator.SetFloat("circlingDir", circlingDir);
+        circlingDir = Random.Range(0, 2) == 0 ? 1 : -1; 
      }
 
     public override void Exit()
     {
-        
+        enemy.CombatMovementTimer = 0f;
     }
 }

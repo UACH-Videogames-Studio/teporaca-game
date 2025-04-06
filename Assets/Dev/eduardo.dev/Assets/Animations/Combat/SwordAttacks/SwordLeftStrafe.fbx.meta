@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 2c18224a7c86e414fadca69111504ec9
+guid: 91ed33cded72ba0468042889353ce36c
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -31,7 +31,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: mixamo.com
+      name: SwordLeftStrafe
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
@@ -42,8 +42,8 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
+      loopTime: 1
+      loopBlend: 1
       loopBlendOrientation: 1
       loopBlendPositionY: 1
       loopBlendPositionXZ: 0
