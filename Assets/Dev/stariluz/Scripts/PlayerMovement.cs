@@ -80,7 +80,6 @@ namespace Stariluz
         }
 
         protected float currentVelocity;
-        private float layerWeightVelocity = 0f;
 
 
         private void Awake()
