@@ -107,16 +107,16 @@ namespace Stariluz
 
         void Update()
         {
-            UpdatePosition();
+            // UpdatePosition();
             UpdateZoom();
             UpdateRotation();
         }
 
-        private void UpdatePosition()
-        {
-            // Follow player - camera offset
-            transform.position = player.position + new Vector3(0, yOffset, 0);
-        }
+        // private void UpdatePosition()
+        // {
+        //     // Follow player - camera offset
+        //     transform.position = player.position + new Vector3(0, yOffset, 0);
+        // }
         private void UpdateRotation()
         {
             lookInput = _playerInput.Look.ReadValue<Vector2>();
