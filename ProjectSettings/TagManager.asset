@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Hitbox
   - Axe
+  - Grass
   layers:
   - Default
   - TransparentFX
@@ -21,7 +22,7 @@ TagManager:
   - VisionSensor
   - World Hitbox
   - Axe Hitbox
-  - 
+  - Grass
   - 
   - 
   - 

@@ -15,6 +15,7 @@ public class TreeChop : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log(("Triger", other, other.CompareTag("Axe"), canBeHit));
         if (other.CompareTag("Axe") && canBeHit)
         {
             StartCoroutine(HitCooldown());
@@ -24,6 +25,7 @@ public class TreeChop : MonoBehaviour
 
     void HandleHit()
     {
+        Debug.Log(("Hit", hitCount));
         hitCount++;
 
         if (hitCount == 1)
@@ -41,7 +43,7 @@ public class TreeChop : MonoBehaviour
             // Desaparece (puedes usar Destroy o desactivarlo)
             NotifyTreeDestroyed();
             Destroy(gameObject);
-        }   
+        }
     }
 
     System.Collections.IEnumerator HitCooldown()
