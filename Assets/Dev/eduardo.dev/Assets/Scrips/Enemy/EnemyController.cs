@@ -2,11 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public enum EnemyStates { Idle, CombatMovement, Attack }
+public enum EnemyStates { Idle, CombatMovement, Attack, RetreatAfterAttack }
 
 public class EnemyController : MonoBehaviour
 {
     [field: SerializeField] public float Fov { get; private set; } = 180f;
+    [field: SerializeField] public WeaponType Weapon { get; private set; }
 
     public List<MeeleFighter> TargetsInRange {get; set;} = new List<MeeleFighter>();
     public MeeleFighter Target { get; set; }
@@ -31,9 +32,12 @@ public class EnemyController : MonoBehaviour
         stateDict[EnemyStates.Idle] = GetComponent<IdleState>();
         stateDict[EnemyStates.CombatMovement] = GetComponent<CombatMovementState>();
         stateDict[EnemyStates.Attack] = GetComponent<AttackState>();
+        stateDict[EnemyStates.RetreatAfterAttack] = GetComponent<RetreatAfterAttackState>();
 
         StateMachine = new StateMachine<EnemyController>(this);
         StateMachine.ChangeState(stateDict[EnemyStates.Idle]);
+
+        Animator.SetInteger("weaponType", (int)Weapon);
     }
 
     public void ChangeState(EnemyStates state)
@@ -51,12 +55,10 @@ public class EnemyController : MonoBehaviour
     {
         StateMachine.Execute();
 
-        var deltaPos = transform.position - prevPos;
+        var deltaPos = Animator.applyRootMotion? Vector3.zero : transform.position - prevPos;
         var velocity = deltaPos / Time.deltaTime;
 
         float forwardSpeed = Vector3.Dot(velocity, transform.forward);
-
-
         Animator.SetFloat("forwardSpeed", forwardSpeed / NavAgent.speed, 0.2f, Time.deltaTime);
 
         float angle = Vector3.SignedAngle(transform.forward, velocity, Vector3.up);

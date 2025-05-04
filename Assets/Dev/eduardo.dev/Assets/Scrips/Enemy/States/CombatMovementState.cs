@@ -79,13 +79,13 @@ public class CombatMovementState : State<EnemyController>
         state = AICombatStates.Idle;
         timer = Random.Range(idleTimeRange.x, idleTimeRange.y);
 
-        enemy.Animator.SetBool("axeMode", true);
+        enemy.Animator.SetInteger("weaponType", (int)enemy.Weapon);
     }
 
     void StartChase()
     {
         state = AICombatStates.Chase;
-        enemy.Animator.SetBool("axeMode", false);
+        enemy.Animator.SetInteger("weaponType", (int)enemy.Weapon);
     }
 
     void StartCircling()

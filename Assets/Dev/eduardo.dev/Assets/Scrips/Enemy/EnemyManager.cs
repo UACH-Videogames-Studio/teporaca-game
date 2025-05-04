@@ -10,7 +10,7 @@ public class EnemyManager : MonoBehaviour
     {
         i = this;
     }
-    List <EnemyController> enemiesInRange = new List<EnemyController>();
+    public List <EnemyController> enemiesInRange = new List<EnemyController>();
     float notAttackingTimer = 2f;
     
     public void AddEnemyInRange (EnemyController enemy)
@@ -36,8 +36,11 @@ public class EnemyManager : MonoBehaviour
             if (notAttackingTimer <= 0)
             {
                 var attackingEnemy = SelectEnemyForAttack();
-                attackingEnemy.ChangeState(EnemyStates.Attack);
-                notAttackingTimer = Random.Range(timeRangeBetweenAttack.x,timeRangeBetweenAttack.y);
+                if (attackingEnemy != null && attackingEnemy.IsInState(EnemyStates.CombatMovement))
+                {
+                    attackingEnemy.ChangeState(EnemyStates.Attack);
+                    notAttackingTimer = Random.Range(timeRangeBetweenAttack.x,timeRangeBetweenAttack.y);
+                }
             }
         }
     }

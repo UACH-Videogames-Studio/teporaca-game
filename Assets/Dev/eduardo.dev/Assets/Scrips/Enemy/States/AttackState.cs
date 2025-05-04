@@ -19,6 +19,7 @@ public class AttackState : State<EnemyController>
    {
          if (isAttacking) return;
 
+         if (!enemy.Target) return;
          enemy.NavAgent.SetDestination(enemy.Target.transform.position);
 
          if (Vector3.Distance(enemy.Target.transform.position, enemy.transform.position) <= attackDistance + 0.03f)
@@ -35,5 +36,12 @@ public class AttackState : State<EnemyController>
 
       enemy.Animator.applyRootMotion = false;
       isAttacking = false;
+
+      enemy.ChangeState(EnemyStates.RetreatAfterAttack);
+   }
+
+   public override void Exit ()
+   {
+      enemy.NavAgent.ResetPath();
    }
 }

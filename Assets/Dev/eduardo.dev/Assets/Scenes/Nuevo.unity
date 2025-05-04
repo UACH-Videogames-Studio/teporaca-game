@@ -154,6 +154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeRangeBetweenAttack: {x: 1, y: 4}
+  enemiesInRange: []
 --- !u!4 &205368860
 Transform:
   m_ObjectHideFlags: 0
@@ -705,7 +706,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3286919534555333840, guid: 176362483e18ae24894681858463bbc4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 8.23
+      value: 7.66
       objectReference: {fileID: 0}
     - target: {fileID: 3286919534555333840, guid: 176362483e18ae24894681858463bbc4, type: 3}
       propertyPath: m_LocalPosition.y
@@ -713,7 +714,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3286919534555333840, guid: 176362483e18ae24894681858463bbc4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.14
       objectReference: {fileID: 0}
     - target: {fileID: 3286919534555333840, guid: 176362483e18ae24894681858463bbc4, type: 3}
       propertyPath: m_LocalRotation.w

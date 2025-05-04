@@ -3244,6 +3244,7 @@ GameObject:
   - component: {fileID: 6835054562964948974}
   - component: {fileID: 9172962365697120571}
   - component: {fileID: 6837081454440453469}
+  - component: {fileID: 9071167306602330366}
   m_Layer: 8
   m_Name: EnemyA
   m_TagString: Untagged
@@ -3345,6 +3346,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Fov>k__BackingField: 180
+  <Weapon>k__BackingField: 2
 --- !u!114 &8577299912085941058
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3409,6 +3411,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackDistance: 1
+--- !u!114 &9071167306602330366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7360794929865135029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4b68696e3852db4ca2c9d45028d139f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backwardWalkSpeed: 1.5
+  distanceToRetreat: 3
 --- !u!1 &7385356361501536524
 GameObject:
   m_ObjectHideFlags: 0

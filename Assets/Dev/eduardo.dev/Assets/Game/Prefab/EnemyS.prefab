@@ -2828,6 +2828,7 @@ GameObject:
   - component: {fileID: 7415637333268395740}
   - component: {fileID: 8475151586292977146}
   - component: {fileID: 4058026495651345121}
+  - component: {fileID: 1187628614233933026}
   m_Layer: 8
   m_Name: EnemyS
   m_TagString: Untagged
@@ -2931,6 +2932,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Fov>k__BackingField: 180
+  <Weapon>k__BackingField: 1
 --- !u!114 &3401981457401374895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2995,6 +2997,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackDistance: 1
+--- !u!114 &1187628614233933026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7872815249376549929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4b68696e3852db4ca2c9d45028d139f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backwardWalkSpeed: 1.5
+  distanceToRetreat: 3
 --- !u!1 &7923852780906576294
 GameObject:
   m_ObjectHideFlags: 0
