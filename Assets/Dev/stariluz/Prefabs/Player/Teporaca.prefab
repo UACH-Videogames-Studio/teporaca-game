@@ -192,7 +192,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 2f3336ac98703b946b2921d9463173e6, type: 3}
       propertyPath: m_Name
-      value: Teporaca@OriginalPose
+      value: Teporaca
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 2f3336ac98703b946b2921d9463173e6, type: 3}
       propertyPath: m_TagString
@@ -201,7 +201,7 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: 2f3336ac98703b946b2921d9463173e6, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 3c072b19b54a4a44a8fb92644d5b59ca, type: 2}
+      objectReference: {fileID: 9100000, guid: 1cfe9d9e3e6a83b428b27cc265118bc7, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -261,7 +261,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97fc996fca634424a91d1e4b815fc359, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocity: 3
+  velocity: 2.5
   sprintAdittion: 2
   smoothTime: 4
   jumpForce: 10

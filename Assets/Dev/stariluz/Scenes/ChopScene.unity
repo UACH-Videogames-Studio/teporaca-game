@@ -510,7 +510,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7338141416584139500, guid: 819bceb4e74c61c48a9db4cb04634e85, type: 3}
       propertyPath: m_Name
-      value: Teporaca@OriginalPose
+      value: Teporaca
       objectReference: {fileID: 0}
     - target: {fileID: 7970667728797435990, guid: 819bceb4e74c61c48a9db4cb04634e85, type: 3}
       propertyPath: m_LocalPosition.x
