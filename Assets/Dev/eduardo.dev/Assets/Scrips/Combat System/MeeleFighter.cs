@@ -50,6 +50,7 @@ public class MeeleFighter : MonoBehaviour
     int comboCount = 0; // Contador del combo actual
 
     public bool InAction { get; private set; } = false; // Indica si el personaje está actualmente atacando o siendo golpeado
+    public bool InCounter { get; set; } = false; // Indica si el personaje está en medio de un contraataque
 
     // Método llamado por el sistema de input cuando se presiona el botón de ataque
     public void TryToAttack()
@@ -91,6 +92,7 @@ public class MeeleFighter : MonoBehaviour
             // Transición de preparación a impacto
             if (AttackStates == AttackStates.Windup)
             {
+                if (InCounter) break; // Si está en contraataque, no se activa el impacto
                 if (normalizedTime >= attacks[comboCount].ImpactStartTime)
                 {
                     AttackStates = AttackStates.Impact;
@@ -151,6 +153,43 @@ public class MeeleFighter : MonoBehaviour
         InAction = false; // El personaje puede volver a actuar
     }
 
+    // Reproduce una animación cuando el personaje recibe un golpe
+    public IEnumerator PerformCounterAttack(EnemyController opponent)
+    {
+        InAction = true;
+
+        InCounter = true; // Indica que el personaje está en medio de un contraataque
+        opponent.Fighter.InCounter = true; // Indica que el oponente está en medio de un contraataque
+        opponent.ChangeState(EnemyStates.Dead); // Cambia el estado del oponente a muerto
+
+        var dispVec = opponent.transform.position - transform.position; // Calcula la dirección del golpe
+        dispVec.y = 0; // Mantiene la dirección horizontal
+        transform.rotation = Quaternion.LookRotation(dispVec); // Orienta el personaje hacia el oponente
+        opponent.transform.rotation = Quaternion.LookRotation(-dispVec); // Orienta el oponente hacia el personaje
+
+        var targetPos = opponent.transform.position - dispVec.normalized * 1f;
+
+        animator.CrossFade("CounterAttackA", 0.2f); // Reproduce la animación de impacto
+        opponent.Animator.CrossFade("CounterAttackVictimA", 0.2f);
+        yield return null;
+
+        var animState = animator.GetNextAnimatorStateInfo(1);
+
+        float timer = 0f;
+        while (timer <= animState.length)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, 5 * Time.deltaTime); // Mueve el personaje hacia la posición del oponente
+
+            yield return null; // Espera un frame
+            timer += Time.deltaTime; // Incrementa el temporizador
+        }
+
+        InCounter = false; // Indica que el personaje ya no está en medio de un contraataque
+        opponent.Fighter.InCounter = false; // Indica que el oponente ya no está en medio de un contraataque
+
+        InAction = false; // El personaje puede volver a actuar
+    }
+
     // Activa el collider correspondiente al ataque actual
     void EnableHitBox(AttackData attack)
     {
@@ -193,4 +232,8 @@ public class MeeleFighter : MonoBehaviour
         if (rightHandCollider != null)
             rightHandCollider.enabled = false;
     }
+
+    public List<AttackData> Attacks => attacks; // Propiedad para acceder
+
+    public bool IsCounterable  => AttackStates == AttackStates.Windup && comboCount == 0;
 }

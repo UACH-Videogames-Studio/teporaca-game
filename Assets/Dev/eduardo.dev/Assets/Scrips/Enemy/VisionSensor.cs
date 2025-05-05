@@ -3,6 +3,11 @@ using UnityEngine;
 public class VisionSensor : MonoBehaviour
 {
     [SerializeField] EnemyController enemy;
+
+    void Awake()
+    {
+        enemy.VisionSensor = this;
+    }
     private void OnTriggerEnter(Collider other)
     {
         var fighter = other.GetComponent<MeeleFighter>();
