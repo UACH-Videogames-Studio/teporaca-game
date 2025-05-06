@@ -183,14 +183,12 @@ namespace Stariluz
 
         void HandleOnGame()
         {
-            Debug.Log("On Game");
             playerInput.Enable();
             ExecuteCurrentUpdate = UpdateOnGame;
         }
 
         void HandleOnUI()
         {
-            Debug.Log("On UI");
             playerInput.Disable();
             ExecuteCurrentUpdate = UpdateOnUI;
         }

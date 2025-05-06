@@ -13,15 +13,16 @@ namespace Stariluz
         public GameState OnGame, OnUI;
 
         [Header("UI Canvas")]
-        public GameObject uiCanvas;
+        public GameObject canvas;
+        public GameObject UIModeBackground;
 
         [Header("UI Panels")]
         public GameObject playUI;
         public GameObject pauseMenuUI;
         public GameObject settingsMenuUI;
         public GameObject deathUI;
-        public GameObject confirmMenuUI;
-
+        public GameObject confirmRebootMenuUI;
+        public GameObject confirmExitGameMenuUI;
         private UIState _currentState;
         public UIState CurrentState
         {
@@ -74,7 +75,7 @@ namespace Stariluz
             }
 
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            // DontDestroyOnLoad(gameObject);
 
             _inputActions = new InputActions();
             _uiInput = inputActions.UI;
@@ -89,8 +90,11 @@ namespace Stariluz
         }
         private void OnDisable()
         {
-            inputActions.Disable();
-            uiInput.Cancel.performed += ManageUICancelAction;
+            if (inputActions!=null)
+            {
+                inputActions.Disable();
+                uiInput.Cancel.performed -= ManageUICancelAction;
+            }
         }
 
         void Start()
@@ -115,8 +119,8 @@ namespace Stariluz
         {
             DisableAllUI();
 
-            if (uiCanvas)
-                uiCanvas.SetActive(newState != UIState.InPlayScreen);
+            if (UIModeBackground)
+                UIModeBackground.SetActive(newState != UIState.InPlayScreen);
 
 
             if (newState == UIState.InPlayScreen)
@@ -145,8 +149,12 @@ namespace Stariluz
                     if (deathUI) deathUI.SetActive(true);
                     break;
 
-                case UIState.InConfirmScreen:
-                    if (confirmMenuUI) confirmMenuUI.SetActive(true);
+                case UIState.InConfirmRebootScreen:
+                    if (confirmRebootMenuUI) confirmRebootMenuUI.SetActive(true);
+                    break;
+
+                case UIState.InConfirmExitGameScreen:
+                    if (confirmExitGameMenuUI) confirmExitGameMenuUI.SetActive(true);
                     break;
             }
 
@@ -159,9 +167,10 @@ namespace Stariluz
             if (pauseMenuUI) pauseMenuUI.SetActive(false);
             if (settingsMenuUI) settingsMenuUI.SetActive(false);
             if (deathUI) deathUI.SetActive(false);
-            if (confirmMenuUI) confirmMenuUI.SetActive(false);
+            if (confirmRebootMenuUI) confirmRebootMenuUI.SetActive(false);
+            if (confirmExitGameMenuUI) confirmExitGameMenuUI.SetActive(false);
         }
-        
+
         private void ManageUICancelAction(InputAction.CallbackContext context)
         {
 
@@ -171,20 +180,15 @@ namespace Stariluz
                     OpenPause();
                     break;
 
-                case UIState.InPauseScreen:
-                    ResumeGame();
-                    break;
-
-                case UIState.InSettingsScreen:
-                    ChangeState(stateHistory.Pop());
-                    break;
-
                 case UIState.InDeathScreen:
-                    ExitGame();
+                    // Navigate to start screen
                     break;
 
-                case UIState.InConfirmScreen:
-                    // Empty one stack
+                case UIState.InPauseScreen:
+                case UIState.InSettingsScreen:
+                case UIState.InConfirmRebootScreen:
+                case UIState.InConfirmExitGameScreen:
+                    ReturnState();
                     break;
             }
 
@@ -203,9 +207,10 @@ namespace Stariluz
         }
 
         public void OpenSettings() => LoadState(UIState.InSettingsScreen);
-        public void OpenConfirm() => LoadState(UIState.InConfirmScreen);
+        public void OpenConfirmReboot() => LoadState(UIState.InConfirmRebootScreen);
+        public void OpenConfirmExitGame() => LoadState(UIState.InConfirmExitGameScreen);
         public void OpenPause() => LoadState(UIState.InPauseScreen);
-        public void ResumeGame() => ChangeState(UIState.InPlayScreen);
+        public void ResumeGame() => ReturnState();
         public void Die() => ChangeState(UIState.InDeathScreen);
     }
 

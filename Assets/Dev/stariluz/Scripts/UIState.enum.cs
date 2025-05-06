@@ -6,7 +6,8 @@ namespace Stariluz
         InPauseScreen,
         InSettingsScreen,
         InDeathScreen,
-        InConfirmScreen
+        InConfirmRebootScreen,
+        InConfirmExitGameScreen
     }
 
 }
