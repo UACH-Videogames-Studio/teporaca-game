@@ -45,6 +45,22 @@ namespace Stariluz
         protected bool inputCrouch;
         protected bool inputSprint;
 
+        protected CharacterController characterController;
+        protected int ACzMovementHash;
+
+        protected Vector2 moveInput;
+        protected float currentVelocity;
+
+
+        public delegate void UpdateFunction();
+
+        public UpdateFunction ExecuteCurrentUpdate;
+
+        protected int ACchopHash;
+        private bool isChopping = false;
+        [SerializeField] private Collider axeCollider;
+        [SerializeField] private float frameRate = 24f; // Asume que el juego corre a 60 fps
+
         [HideInInspector]
         protected Animator _animator;
         public Animator animator
@@ -54,10 +70,6 @@ namespace Stariluz
                 return _animator;
             }
         }
-        protected CharacterController characterController;
-        protected int ACzMovementHash;
-
-        protected Vector2 moveInput;
 
         [HideInInspector]
         protected InputActions _inputActions;
@@ -79,23 +91,27 @@ namespace Stariluz
             }
         }
 
-        protected float currentVelocity;
-
 
         private void Awake()
         {
             _inputActions = new InputActions();
             _playerInput = inputActions.Player;
         }
+
         private void OnEnable()
         {
+            ExecuteCurrentUpdate = UpdateOnGame;
             inputActions.Enable();
             playerInput.Attack.started += Chop;
+            GameManager.Instance.OnGame += HandleOnGame;
+            GameManager.Instance.OnUI += HandleOnUI;
         }
         private void OnDisable()
         {
             inputActions.Disable();
             playerInput.Attack.started -= Chop;
+            GameManager.Instance.OnGame -= HandleOnGame;
+            GameManager.Instance.OnUI -= HandleOnUI;
         }
 
         void Start()
@@ -110,11 +126,33 @@ namespace Stariluz
                 Debug.LogWarning("Hey buddy, you don't have the Animator component in your player. Without it, the animations won't work.");
         }
 
-
-        // Update is only being used here to identify keys and trigger animations
         void Update()
         {
+            ExecuteCurrentUpdate();
+        }
 
+        // With the inputs and animations defined, FixedUpdate is responsible for applying movements and actions to the player
+        private void FixedUpdate()
+        {
+            // Direction movement
+            float directionY = -gravity * Time.deltaTime;
+
+            // Jump handler
+            if (isJumping)
+            {
+                directionY += JumpUpdate();
+            }
+
+            Vector3 verticalDirection = Vector3.up * directionY;
+            Vector3 horizontalDirection = CalcHoriziontalMovement();
+
+            Vector3 movement = verticalDirection + horizontalDirection;
+            characterController.Move(movement);
+            UpdateAnimation();
+        }
+        
+        void UpdateOnGame()
+        {
             // Input checkers
             moveInput = playerInput.Move.ReadValue<Vector2>();
             inputJump = playerInput.Jump.IsPressed();
@@ -141,31 +179,22 @@ namespace Stariluz
 
             HeadHittingDetect();
         }
-        protected bool CanJump()
+        void UpdateOnUI() { }
+
+        void HandleOnGame()
         {
-            return inputJump && characterController.isGrounded;
+            Debug.Log("On Game");
+            playerInput.Enable();
+            ExecuteCurrentUpdate = UpdateOnGame;
         }
 
-
-        // With the inputs and animations defined, FixedUpdate is responsible for applying movements and actions to the player
-        private void FixedUpdate()
+        void HandleOnUI()
         {
-            // Direction movement
-            float directionY = -gravity * Time.deltaTime;
-
-            // Jump handler
-            if (isJumping)
-            {
-                directionY += JumpUpdate();
-            }
-
-            Vector3 verticalDirection = Vector3.up * directionY;
-            Vector3 horizontalDirection = CalcHoriziontalMovement();
-
-            Vector3 movement = verticalDirection + horizontalDirection;
-            characterController.Move(movement);
-            UpdateAnimation();
+            Debug.Log("On UI");
+            playerInput.Disable();
+            ExecuteCurrentUpdate = UpdateOnUI;
         }
+
         protected void UpdateAnimation()
         {
             // Vector3 velocity = characterController.velocity;
@@ -179,6 +208,11 @@ namespace Stariluz
             float smoothedSpeed = Mathf.SmoothDamp(animator.GetFloat(ACzMovementHash), targetSpeed, ref currentVelocity, Time.deltaTime * smoothTime);
 
             animator.SetFloat(ACzMovementHash, smoothedSpeed);
+        }
+
+        protected bool CanJump()
+        {
+            return inputJump && characterController.isGrounded;
         }
 
         protected float JumpUpdate()
@@ -253,13 +287,9 @@ namespace Stariluz
             }
         }
 
-        protected int ACchopHash;
-        private bool isChopping = false;
 
         private void Chop(InputAction.CallbackContext context)
         {
-            Debug.Log("Weapon");
-
             if (!isChopping)
             {
                 isChopping = true;
@@ -271,9 +301,6 @@ namespace Stariluz
         {
             isChopping = false;
         }
-        [SerializeField] private Collider axeCollider;
-        [SerializeField] private float frameRate = 24f; // Asume que el juego corre a 60 fps
-
         private IEnumerator EnableAxeColliderAtFrame(int startFrame, int endFrame)
         {
             // Esperar hasta el frame 10
