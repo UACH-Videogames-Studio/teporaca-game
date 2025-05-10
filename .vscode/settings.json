@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "teporaca-game.sln"
+    "dotnet.defaultSolution": "teporashi.sln"
 }
