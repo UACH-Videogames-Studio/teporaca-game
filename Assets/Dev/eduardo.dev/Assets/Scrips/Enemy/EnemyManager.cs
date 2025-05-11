@@ -10,8 +10,8 @@ public class EnemyManager : MonoBehaviour
     {
         i = this;
     }
-    List <EnemyController> enemiesInRange;
-    float notAttackingTimer;
+    List <EnemyController> enemiesInRange = new List<EnemyController>();
+    float notAttackingTimer = 2f;
     
     public void AddEnemyInRange (EnemyController enemy)
     {
@@ -26,6 +26,8 @@ public class EnemyManager : MonoBehaviour
 
     private void Update()
     {
+        if (enemiesInRange.Count == 0) return;
+
         if (!enemiesInRange.Any(e => e.IsInState(EnemyStates.Attack)))
         {
             if (notAttackingTimer > 0)

@@ -5,24 +5,10 @@ using UnityEngine.UI;
 
 public class SceneTransitionManager : MonoBehaviour
 {
-    public static SceneTransitionManager Instance;
-
     [SerializeField] private Image fadeImage;
     [SerializeField] private float fadeDuration = 1f;
+    [SerializeField] private bool debugMode = false;
 
-    private void Awake()
-    {
-        // Singleton
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
 
     private void Start()
     {
@@ -31,7 +17,11 @@ public class SceneTransitionManager : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
-        StartCoroutine(Transition(sceneName));
+        if(!debugMode){
+            StartCoroutine(Transition(sceneName));
+        }else{
+            Debug.LogWarning("Transition prevented. Debug mode is active.");
+        }
     }
 
     private IEnumerator Transition(string sceneName)
@@ -47,6 +37,7 @@ public class SceneTransitionManager : MonoBehaviour
 
     private IEnumerator FadeOut()
     {
+        SetFadeAlpha(0f);
         float t = 0f;
         while (t < fadeDuration)
         {
@@ -60,6 +51,7 @@ public class SceneTransitionManager : MonoBehaviour
 
     private IEnumerator FadeIn()
     {
+        SetFadeAlpha(1f);
         float t = 0f;
         while (t < fadeDuration)
         {

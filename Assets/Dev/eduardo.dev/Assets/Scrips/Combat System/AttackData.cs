@@ -50,5 +50,8 @@ public enum AttackHitbox
     LeftFoot,   // Pie izquierdo
     RightFoot,  // Pie derecho
     Axe,        // Hacha
-    Arrow       // Flecha
+    Arrow,      // Flecha
+    Sword,      // Espada 
+    Shield      // Escudo
+
 }

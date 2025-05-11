@@ -7,7 +7,6 @@ public class TreeChop : MonoBehaviour
     private bool canBeHit = true;
     private float hitCooldown = 0.25f;
 
-
     void Start()
     {
         originalScale = transform.localScale;
@@ -26,22 +25,29 @@ public class TreeChop : MonoBehaviour
     {
         hitCount++;
 
+        float newScaleFactor = 1f;
         if (hitCount == 1)
         {
-            // Disminuye el tamaño al 50%
-            transform.localScale = originalScale * 0.5f;
+            newScaleFactor = 0.5f;
         }
         else if (hitCount == 2)
         {
-            // Disminuye un 25% más (de su tamaño original)
-            transform.localScale = originalScale * 0.25f;
+            newScaleFactor = 0.25f;
         }
-        else if (hitCount >= 3)
+
+        if (hitCount >= 3)
         {
-            // Desaparece (puedes usar Destroy o desactivarlo)
             NotifyTreeDestroyed();
             Destroy(gameObject);
-        }   
+            return;
+        }
+
+        Vector3 newScale = originalScale * newScaleFactor;
+        float heightDifference = (originalScale.y - newScale.y) * transform.localScale.y / originalScale.y;
+
+        // Ajustar la posición para mantener la base en el mismo lugar
+        transform.position -= new Vector3(0, heightDifference / 2f, 0);
+        transform.localScale = newScale;
     }
 
     System.Collections.IEnumerator HitCooldown()
@@ -50,10 +56,10 @@ public class TreeChop : MonoBehaviour
         yield return new WaitForSeconds(hitCooldown);
         canBeHit = true;
     }
-    
+
+    public ChopSceneManger manager;
     void NotifyTreeDestroyed()
     {
-        ChopSceneManger.Instance.TreeDestroyed(); // Llama al manejador
+        manager.TreeDestroyed();
     }
-
 }

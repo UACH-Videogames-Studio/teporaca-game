@@ -80,7 +80,6 @@ namespace Stariluz
         }
 
         protected float currentVelocity;
-        private float layerWeightVelocity = 0f;
 
 
         private void Awake()
@@ -120,11 +119,11 @@ namespace Stariluz
             moveInput = playerInput.Move.ReadValue<Vector2>();
             inputJump = playerInput.Jump.IsPressed();
             inputSprint = playerInput.Sprint.IsPressed();
-            inputCrouch = playerInput.Crouch.IsPressed();
+            // inputCrouch = playerInput.Crouch.IsPressed();
 
             // Check if you pressed the crouch input key and change the player's state
-            if (inputCrouch)
-                isCrouching = !isCrouching;
+            // if (inputCrouch)
+            //     isCrouching = !isCrouching;
 
             if (characterController.isGrounded)
             {

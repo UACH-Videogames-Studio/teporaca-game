@@ -1,163 +1,4 @@
-// using System.Collections;
-// using System.Collections.Generic;
-// using NUnit.Framework.Internal.Execution;
-// using UnityEngine;
-
-// public enum AttackStates { Idle, Windup, Impact, Cooldown }
-
-// public class MeeleFighter : MonoBehaviour
-// {
-//     [SerializeField] List<AttackData> attacks;
-//     [SerializeField] GameObject axe;
-
-//     BoxCollider axeCollider;
-//     SphereCollider leftHandCollider, rightHandCollider, leftFootCollider, rightFootCollider;
-
-//     Animator animator;
-
-//     private void Awake()
-//     {
-//         animator = GetComponent<Animator>();
-//     }
-
-//     private void Start()
-//     {
-//         if (axe != null)
-//         {
-//             axeCollider = axe.GetComponent<BoxCollider>();
-//             leftFootCollider = animator.GetBoneTransform(HumanBodyBones.LeftFoot).GetComponent<SphereCollider>();
-//             rightFootCollider = animator.GetBoneTransform(HumanBodyBones.RightFoot).GetComponent<SphereCollider>();
-//             leftHandCollider = animator.GetBoneTransform(HumanBodyBones.LeftHand).GetComponent<SphereCollider>();
-//             rightHandCollider = animator.GetBoneTransform(HumanBodyBones.RightHand).GetComponent<SphereCollider>();
-
-//             DisableHitboxes();
-//         }
-//     } 
-
-//     AttackStates AttackStates;
-//     bool doCombo;
-//     int comboCount = 0;
-//     public bool InAction {get; private set;} = false;
-//     public void TryToAttack()
-//     {
-//         if (!InAction)
-//         {
-//             StartCoroutine(Attack());
-//         }
-//         else if (AttackStates == AttackStates.Impact || AttackStates == AttackStates.Cooldown)
-//         {
-//             doCombo = true;
-//         }
-//     }
-
-//     IEnumerator Attack()
-//     {
-//         InAction = true;
-//         AttackStates = AttackStates.Windup;
-
-//         animator.CrossFade(attacks[comboCount].AnimName, 0.2f);
-//         yield return null;
-
-//         var animState = animator.GetNextAnimatorStateInfo(1);
-
-//         float timer = 0f;
-//         while (timer <= animState.length)
-//         {
-//             timer += Time.deltaTime;
-//             float normalizedTime = timer / animState.length;
-
-//             if (AttackStates == AttackStates.Windup)
-//             {
-//                 if (normalizedTime >= attacks[comboCount].ImpactStartTime)
-//                 {
-//                     AttackStates = AttackStates.Impact;
-//                     EnableHitBox(attacks[comboCount]);
-//                 }
-//             }
-//             else if (AttackStates == AttackStates.Impact)
-//             {
-//                 if (normalizedTime >= attacks[comboCount].ImpactEndTime)
-//                 {
-//                     AttackStates = AttackStates.Cooldown;
-//                     DisableHitboxes();
-//                 }
-//             }
-//             else if (AttackStates == AttackStates.Cooldown)
-//             {
-//                 if (doCombo)
-//                 {
-//                     doCombo = false;
-//                     comboCount = (comboCount + 1) % attacks.Count;
-
-//                     StartCoroutine(Attack());
-//                     yield break;
-//                 }
-//             }
-
-//             yield return null;
-//         }
-
-//         AttackStates = AttackStates.Idle;
-//         comboCount = 0;
-//         InAction = false;
-//     }
-
-//     private void OnTriggerEnter(Collider other)
-//     {
-//         if (other.tag == "Hitbox" && !InAction)
-//         {
-//             StartCoroutine(PlayHitReaction());
-//         }
-//     }
-
-//     IEnumerator PlayHitReaction()
-//     {
-//         InAction = true;
-//         animator.CrossFade("Impact", 0.2f);
-//         yield return null;
-
-//         var animState = animator.GetNextAnimatorStateInfo(1);
-
-//         yield return new WaitForSeconds(animState.length * 0.8f);
-
-//         InAction = false;
-//     }
-
-//     void EnableHitBox (AttackData attack)
-//     {
-//         switch (attack.HitboxToUse)
-//         {
-//             case AttackHitbox.LeftHand:
-//                 leftHandCollider.enabled = true;
-//                 break;
-//             case AttackHitbox.RightHand:
-//                 rightHandCollider.enabled = true;
-//                 break;
-//             case AttackHitbox.LeftFoot:
-//                 leftFootCollider.enabled = true;
-//                 break;
-//             case AttackHitbox.RightFoot:
-//                 rightFootCollider.enabled = true;
-//                 break;
-//             case AttackHitbox.Axe:
-//                 axeCollider.enabled = true;
-//                 break;
-//             default:
-//                 break;
-//         }
-//     }
-
-//     void DisableHitboxes()
-//     {
-//         axeCollider.enabled = false;
-//         leftFootCollider.enabled = false;
-//         rightFootCollider.enabled = false;
-//         leftHandCollider.enabled = false;
-//         rightHandCollider.enabled = false;
-//     }
-
-// }
-
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework.Internal.Execution; // Esta línea no se usa aquí y puede eliminarse
@@ -169,10 +10,10 @@ public enum AttackStates { Idle, Windup, Impact, Cooldown }
 public class MeeleFighter : MonoBehaviour
 {
     [SerializeField] List<AttackData> attacks; // Lista de ataques posibles (definidos como ScriptableObjects)
-    [SerializeField] GameObject axe; // Referencia al hacha del personaje (si tiene una)
+    [SerializeField] GameObject weapon; // Referencia al arma del personaje (si tiene una)
 
     // Colliders que se usarán como hitboxes para detectar impactos en distintas partes del cuerpo
-    BoxCollider axeCollider;
+    BoxCollider weaponCollider;
     SphereCollider leftHandCollider, rightHandCollider, leftFootCollider, rightFootCollider;
 
     Animator animator; // Referencia al Animator del personaje para controlar animaciones
@@ -186,10 +27,10 @@ public class MeeleFighter : MonoBehaviour
     private void Start()
     {
         // Si el personaje tiene un hacha asignada
-        if (axe != null)
+        if (weapon != null)
         {
             // Se obtienen los colliders correspondientes a cada parte del cuerpo desde el Animator
-            axeCollider = axe.GetComponent<BoxCollider>();
+            weaponCollider = weapon.GetComponent<BoxCollider>();
 
             // Se accede a los huesos humanos del rig para obtener las manos y pies, y sus colliders
             leftFootCollider = animator.GetBoneTransform(HumanBodyBones.LeftFoot).GetComponent<SphereCollider>();
@@ -203,7 +44,7 @@ public class MeeleFighter : MonoBehaviour
     } 
 
     // Estado actual del ataque (Idle, Windup, Impact o Cooldown)
-    AttackStates AttackStates;
+    public AttackStates AttackStates { get; private set; }
 
     bool doCombo; // Indica si el jugador presionó para hacer un combo
     int comboCount = 0; // Contador del combo actual
@@ -228,9 +69,10 @@ public class MeeleFighter : MonoBehaviour
     // Corrutina que maneja todo el proceso del ataque: animación, tiempos y combos
     IEnumerator Attack()
     {
+        // Si el personaje está en medio de un ataque, no puede iniciar otro
         InAction = true; // El personaje está ocupado
         AttackStates = AttackStates.Windup; // Empieza en fase de preparación
-
+        
         // Se inicia la animación del ataque actual según el combo
         animator.CrossFade(attacks[comboCount].AnimName, 0.2f);
         yield return null; // Espera un frame
@@ -327,7 +169,10 @@ public class MeeleFighter : MonoBehaviour
                 rightFootCollider.enabled = true;
                 break;
             case AttackHitbox.Axe:
-                axeCollider.enabled = true;
+                weaponCollider.enabled = true;
+                break;
+            case AttackHitbox.Sword:
+                weaponCollider.enabled = true;
                 break;
             default:
                 break;
@@ -337,10 +182,15 @@ public class MeeleFighter : MonoBehaviour
     // Desactiva todos los colliders de ataque
     void DisableHitboxes()
     {
-        axeCollider.enabled = false;
-        leftFootCollider.enabled = false;
-        rightFootCollider.enabled = false;
-        leftHandCollider.enabled = false;
-        rightHandCollider.enabled = false;
+        weaponCollider.enabled = false;
+
+        if (leftFootCollider != null)
+            leftFootCollider.enabled = false;
+        if (rightFootCollider != null)
+            rightFootCollider.enabled = false;
+        if (leftHandCollider != null)
+            leftHandCollider.enabled = false;
+        if (rightHandCollider != null)
+            rightHandCollider.enabled = false;
     }
 }

@@ -20,6 +20,7 @@ public class ChopSceneManger : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
+    public SceneTransitionManager manager;
 
     public void TreeDestroyed()
     {
@@ -28,7 +29,7 @@ public class ChopSceneManger : MonoBehaviour
             sceneLoading = true;
 
             // Llama a tu SceneTransitionManager
-            SceneTransitionManager.Instance.LoadScene(nextSceneName);
+            manager.LoadScene(nextSceneName);
         }
     }
 }

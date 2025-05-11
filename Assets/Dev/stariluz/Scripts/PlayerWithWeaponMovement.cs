@@ -15,7 +15,6 @@ namespace Stariluz
         protected int ACchopHash;
 
         [SerializeField] protected bool isWeaponDrawn = false;
-        private float layerWeightVelocity = 0f;
         private bool isChopping=false;
 
         private void OnEnable()

@@ -41,9 +41,9 @@ public class TitleScreenController : MonoBehaviour
     {
         inputActions.Disable();
     }
-
+    public SceneTransitionManager manager;
     private void StartGame(InputAction.CallbackContext context)
     {
-        SceneTransitionManager.Instance.LoadScene(sceneToLoad);
+        manager.LoadScene(sceneToLoad);
     }
 }
