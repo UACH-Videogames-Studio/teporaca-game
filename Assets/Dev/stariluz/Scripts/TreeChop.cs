@@ -1,65 +1,75 @@
 using UnityEngine;
-
-public class TreeChop : MonoBehaviour
+namespace Stariluz
 {
-    private int hitCount = 0;
-    private Vector3 originalScale;
-    private bool canBeHit = true;
-    private float hitCooldown = 0.25f;
-
-    void Start()
+    public class TreeChop : MonoBehaviour
     {
-        originalScale = transform.localScale;
-    }
+        private int hitCount = 0;
+        private Vector3 originalScale;
+        private bool canBeHit = true;
+        private float hitCooldown = 0.25f;
+        private Coroutine currentCorroutine;
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Axe") && canBeHit)
+        void Start()
         {
-            StartCoroutine(HitCooldown());
-            HandleHit();
-        }
-    }
-
-    void HandleHit()
-    {
-        hitCount++;
-
-        float newScaleFactor = 1f;
-        if (hitCount == 1)
-        {
-            newScaleFactor = 0.5f;
-        }
-        else if (hitCount == 2)
-        {
-            newScaleFactor = 0.25f;
+            originalScale = transform.localScale;
         }
 
-        if (hitCount >= 3)
+        private void OnTriggerEnter(Collider other)
         {
-            NotifyTreeDestroyed();
-            Destroy(gameObject);
-            return;
+            if (other.CompareTag("Axe") && canBeHit)
+            {
+                HandleHit();
+            }
         }
 
-        Vector3 newScale = originalScale * newScaleFactor;
-        float heightDifference = (originalScale.y - newScale.y) * transform.localScale.y / originalScale.y;
+        void HandleHit()
+        {
+            hitCount++;
 
-        // Ajustar la posición para mantener la base en el mismo lugar
-        transform.position -= new Vector3(0, heightDifference / 2f, 0);
-        transform.localScale = newScale;
-    }
+            float newScaleFactor = 1f;
+            if (hitCount == 1)
+            {
+                newScaleFactor = 0.5f;
+            }
+            else if (hitCount == 2)
+            {
+                newScaleFactor = 0.25f;
+            }
+            else if (hitCount >= 3)
+            {
+                NotifyTreeDestroyed();
+                gameObject.SetActive(false);
+                return;
+            }
 
-    System.Collections.IEnumerator HitCooldown()
-    {
-        canBeHit = false;
-        yield return new WaitForSeconds(hitCooldown);
-        canBeHit = true;
-    }
+            currentCorroutine = StartCoroutine(HitCooldown());
 
-    public ChopSceneManger manager;
-    void NotifyTreeDestroyed()
-    {
-        manager.TreeDestroyed();
+            Vector3 newScale = originalScale * newScaleFactor;
+            float heightDifference = (originalScale.y - newScale.y) * transform.localScale.y / originalScale.y;
+
+            // Ajustar la posición para mantener la base en el mismo lugar
+            transform.position -= new Vector3(0, heightDifference / 2f, 0);
+            transform.localScale = newScale;
+        }
+
+        System.Collections.IEnumerator HitCooldown()
+        {
+            canBeHit = false;
+            yield return new WaitForSeconds(hitCooldown);
+            canBeHit = true;
+        }
+
+        void NotifyTreeDestroyed()
+        {
+            ChopSceneManger.Instance.TreeDestroyed(this);
+        }
+
+        public void Restore()
+        {
+            canBeHit = true;
+            hitCount = 0;
+            transform.localScale = originalScale;
+            gameObject.SetActive(true);
+        }
     }
 }

@@ -1,35 +1,69 @@
+using System.Collections.Generic;
+using Stariluz;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class ChopSceneManger : MonoBehaviour
+namespace Stariluz
 {
-    public static ChopSceneManger Instance { get; private set; }
-
-    [SerializeField] private string nextSceneName = "Narrative2"; // Cambia esto por el nombre real
-
-    private bool sceneLoading = false;
-
-    private void Awake()
+    public class ChopSceneManger : MonoBehaviour
     {
-        // Singleton pattern
-        if (Instance != null && Instance != this)
+        public static ChopSceneManger Instance { get; private set; }
+
+        [SerializeField] private string nextSceneName = "Narrative2"; // Cambia esto por el nombre real
+
+
+        // Lista de estados de árboles
+        private List<TreeChop> destroyedTrees = new List<TreeChop>();
+        public SceneTransitionManager manager;
+
+        private void Awake()
         {
-            Destroy(gameObject);
-            return;
+            // Singleton pattern
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
 
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
-    }
-    public SceneTransitionManager manager;
-
-    public void TreeDestroyed()
-    {
-        if (!sceneLoading)
+        private void OnEnable()
         {
-            sceneLoading = true;
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
 
-            // Llama a tu SceneTransitionManager
-            manager.LoadScene(nextSceneName);
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+
+        public void TreeDestroyed(TreeChop tree)
+        {
+            // if (!destroyedTrees.Contains(tree))
+            // {
+            destroyedTrees.Add(tree);
+            // }
+
+            // if (!sceneLoading)
+            // {
+            //     sceneLoading = true;
+            //     manager.LoadScene(nextSceneName);
+            // }
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            // Restaurar árboles destruidos si reiniciaste el capítulo
+            foreach (var tree in destroyedTrees)
+            {
+                if (tree != null)
+                {
+                    tree.Restore();
+                }
+            }
+            destroyedTrees.Clear();
         }
     }
 }
