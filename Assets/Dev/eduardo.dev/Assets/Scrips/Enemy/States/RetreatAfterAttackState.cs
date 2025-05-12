@@ -10,7 +10,6 @@ public class RetreatAfterAttackState : State<EnemyController>
     public override void Enter(EnemyController owner)
     {
         enemy = owner;
-        enemy.Animator.SetFloat("forwardSpeed", -0.2f);
     }
 
     public override void Execute()
@@ -27,10 +26,4 @@ public class RetreatAfterAttackState : State<EnemyController>
         vecToTarget.y = 0;
         transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(vecToTarget), 500 * Time.deltaTime);
     }
-
-    public override void Exit()
-    {
-        enemy.Animator.SetFloat("forwardSpeed", 0f);
-    }
-
 }

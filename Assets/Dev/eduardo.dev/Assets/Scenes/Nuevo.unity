@@ -154,6 +154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeRangeBetweenAttack: {x: 1, y: 4}
+  player: {fileID: 1783452853}
   enemiesInRange: []
 --- !u!4 &205368860
 Transform:
@@ -218,9 +219,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1395696086832806926, guid: 199e680e569efa4448985c34c7a8ae0d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7360794929865135029, guid: 199e680e569efa4448985c34c7a8ae0d, type: 3}
       propertyPath: m_Name
       value: EnemyA2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7360794929865135029, guid: 199e680e569efa4448985c34c7a8ae0d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -492,9 +501,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1395696086832806926, guid: 199e680e569efa4448985c34c7a8ae0d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7360794929865135029, guid: 199e680e569efa4448985c34c7a8ae0d, type: 3}
       propertyPath: m_Name
       value: EnemyA
+      objectReference: {fileID: 0}
+    - target: {fileID: 7360794929865135029, guid: 199e680e569efa4448985c34c7a8ae0d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -688,6 +705,17 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!114 &1783452853 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6074551656682186008, guid: 7fe0327bc5a95a446bcfab94212b3e5f, type: 3}
+  m_PrefabInstance: {fileID: 2931603491686312913}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d94e2e873ae7c1e478b79fa8324ce6cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1815606485
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -743,6 +771,10 @@ PrefabInstance:
     - target: {fileID: 3286919534555333840, guid: 176362483e18ae24894681858463bbc4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5896711248941069335, guid: 176362483e18ae24894681858463bbc4, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7872815249376549929, guid: 176362483e18ae24894681858463bbc4, type: 3}
       propertyPath: m_Name
@@ -924,9 +956,49 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2498632844415347133, guid: 7fe0327bc5a95a446bcfab94212b3e5f, type: 3}
+      propertyPath: m_ActionEvents.Array.size
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 2498632844415347133, guid: 7fe0327bc5a95a446bcfab94212b3e5f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[23].m_ActionId
+      value: 9f0aa1f4-3a26-4338-b734-f805b167ed11
+      objectReference: {fileID: 0}
+    - target: {fileID: 2498632844415347133, guid: 7fe0327bc5a95a446bcfab94212b3e5f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[23].m_ActionName
+      value: 'Player/LockOn[/Mouse/middleButton,/DualSenseGamepadHID/rightStickPress]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2498632844415347133, guid: 7fe0327bc5a95a446bcfab94212b3e5f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[23].m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2498632844415347133, guid: 7fe0327bc5a95a446bcfab94212b3e5f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[23].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2498632844415347133, guid: 7fe0327bc5a95a446bcfab94212b3e5f, type: 3}
       propertyPath: m_ActionEvents.Array.data[1].m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2077449495}
+    - target: {fileID: 2498632844415347133, guid: 7fe0327bc5a95a446bcfab94212b3e5f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[23].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1783452853}
+    - target: {fileID: 2498632844415347133, guid: 7fe0327bc5a95a446bcfab94212b3e5f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[23].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2498632844415347133, guid: 7fe0327bc5a95a446bcfab94212b3e5f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[23].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: combatModeOn
+      objectReference: {fileID: 0}
+    - target: {fileID: 2498632844415347133, guid: 7fe0327bc5a95a446bcfab94212b3e5f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[23].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: CombatController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2498632844415347133, guid: 7fe0327bc5a95a446bcfab94212b3e5f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[23].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 5267485449666014090, guid: 7fe0327bc5a95a446bcfab94212b3e5f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.9

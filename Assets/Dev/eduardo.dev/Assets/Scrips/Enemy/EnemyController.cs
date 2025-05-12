@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public enum EnemyStates { Idle, CombatMovement, Attack, RetreatAfterAttack, Dead }
+public enum EnemyStates { Idle, CombatMovement, Attack, RetreatAfterAttack, Dead, GettingHit }
 
 public class EnemyController : MonoBehaviour
 {
@@ -11,6 +11,7 @@ public class EnemyController : MonoBehaviour
 
     public List<MeeleFighter> TargetsInRange {get; set;} = new List<MeeleFighter>();
     public MeeleFighter Target { get; set; }
+    public SkinnedMeshHighlighter MeshHighlighter { get; private set; }
     public float CombatMovementTimer { get; set; } = 0f;
 
     public StateMachine<EnemyController> StateMachine { get; private set;}
@@ -31,6 +32,7 @@ public class EnemyController : MonoBehaviour
         CharacterController = GetComponent<CharacterController>();
         Animator = GetComponent<Animator>();
         Fighter = GetComponent<MeeleFighter>();
+        MeshHighlighter = GetComponent<SkinnedMeshHighlighter>();
 
         stateDict = new Dictionary<EnemyStates, State<EnemyController>>();
         stateDict[EnemyStates.Idle] = GetComponent<IdleState>();
@@ -38,12 +40,15 @@ public class EnemyController : MonoBehaviour
         stateDict[EnemyStates.Attack] = GetComponent<AttackState>();
         stateDict[EnemyStates.RetreatAfterAttack] = GetComponent<RetreatAfterAttackState>();
         stateDict[EnemyStates.Dead] = GetComponent<DeadState>();
+        stateDict[EnemyStates.GettingHit] = GetComponent<GettingHitState>();
 
 
         StateMachine = new StateMachine<EnemyController>(this);
         StateMachine.ChangeState(stateDict[EnemyStates.Idle]);
 
-        Animator.SetInteger("weaponType", (int)Weapon);
+        Fighter.OnGotHit += () => ChangeState(EnemyStates.GettingHit);
+
+        Animator.SetInteger("weaponType", 0);
     }
 
     public void ChangeState(EnemyStates state)
@@ -72,6 +77,23 @@ public class EnemyController : MonoBehaviour
         Animator.SetFloat("strafeSpeed", strafeSpeed, 0.2f, Time.deltaTime);
 
         prevPos = transform.position;
+    }
+
+    public MeeleFighter FindTarget()
+    {
+        foreach (var target in TargetsInRange)
+        {
+            var vecToTarget = target.transform.position - transform.position;
+            float angle = Vector3.Angle(transform.forward, vecToTarget);
+
+            if (angle <= Fov / 2 )
+            {
+                return target;
+            }
+
+        }
+
+        return null;
     }
 
 }

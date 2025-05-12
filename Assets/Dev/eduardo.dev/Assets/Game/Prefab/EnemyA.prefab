@@ -3246,6 +3246,8 @@ GameObject:
   - component: {fileID: 6837081454440453469}
   - component: {fileID: 9071167306602330366}
   - component: {fileID: 3600904500299944038}
+  - component: {fileID: 443033106169381307}
+  - component: {fileID: 1395696086832806926}
   m_Layer: 8
   m_Name: EnemyA
   m_TagString: Untagged
@@ -3309,6 +3311,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f476ecf1ee597cd4bb3f63ff1d4e5356, type: 2}
   - {fileID: 11400000, guid: 6b61d04f001d5de4e874d0728564eca6, type: 2}
   weapon: {fileID: 2752823942753395570}
+  rotationSpeed: 500
 --- !u!143 &2870859731489518098
 CharacterController:
   m_ObjectHideFlags: 0
@@ -3438,6 +3441,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c798385310792594fb6471178a43c8c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &443033106169381307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7360794929865135029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8086af8873e80844f9e2d90ffb4d7a87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshesToHighlight:
+  - {fileID: 337110839966011269}
+  originalMaterial: {fileID: -7506300975346226867, guid: 2acba2288f967164799316658c389c18, type: 3}
+  highlightedMaterial: {fileID: 2100000, guid: bd9720758d4cbdf409de281bd120951a, type: 2}
+--- !u!114 &1395696086832806926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7360794929865135029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e2b9bbabf5888443b6c52b537452a87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stunnTime: 0.5
 --- !u!1 &7385356361501536524
 GameObject:
   m_ObjectHideFlags: 0
