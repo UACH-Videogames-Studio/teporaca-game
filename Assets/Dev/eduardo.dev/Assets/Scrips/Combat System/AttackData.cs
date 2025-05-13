@@ -1,18 +1,3 @@
-// using UnityEngine;
-
-// [CreateAssetMenu(menuName = "Combat System/Create a new attack")]
-// public class AttackData : ScriptableObject
-// {
-//     [field: SerializeField] public string AnimName { get; private set;}
-//     [field: SerializeField] public AttackHitbox HitboxToUse { get; private set;}
-
-//     [field: SerializeField] public float ImpactStartTime { get; private set;}
-//     [field: SerializeField] public float ImpactEndTime { get; private set;}
-
-// }
-
-// public enum AttackHitbox {LeftHand, RightHand, LeftFoot, RightFoot, Axe, Arrow}
-
 using UnityEngine;
 
 // Este atributo permite crear una nueva instancia de este ScriptableObject desde el menú de Unity.
@@ -38,7 +23,24 @@ public class AttackData : ScriptableObject
     // Tiempo (en segundos) hasta el cual el impacto sigue siendo válido.
     // Después de este tiempo, el ataque ya no tiene efecto aunque la animación continúe.
     [field: SerializeField] 
-    public float ImpactEndTime { get; private set; }
+    public float ImpactEndTime { get; private set; } 
+
+    [field: Header("Movimiento al objetivo")] 
+
+    [field: SerializeField]
+    public bool MoveToTarget { get; private set; } // Indica si el personaje se moverá hacia el objetivo al atacar
+
+    [field: SerializeField]
+    public float DistanceFromTarget { get; private set; } = 1f;// Distancia a la que el personaje se detendrá al atacar
+
+    [field: SerializeField]
+    public float MaxMoveDistance { get; private set; } = 3f; // Distancia máxima que el personaje puede moverse al atacar
+
+    [field: SerializeField]
+    public float MoveStartTime { get; private set; } = 0f; // Tiempo que tarda en comenzar a moverse hacia el objetivo
+
+    [field: SerializeField]
+    public float MoveEndTime { get; private set; } = 1f; // Tiempo que tarda en llegar al objetivo
 }
 
 // Enumerador que define las posibles zonas de impacto o armas que se pueden usar en un ataque.

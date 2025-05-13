@@ -1,6 +1,5 @@
 using UnityEngine; // Importa las funciones básicas de Unity
 using UnityEngine.InputSystem; // Importa el nuevo sistema de entrada (Input System)
-using UnityEngine.UI; // Se usa para elementos UI, aunque no se utiliza en este script directamente
 
 // Este script controla el sistema de combate (golpes/ataques) del personaje
 public class CombatController : MonoBehaviour
@@ -68,13 +67,8 @@ public class CombatController : MonoBehaviour
             else
             {
                 var enemyToAttack = EnemyManager.I.GetClosesEnemyToDirection(PlayerControllerE.Instance.InputDirection); // Obtiene el enemigo más cercano a la dirección de entrada del jugador
-                Vector3? dirToAttack = null; // Inicializa la dirección de ataque como nula
-                if (enemyToAttack != null) // Si hay un enemigo para atacar
-                {
-                    dirToAttack = enemyToAttack.transform.position - transform.position; // Calcula la dirección hacia el enemigo
-                }
 
-                meeleFighter.TryToAttack(dirToAttack); // Intenta realizar un ataque hacia el enemigo
+                meeleFighter.TryToAttack(enemyToAttack.Fighter); // Intenta realizar un ataque hacia el enemigo
 
                 CombatMode = true; // Activa el modo combate al atacar
             }

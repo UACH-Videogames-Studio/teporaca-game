@@ -1,5 +1,5 @@
-using System.Collections.Generic;
-using UnityEngine;
+// Este script define un ScriptableObject que almacena datos sobre ataques en un sistema de combate.
+// Este script es parte de un sistema de combate en Unity y se utiliza para definir los datos de un ataque.
 
 // Esta clase representa una Máquina de Estados Finita (FSM) genérica.
 // Está diseñada para controlar el comportamiento de un objeto (por ejemplo, un NPC, un enemigo o cualquier entidad).

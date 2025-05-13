@@ -955,6 +955,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 370842685352231778, guid: 7fe0327bc5a95a446bcfab94212b3e5f, type: 3}
+      propertyPath: longRangeAttacks.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 370842685352231778, guid: 7fe0327bc5a95a446bcfab94212b3e5f, type: 3}
+      propertyPath: 'longRangeAttacks.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 15a5003e865fe0740b363737f8fff6aa, type: 2}
     - target: {fileID: 2498632844415347133, guid: 7fe0327bc5a95a446bcfab94212b3e5f, type: 3}
       propertyPath: m_ActionEvents.Array.size
       value: 24

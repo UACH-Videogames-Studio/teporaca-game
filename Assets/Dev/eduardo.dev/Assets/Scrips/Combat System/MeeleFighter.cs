@@ -9,6 +9,9 @@ public enum AttackStates { Idle, Windup, Impact, Cooldown }
 public class MeeleFighter : MonoBehaviour
 {
     [SerializeField] List<AttackData> attacks; // Lista de ataques posibles (definidos como ScriptableObjects)
+    [SerializeField] List<AttackData> longRangeAttacks; // Lista de ataques a distancia (definidos como ScriptableObjects)
+    [SerializeField] float longRangeAttackThreshold = 1.5f; // Distancia mínima para considerar un ataque a distancia
+
     [SerializeField] GameObject weapon; // Referencia al arma del personaje (si tiene una)
     [SerializeField] float rotationSpeed = 500f; // Velocidad de rotación del personaje al atacar
 
@@ -56,12 +59,12 @@ public class MeeleFighter : MonoBehaviour
     public bool InCounter { get; set; } = false; // Indica si el personaje está en medio de un contraataque
 
     // Método llamado por el sistema de input cuando se presiona el botón de ataque
-    public void TryToAttack(Vector3? attackDir = null)
+    public void TryToAttack(MeeleFighter target = null)
     {
         // Si no está haciendo otra acción, comienza el ataque
         if (!InAction)
         {
-            StartCoroutine(Attack(attackDir)); // Inicia la corrutina de ataque
+            StartCoroutine(Attack(target)); // Inicia la corrutina de ataque
         }
         // Si ya está atacando pero en la fase correcta (impacto o recuperación), se activa el combo
         else if (AttackStates == AttackStates.Impact || AttackStates == AttackStates.Cooldown)
@@ -71,14 +74,42 @@ public class MeeleFighter : MonoBehaviour
     }
 
     // Corrutina que maneja todo el proceso del ataque: animación, tiempos y combos
-    IEnumerator Attack(Vector3? attackDir = null)
+    IEnumerator Attack(MeeleFighter target = null)
     {
         // Si el personaje está en medio de un ataque, no puede iniciar otro
         InAction = true; // El personaje está ocupado
         AttackStates = AttackStates.Windup; // Empieza en fase de preparación
+
+        var attack = attacks[comboCount]; // Obtiene el ataque actual según el contador de combo
+
+        var attackDir = transform.forward; // Dirección del ataque (por defecto hacia adelante)
+        Vector3 startPos = transform.position; // Posición inicial del personaje
+        Vector3 targetPos = Vector3.zero; // Posición del objetivo (inicialmente vacía)
+
+        if (target != null)
+        {
+            // Si hay un objetivo, se calcula la dirección del ataque hacia él
+            var vecToTarget = target.transform.position - transform.position; // Vector de desplazamiento hacia el objetivo
+            //vecToTarget.y = 0; // Mantiene la dirección horizontal
+
+            attackDir = vecToTarget.normalized; // Normaliza el vector para obtener la dirección
+            float distance = vecToTarget.magnitude - attack.DistanceFromTarget; // Calcula la distancia al objetivo menos la distancia de ataque
+
+            if (distance > longRangeAttackThreshold) // Si la distancia es mayor que el umbral
+                attack = longRangeAttacks[0]; // Cambia al ataque a distancia
+
+            if (attack.MoveToTarget) 
+            {
+                if (distance <= attack.MaxMoveDistance) // Si la distancia es menor o igual a la distancia máxima de movimiento
+                    targetPos = target.transform.position - attackDir * attack.DistanceFromTarget; // Calcula la posición de destino
+                else
+                    targetPos = startPos + attackDir * attack.MaxMoveDistance; // Si no, se usa la distancia máxima de movimiento             
+            }
+            
+        }
         
         // Se inicia la animación del ataque actual según el combo
-        animator.CrossFade(attacks[comboCount].AnimName, 0.2f);
+        animator.CrossFade(attack.AnimName, 0.2f);
         yield return null; // Espera un frame
 
         // Se obtiene el estado siguiente del Animator en la capa 1
@@ -92,26 +123,34 @@ public class MeeleFighter : MonoBehaviour
             timer += Time.deltaTime; // Incrementa el temporizador
             float normalizedTime = timer / animState.length; // Normaliza el tiempo de la animación (0 a 1)
 
+            // Mover al atacante hacia el objetivo mientras ataca
+
+            if (target != null && attack.MoveToTarget) 
+            {
+                float percTime = (normalizedTime - attack.MoveStartTime) / (attack.MoveEndTime - attack.MoveStartTime); // Calcula el porcentaje de movimiento
+                transform.position = Vector3.Lerp(startPos, targetPos, percTime); // Interpola la posición entre el inicio y el objetivo
+            }
+
             //Rotar a la dirección del ataque
             if (attackDir != null)
             {
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(attackDir.Value), rotationSpeed * Time.deltaTime); // Rotar hacia la dirección del ataque
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(attackDir), rotationSpeed * Time.deltaTime); // Rotar hacia la dirección del ataque
             }
 
             // Transición de preparación a impacto
             if (AttackStates == AttackStates.Windup)
             {
                 if (InCounter) break; // Si está en contraataque, no se activa el impacto
-                if (normalizedTime >= attacks[comboCount].ImpactStartTime) // Si el tiempo normalizado supera el inicio del impacto
+                if (normalizedTime >= attack.ImpactStartTime) // Si el tiempo normalizado supera el inicio del impacto
                 {
                     AttackStates = AttackStates.Impact; // Cambia el estado a impacto
-                    EnableHitBox(attacks[comboCount]); // Activar hitbox correspondiente
+                    EnableHitBox(attack); // Activar hitbox correspondiente
                 }
             }
             // Transición de impacto a recuperación
             else if (AttackStates == AttackStates.Impact)
             {
-                if (normalizedTime >= attacks[comboCount].ImpactEndTime) 
+                if (normalizedTime >= attack.ImpactEndTime) 
                 {
                     AttackStates = AttackStates.Cooldown; // Cambia el estado a recuperación
                     DisableHitboxes(); // Desactiva hitboxes después del golpe
