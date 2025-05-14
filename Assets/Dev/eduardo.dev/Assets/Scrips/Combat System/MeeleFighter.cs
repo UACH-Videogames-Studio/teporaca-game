@@ -8,6 +8,7 @@ public enum AttackStates { Idle, Windup, Impact, Cooldown }
 
 public class MeeleFighter : MonoBehaviour
 {
+    [field: SerializeField] public float Health { get; private set; } = 25f; // Salud del personaje (por defecto 100)
     [SerializeField] List<AttackData> attacks; // Lista de ataques posibles (definidos como ScriptableObjects)
     [SerializeField] List<AttackData> longRangeAttacks; // Lista de ataques a distancia (definidos como ScriptableObjects)
     [SerializeField] float longRangeAttackThreshold = 1.5f; // Distancia mínima para considerar un ataque a distancia
@@ -15,7 +16,9 @@ public class MeeleFighter : MonoBehaviour
     [SerializeField] GameObject weapon; // Referencia al arma del personaje (si tiene una)
     [SerializeField] float rotationSpeed = 500f; // Velocidad de rotación del personaje al atacar
 
-    public event Action OnGotHit; // Evento que se dispara cuando el personaje recibe un golpe (para efectos visuales o de sonido)
+    public bool IsTakingHit { get; private set; } = false; // Indica si el personaje está siendo golpeado
+
+    public event Action<MeeleFighter> OnGotHit; // Evento que se dispara cuando el personaje recibe un golpe (para efectos visuales o de sonido)
     public event Action OnHitComplete; // Evento que se dispara cuando el ataque impacta (para efectos visuales o de sonido)
 
     // Colliders que se usarán como hitboxes para detectar impactos en distintas partes del cuerpo
@@ -95,7 +98,7 @@ public class MeeleFighter : MonoBehaviour
             attackDir = vecToTarget.normalized; // Normaliza el vector para obtener la dirección
             float distance = vecToTarget.magnitude - attack.DistanceFromTarget; // Calcula la distancia al objetivo menos la distancia de ataque
 
-            if (distance > longRangeAttackThreshold) // Si la distancia es mayor que el umbral
+            if (distance > longRangeAttackThreshold && longRangeAttacks.Count > 0) // Si la distancia es mayor que el umbral
                 attack = longRangeAttacks[0]; // Cambia al ataque a distancia
 
             if (attack.MoveToTarget) 
@@ -120,6 +123,7 @@ public class MeeleFighter : MonoBehaviour
         // Se ejecuta mientras la animación esté activa
         while (timer <= animState.length)
         {
+            if (IsTakingHit) break; // Si el personaje está siendo golpeado, se interrumpe el ataque
             timer += Time.deltaTime; // Incrementa el temporizador
             float normalizedTime = timer / animState.length; // Normaliza el tiempo de la animación (0 a 1)
 
@@ -181,22 +185,33 @@ public class MeeleFighter : MonoBehaviour
     // Detecta si este personaje es golpeado por otro (usando colliders con tag "Hitbox")
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Hitbox" && !InAction)
+        if (other.tag == "Hitbox" && !IsTakingHit && !InCounter)
         {
-            StartCoroutine(PlayHitReaction(other.GetComponentInParent<MeeleFighter>().transform)); // Ejecuta animación de impacto
+            var attacker = other.GetComponentInParent<MeeleFighter>(); // Obtiene el atacante (si es un personaje)
+            TakeDamage(5f); // Aplica daño al personaje (5 por defecto)
+            OnGotHit?.Invoke(attacker); // Dispara el evento de golpe recibido (para efectos visuales o de sonido)
+
+            if (Health > 0)
+                StartCoroutine(PlayHitReaction(attacker)); // Ejecuta animación de impacto
+            else
+                PlayDeathAnimation(attacker); // Ejecuta animación de muerte
         }
     }
 
+    void TakeDamage (float damage)
+    {
+        Health = Mathf.Clamp(Health - damage, 0, Health); // Reduce la salud del personaje
+    }
+
     // Reproduce una animación cuando el personaje recibe un golpe
-    IEnumerator PlayHitReaction(Transform attacker)
+    IEnumerator PlayHitReaction(MeeleFighter attacker)
     {
         InAction = true; // El personaje está ocupado
+        IsTakingHit = true; // Indica que el personaje está siendo golpeado
 
-        var dispVec = attacker.position - transform.position; // Calcula la dirección del golpe
+        var dispVec = attacker.transform.position - transform.position; // Calcula la dirección del golpe
         dispVec.y = 0; // Mantiene la dirección horizontal
         transform.rotation = Quaternion.LookRotation(dispVec); // Orienta el personaje hacia el atacante
-
-        OnGotHit?.Invoke(); // Dispara el evento de golpe recibido (para efectos visuales o de sonido)
 
         animator.CrossFade("Impact", 0.2f); // Reproduce la animación de impacto
         yield return null; // Espera un frame
@@ -208,8 +223,14 @@ public class MeeleFighter : MonoBehaviour
         OnHitComplete?.Invoke(); // Dispara el evento de golpe completado (para efectos visuales o de sonido)
 
         InAction = false; // El personaje puede volver a actuar
+        IsTakingHit = false; // Indica que el personaje ya no está siendo golpeado
     }
 
+    void PlayDeathAnimation(MeeleFighter attacker)
+    {
+        animator.CrossFade("DeathBackward01", 0.2f); // Reproduce la animación de muerte
+    }
+        
     // Reproduce una animación cuando el personaje recibe un golpe
     public IEnumerator PerformCounterAttack(EnemyController opponent)
     {

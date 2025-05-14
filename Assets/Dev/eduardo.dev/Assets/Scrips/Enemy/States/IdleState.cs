@@ -15,7 +15,10 @@ public class IdleState : State<EnemyController>
     {
         enemy.Target = enemy.FindTarget();
         if (enemy.Target != null)
+        {
+            enemy.AlertNearbyEnemies();
             enemy.ChangeState(EnemyStates.CombatMovement);
+        }
     }
 
     public override void Exit()

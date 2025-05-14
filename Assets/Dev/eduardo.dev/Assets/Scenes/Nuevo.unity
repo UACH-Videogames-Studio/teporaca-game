@@ -155,6 +155,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeRangeBetweenAttack: {x: 1, y: 4}
   player: {fileID: 1783452853}
+  <EnemyLayer>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 256
   enemiesInRange: []
 --- !u!4 &205368860
 Transform:
@@ -229,7 +232,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7360794929865135029, guid: 199e680e569efa4448985c34c7a8ae0d, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -511,7 +514,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7360794929865135029, guid: 199e680e569efa4448985c34c7a8ae0d, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -957,7 +960,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 370842685352231778, guid: 7fe0327bc5a95a446bcfab94212b3e5f, type: 3}
       propertyPath: longRangeAttacks.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 370842685352231778, guid: 7fe0327bc5a95a446bcfab94212b3e5f, type: 3}
       propertyPath: 'longRangeAttacks.Array.data[0]'

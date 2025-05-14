@@ -49,12 +49,21 @@ public class CombatController : MonoBehaviour
         cam = Camera.main.GetComponent<CameraControllerE>(); // Obtiene el componente CameraController de la cámara principal
     }
 
+    private void Start()
+    {
+        meeleFighter.OnGotHit += (MeeleFighter attacker) => 
+        {
+            if (CombatMode && attacker != TargetEnemy.Fighter)
+                TargetEnemy = attacker.GetComponent<EnemyController>(); // Si el atacante no es el enemigo objetivo, lo establece como nuevo objetivo
+        };
+    }
+
     // Esta función se conecta al nuevo sistema de entrada (Input System)
     // Se debe enlazar en el Input Action con el evento "performed" o "started"
     public void OnAttack(InputAction.CallbackContext context)
     {
         // Verifica si el botón de ataque acaba de ser presionado (fase "started")
-        if (context.started)
+        if (context.started && !meeleFighter.IsTakingHit)
         {
             // Llama al método TryToAttack() del componente MeeleFighter
             // Este método intentará realizar un ataque si las condiciones lo permiten
@@ -66,9 +75,9 @@ public class CombatController : MonoBehaviour
             }
             else
             {
-                var enemyToAttack = EnemyManager.I.GetClosesEnemyToDirection(PlayerControllerE.Instance.InputDirection); // Obtiene el enemigo más cercano a la dirección de entrada del jugador
+                var enemyToAttack = EnemyManager.I.GetClosesEnemyToDirection(PlayerControllerE.Instance.GetIntentDirection()); // Obtiene el enemigo más cercano a la dirección de entrada del jugador
 
-                meeleFighter.TryToAttack(enemyToAttack.Fighter); // Intenta realizar un ataque hacia el enemigo
+                meeleFighter.TryToAttack(enemyToAttack?.Fighter); // Intenta realizar un ataque hacia el enemigo
 
                 CombatMode = true; // Activa el modo combate al atacar
             }

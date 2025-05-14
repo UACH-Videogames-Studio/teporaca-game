@@ -7,6 +7,8 @@ public class GettingHitState : State<EnemyController>
     EnemyController enemy;
     public override void Enter(EnemyController owner)
     {
+        StopAllCoroutines();
+
         enemy = owner;
         enemy.Fighter.OnHitComplete += () => StartCoroutine(GoToCombatMovement());
     }
@@ -14,7 +16,9 @@ public class GettingHitState : State<EnemyController>
     IEnumerator GoToCombatMovement()
     {
         yield return new WaitForSeconds(stunnTime);
-        enemy.ChangeState(EnemyStates.CombatMovement);
+
+        if (!enemy.IsInState(EnemyStates.Dead))
+            enemy.ChangeState(EnemyStates.CombatMovement);
     }
         
 }

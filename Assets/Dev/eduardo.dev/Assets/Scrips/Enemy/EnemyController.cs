@@ -7,6 +7,7 @@ public enum EnemyStates { Idle, CombatMovement, Attack, RetreatAfterAttack, Dead
 public class EnemyController : MonoBehaviour
 {
     [field: SerializeField] public float Fov { get; private set; } = 180f;
+    [field: SerializeField] public float AlertRange { get; private set; } = 20f;
     [field: SerializeField] public WeaponType Weapon { get; private set; }
 
     public List<MeeleFighter> TargetsInRange {get; set;} = new List<MeeleFighter>();
@@ -46,7 +47,21 @@ public class EnemyController : MonoBehaviour
         StateMachine = new StateMachine<EnemyController>(this);
         StateMachine.ChangeState(stateDict[EnemyStates.Idle]);
 
-        Fighter.OnGotHit += () => ChangeState(EnemyStates.GettingHit);
+        Fighter.OnGotHit += (MeeleFighter attacker) => 
+        {
+            if (Fighter.Health > 0)
+            {
+                if (Target == null)
+                {
+                    Target = attacker;
+                    AlertNearbyEnemies();
+                }
+                
+                ChangeState(EnemyStates.GettingHit);
+            }
+            else
+                ChangeState(EnemyStates.Dead);
+        };
 
         Animator.SetInteger("weaponType", 0);
     }
@@ -76,6 +91,12 @@ public class EnemyController : MonoBehaviour
         float strafeSpeed = Mathf.Sin(angle * Mathf.Deg2Rad);
         Animator.SetFloat("strafeSpeed", strafeSpeed, 0.2f, Time.deltaTime);
 
+        if (Target?.Health <= 0)
+        {
+            TargetsInRange.Remove(Target);
+            EnemyManager.I.RemoveEnemyInRange(this);
+        }
+
         prevPos = transform.position;
     }
 
@@ -94,6 +115,23 @@ public class EnemyController : MonoBehaviour
         }
 
         return null;
+    }
+
+    public void AlertNearbyEnemies()
+    {
+        var colliders = Physics.OverlapBox(transform.position, new Vector3(AlertRange / 2f, 1f, AlertRange / 2f), Quaternion.identity,  EnemyManager.I.EnemyLayer);
+
+        foreach (var collider in colliders)
+        {
+            if (collider.gameObject == gameObject) continue;
+
+            var nearbyEnemy = collider.GetComponent<EnemyController>();
+            if (nearbyEnemy != null && nearbyEnemy.Target == null)
+            {
+                nearbyEnemy.Target = Target;
+                nearbyEnemy.ChangeState(EnemyStates.CombatMovement);
+            }
+        }
     }
 
 }

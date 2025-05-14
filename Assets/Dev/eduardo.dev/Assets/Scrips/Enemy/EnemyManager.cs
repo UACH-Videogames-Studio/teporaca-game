@@ -6,6 +6,7 @@ public class EnemyManager : MonoBehaviour
 {
     [SerializeField] Vector2 timeRangeBetweenAttack = new Vector2(1,4);
     [SerializeField] CombatController player;
+    [field: SerializeField] public LayerMask EnemyLayer { get; private set; }
     public static EnemyManager I { get; private set; }
     private void Awake()
     {

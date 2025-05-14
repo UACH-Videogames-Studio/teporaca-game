@@ -71,7 +71,7 @@ public class PlayerControllerE : MonoBehaviour
     private void Update()
     {
         // Si el jugador está atacando, no se mueve
-        if (meeleFighter.InAction)
+        if (meeleFighter.InAction || meeleFighter.Health <= 0)
         {
             targetRotation = transform.rotation; // Mantener la rotación actual
             animator.SetFloat("forwardSpeed", 0); // No enviar velocidad a la animación
@@ -161,6 +161,11 @@ public class PlayerControllerE : MonoBehaviour
             groundCheckRadius,
             groundLayer
         );
+    }
+
+    public Vector3 GetIntentDirection()
+    {
+        return InputDirection != Vector3.zero ? InputDirection : transform.forward;
     }
 
     // Dibuja una esfera en el editor para visualizar la detección del suelo
