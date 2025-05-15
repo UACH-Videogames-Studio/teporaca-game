@@ -1,41 +1,61 @@
-// using UnityEditor.Rendering.LookDev;
-// using UnityEngine;
-// using UnityEngine.InputSystem;
-// using UnityEngine.UI;
-
-// public class CombatController : MonoBehaviour
-// {
-//     MeeleFighter meeleFighter;
-
-//     private void Awake()
-//     {
-//         meeleFighter = GetComponent<MeeleFighter>();
-//     }
-
-//     public void OnAttack (InputAction.CallbackContext context)
-//     {
-//         if (context.started)
-//         {
-//             meeleFighter.TryToAttack();
-//         }
-//     }
-    
-// }
 using UnityEngine; // Importa las funciones básicas de Unity
 using UnityEngine.InputSystem; // Importa el nuevo sistema de entrada (Input System)
-using UnityEngine.UI; // Se usa para elementos UI, aunque no se utiliza en este script directamente
 
 // Este script controla el sistema de combate (golpes/ataques) del personaje
 public class CombatController : MonoBehaviour
 {
+    EnemyController targetEnemy; // Enemigo objetivo actual
+    public EnemyController TargetEnemy
+    {
+        get => targetEnemy; // Devuelve el enemigo objetivo actual
+        set
+        {
+            targetEnemy = value; // Establece el nuevo enemigo objetivo
+
+            if (targetEnemy == null)
+                CombatMode = false; // Si no hay enemigo objetivo, desactiva el modo combate
+        }
+    }
+
+    bool combatMode;
+
+    public bool CombatMode
+    {
+        get => combatMode; // Devuelve el estado actual del modo combate
+        set
+        {
+            combatMode = value;
+
+            if (TargetEnemy == null)
+                combatMode = false; // Si no hay enemigo objetivo, el modo combate se desactiva
+            
+            animator.SetBool("combatMode", combatMode); // Cambia el parámetro "combatMode" del Animator
+        }
+    }
+
     // Referencia al componente MeeleFighter, encargado de gestionar los ataques cuerpo a cuerpo
     MeeleFighter meeleFighter;
+
+    Animator animator; // Referencia al Animator del personaje
+
+    CameraControllerE cam; // Referencia al controlador de cámara
 
     // Awake se llama antes de Start, ideal para obtener referencias a componentes en el mismo GameObject
     private void Awake()
     {
         // Obtiene el componente MeeleFighter del mismo GameObject donde esté este script
         meeleFighter = GetComponent<MeeleFighter>();
+        animator = GetComponent<Animator>();
+        cam = Camera.main.GetComponent<CameraControllerE>(); // Obtiene el componente CameraController de la cámara principal
+    }
+
+    private void Start()
+    {
+        meeleFighter.OnGotHit += (MeeleFighter attacker) => 
+        {
+            if (CombatMode && attacker != TargetEnemy.Fighter)
+                TargetEnemy = attacker.GetComponent<EnemyController>(); // Si el atacante no es el enemigo objetivo, lo establece como nuevo objetivo
+        };
     }
 
     // Esta función se conecta al nuevo sistema de entrada (Input System)
@@ -43,11 +63,60 @@ public class CombatController : MonoBehaviour
     public void OnAttack(InputAction.CallbackContext context)
     {
         // Verifica si el botón de ataque acaba de ser presionado (fase "started")
-        if (context.started)
+        if (context.started && !meeleFighter.IsTakingHit)
         {
             // Llama al método TryToAttack() del componente MeeleFighter
             // Este método intentará realizar un ataque si las condiciones lo permiten
-            meeleFighter.TryToAttack();
+           var enemy = EnemyManager.I.GetAttackingEnemy();
+        
+            if (enemy != null && enemy.Fighter.IsCounterable && !meeleFighter.InAction)
+            {
+                StartCoroutine(meeleFighter.PerformCounterAttack(enemy)); // Realiza un contraataque si el enemigo es atacable y el personaje no está en acción
+            }
+            else
+            {
+                var enemyToAttack = EnemyManager.I.GetClosesEnemyToDirection(PlayerControllerE.Instance.GetIntentDirection()); // Obtiene el enemigo más cercano a la dirección de entrada del jugador
+
+                meeleFighter.TryToAttack(enemyToAttack?.Fighter); // Intenta realizar un ataque hacia el enemigo
+
+                CombatMode = true; // Activa el modo combate al atacar
+            }
+            
+        }
+    }
+
+    public void combatModeOn(InputAction.CallbackContext context)
+    {
+        // Verifica si el botón de combate acaba de ser presionado (fase "started")
+        if (context.started)
+        {
+            CombatMode = !CombatMode; // Cambia el estado del modo combate
+        }
+    }
+
+
+    void OnAnimatorMove()
+    {
+        // Si el personaje está en medio de un contraataque, no se mueve
+        if (!meeleFighter.InCounter)
+            transform.position += animator.deltaPosition;
+
+        
+        transform.rotation *= animator.deltaRotation;
+
+    }
+
+    public Vector3 GetTargetingDir()
+    {
+        if (!CombatMode) // Si no está en modo combate, devuelve la dirección hacia adelante del personaje
+        {
+            var vecFromCam = transform.position - cam.transform.position; // Calcula la dirección desde la cámara hacia el personaje
+            vecFromCam.y = 0f; // Ignora la componente vertical (altura)
+            return vecFromCam.normalized; // Devuelve la dirección normalizada (vector unitario)}
+        }
+        else
+        {
+            return transform.forward; // Si está en modo combate, devuelve la dirección hacia adelante del personaje
         }
     }
 }

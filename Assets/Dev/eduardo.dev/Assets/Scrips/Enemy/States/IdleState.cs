@@ -1,5 +1,5 @@
-using Unity.VisualScripting;
-using UnityEngine;
+// Este script define un ScriptableObject que almacena datos sobre ataques en un sistema de combate.
+// Este script es parte de un sistema de combate en Unity y se utiliza para definir los datos de un ataque.
 
 public class IdleState : State<EnemyController>
 {
@@ -7,22 +7,17 @@ public class IdleState : State<EnemyController>
     public override void Enter(EnemyController owner)
     {
         enemy = owner;
+
+        enemy.Animator.SetInteger("weaponType", 0);
     }
 
     public override void Execute()
     {
-        foreach (var target in enemy.TargetsInRange)
+        enemy.Target = enemy.FindTarget();
+        if (enemy.Target != null)
         {
-            var vecToTarget = target.transform.position - transform.position;
-            float angle = Vector3.Angle(transform.forward, vecToTarget);
-
-            if (angle <= enemy.Fov / 2 )
-            {
-                enemy.Target = target;
-                enemy.ChangeState(EnemyStates.CombatMovement);
-                break;
-            }
-
+            enemy.AlertNearbyEnemies();
+            enemy.ChangeState(EnemyStates.CombatMovement);
         }
     }
 
