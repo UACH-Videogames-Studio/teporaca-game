@@ -29,7 +29,8 @@ public class CombatController : MonoBehaviour
             if (TargetEnemy == null)
                 combatMode = false; // Si no hay enemigo objetivo, el modo combate se desactiva
             
-            animator.SetBool("combatMode", combatMode); // Cambia el parámetro "combatMode" del Animator
+            if (animator != null) // Asegurarse que el animator no sea null
+                animator.SetBool("combatMode", combatMode); // Cambia el parámetro "combatMode" del Animator
         }
     }
 
@@ -46,15 +47,37 @@ public class CombatController : MonoBehaviour
         // Obtiene el componente MeeleFighter del mismo GameObject donde esté este script
         meeleFighter = GetComponent<MeeleFighter>();
         animator = GetComponent<Animator>();
-        cam = Camera.main.GetComponent<CameraControllerE>(); // Obtiene el componente CameraController de la cámara principal
+        
+        // Es más seguro buscar la cámara principal y luego su componente
+        if (Camera.main != null)
+        {
+            cam = Camera.main.GetComponent<CameraControllerE>(); 
+        }
+        else
+        {
+            Debug.LogError("No se encontró la cámara principal (MainCamera) en la escena.");
+        }
     }
 
     private void Start()
     {
+        if (meeleFighter == null)
+        {
+            Debug.LogError("MeeleFighter no encontrado en el GameObject: " + gameObject.name);
+            return;
+        }
+
         meeleFighter.OnGotHit += (MeeleFighter attacker) => 
         {
-            if (CombatMode && attacker != TargetEnemy.Fighter)
-                TargetEnemy = attacker.GetComponent<EnemyController>(); // Si el atacante no es el enemigo objetivo, lo establece como nuevo objetivo
+            // Asegurarse que attacker y TargetEnemy no sean null antes de acceder a sus componentes
+            if (attacker != null && CombatMode && attacker != (TargetEnemy != null ? TargetEnemy.Fighter : null))
+            {
+                EnemyController enemyCtrl = attacker.GetComponent<EnemyController>();
+                if (enemyCtrl != null)
+                {
+                    TargetEnemy = enemyCtrl; // Si el atacante no es el enemigo objetivo, lo establece como nuevo objetivo
+                }
+            }
         };
     }
 
@@ -62,22 +85,36 @@ public class CombatController : MonoBehaviour
     // Se debe enlazar en el Input Action con el evento "performed" o "started"
     public void OnAttack(InputAction.CallbackContext context)
     {
+        // *** INICIO DE LA CORRECCIÓN DEL BUG ***
+        // Verifica si el personaje está vivo antes de procesar el ataque
+        if (meeleFighter != null && meeleFighter.Health <= 0)
+        {
+            return; // Si está muerto, no hacer nada
+        }
+        // *** FIN DE LA CORRECCIÓN DEL BUG ***
+
         // Verifica si el botón de ataque acaba de ser presionado (fase "started")
-        if (context.started && !meeleFighter.IsTakingHit)
+        if (context.started && meeleFighter != null && !meeleFighter.IsTakingHit)
         {
             // Llama al método TryToAttack() del componente MeeleFighter
             // Este método intentará realizar un ataque si las condiciones lo permiten
            var enemy = EnemyManager.I.GetAttackingEnemy();
         
-            if (enemy != null && enemy.Fighter.IsCounterable && !meeleFighter.InAction)
+            if (enemy != null && enemy.Fighter != null && enemy.Fighter.IsCounterable && !meeleFighter.InAction)
             {
                 StartCoroutine(meeleFighter.PerformCounterAttack(enemy)); // Realiza un contraataque si el enemigo es atacable y el personaje no está en acción
             }
             else
             {
-                var enemyToAttack = EnemyManager.I.GetClosesEnemyToDirection(PlayerControllerE.Instance.GetIntentDirection()); // Obtiene el enemigo más cercano a la dirección de entrada del jugador
+                // Asegurarse que PlayerControllerE.Instance no sea null
+                var playerInstance = PlayerControllerE.Instance;
+                if (playerInstance != null) {
+                    var enemyToAttack = EnemyManager.I.GetClosesEnemyToDirection(playerInstance.GetIntentDirection()); // Obtiene el enemigo más cercano a la dirección de entrada del jugador
+                    meeleFighter.TryToAttack(enemyToAttack?.Fighter); // Intenta realizar un ataque hacia el enemigo
+                } else {
+                     meeleFighter.TryToAttack(); // Ataca sin un objetivo específico si no se puede determinar la dirección
+                }
 
-                meeleFighter.TryToAttack(enemyToAttack?.Fighter); // Intenta realizar un ataque hacia el enemigo
 
                 CombatMode = true; // Activa el modo combate al atacar
             }
@@ -97,22 +134,33 @@ public class CombatController : MonoBehaviour
 
     void OnAnimatorMove()
     {
+        if (animator == null || meeleFighter == null) return;
+
         // Si el personaje está en medio de un contraataque, no se mueve
         if (!meeleFighter.InCounter)
-            transform.position += animator.deltaPosition;
-
+        {
+            // Solo aplicar animator.deltaPosition si el CharacterController está habilitado
+            if (GetComponent<CharacterController>() != null && GetComponent<CharacterController>().enabled)
+            {
+                transform.position += animator.deltaPosition;
+            }
+        }
         
         transform.rotation *= animator.deltaRotation;
-
     }
 
     public Vector3 GetTargetingDir()
     {
-        if (!CombatMode) // Si no está en modo combate, devuelve la dirección hacia adelante del personaje
+        if (cam == null) // Si no hay cámara, devuelve la dirección hacia adelante del personaje
+        {
+            return transform.forward;
+        }
+
+        if (!CombatMode) // Si no está en modo combate, devuelve la dirección desde la cámara
         {
             var vecFromCam = transform.position - cam.transform.position; // Calcula la dirección desde la cámara hacia el personaje
             vecFromCam.y = 0f; // Ignora la componente vertical (altura)
-            return vecFromCam.normalized; // Devuelve la dirección normalizada (vector unitario)}
+            return vecFromCam.normalized; // Devuelve la dirección normalizada (vector unitario)
         }
         else
         {
