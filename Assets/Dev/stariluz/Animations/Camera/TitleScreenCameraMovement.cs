@@ -1,101 +1,103 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class TitleScreenCameraMovement : MonoBehaviour
+namespace Stariluz
 {
-    [Header("Configuration")]
-    public Transform target;
-    public float lookSensitivity = 0.1f;
-    public float maxYawAngle = 10f;
-    public float returnSpeed = 2f;
-    public float movementDelay = 3f; // ⏳ Tiempo antes de comenzar el movimiento
-
-    private float currentYaw = 0f;
-    private float targetYaw = 0f;
-
-    private Vector3 initialOffset;
-    private float initialHeight;
-
-    private Vector2 lookInput;
-    private bool hasLookInput = false;
-
-    private float elapsedTime = 0f;
-    private bool canMove = false;
-
-    [HideInInspector]
-    protected InputActions _inputActions;
-    public InputActions inputActions => _inputActions;
-
-    [HideInInspector]
-    protected InputActions.PlayerActions _playerInput;
-    public InputActions.PlayerActions playerInput => _playerInput;
-
-    private void Awake()
+    // [ExecuteInEditMode]
+    public class TitleScreenCameraMovement : MonoBehaviour
     {
-        _inputActions = new InputActions();
-        _playerInput = inputActions.Player;
-    }
+        public Transform target;
+        public float lookSensitivity = 0.1f;
+        public float maxYawAngle = 10f;
+        public float returnSpeed = 2f;
+        public float movementDelay = 3f;
 
-    private void OnEnable()
-    {
-        inputActions.Enable();
-    }
+        private float currentYaw = 0f;
+        private Quaternion initialRotation;
+        private Vector3 initialOffset;
+        private float initialHeight;
+        private bool movementStarted = false;
+        private float elapsedTime = 0f;
 
-    private void OnDisable()
-    {
-        inputActions.Disable();
-    }
+        private Vector2 lookInput;
+        private bool hasLookInput = false;
 
-    void Start()
-    {
-        if (!target)
+        protected InputActions _inputActions;
+        public InputActions inputActions => _inputActions;
+        protected InputActions.PlayerActions _playerInput;
+        public InputActions.PlayerActions playerInput => _playerInput;
+
+        private void Awake()
         {
-            Debug.LogError("TitleScreenCameraMovement: No se asignó un 'target'.");
-            enabled = false;
-            return;
+            _inputActions = new InputActions();
+            _playerInput = inputActions.Player;
         }
 
-        initialOffset = transform.position - target.position;
-        initialHeight = transform.position.y;
-    }
+        private void OnEnable() => inputActions.Enable();
+        private void OnDisable() => inputActions.Disable();
 
-    void Update()
-    {
-        if (!target) return;
-
-        // Esperar antes de activar movimiento
-        if (!canMove)
+        void Start()
         {
+            if (!target)
+            {
+                Debug.LogError("Target not assigned to camera.");
+                enabled = false;
+                return;
+            }
+
+            // Guardamos offset y altura inicial
+            initialOffset = transform.position - target.position;
+            initialHeight = transform.position.y;
+
+            // Hacemos que mire al target y guardamos la rotación
+            transform.LookAt(new Vector3(target.position.x, initialHeight, target.position.z));
+            initialRotation = transform.rotation;
+        }
+
+        void Update()
+        {
+            if (!target) return;
+
             elapsedTime += Time.deltaTime;
-            if (elapsedTime >= movementDelay)
-                canMove = true;
+
+            if (!movementStarted)
+            {
+                if (elapsedTime < movementDelay)
+                {
+                    // Mantener posición y rotación originales durante el delay
+                    transform.position = target.position + initialOffset;
+                    transform.rotation = initialRotation;
+                    return;
+                }
+
+                movementStarted = true;
+            }
+
+            lookInput = playerInput.Look.ReadValue<Vector2>();
+            hasLookInput = lookInput.sqrMagnitude > 0.001f;
+
+            if (hasLookInput)
+            {
+                currentYaw += lookInput.x * lookSensitivity;
+                currentYaw = Mathf.Clamp(currentYaw, -maxYawAngle, maxYawAngle);
+            }
             else
-                return; // No hacer nada hasta que pase el delay
+            {
+                currentYaw = Mathf.Lerp(currentYaw, 0f, Time.deltaTime * returnSpeed);
+            }
+
+            // Calcular rotación horizontal
+            Quaternion yawRotation = Quaternion.Euler(0f, currentYaw, 0f);
+            Vector3 rotatedOffset = yawRotation * initialOffset;
+
+            // Mantener altura original
+            Vector3 targetPosition = target.position + rotatedOffset;
+            targetPosition.y = initialHeight;
+            transform.position = targetPosition;
+
+            // Mirar al target sin cambiar inclinación vertical
+            Vector3 lookAtTarget = new Vector3(target.position.x, initialHeight, target.position.z);
+            transform.LookAt(lookAtTarget);
         }
-
-        lookInput = _playerInput.Look.ReadValue<Vector2>();
-        hasLookInput = lookInput.sqrMagnitude > 0.001f;
-
-        if (hasLookInput)
-        {
-            targetYaw += lookInput.x * lookSensitivity;
-            targetYaw = Mathf.Clamp(targetYaw, -maxYawAngle, maxYawAngle);
-        }
-        else
-        {
-            targetYaw = Mathf.Lerp(targetYaw, 0f, Time.deltaTime * returnSpeed);
-        }
-
-        currentYaw = targetYaw;
-
-        Vector3 horizontalOffset = new Vector3(initialOffset.x, 0f, initialOffset.z);
-        Quaternion rotation = Quaternion.Euler(0f, currentYaw, 0f);
-        Vector3 rotatedOffset = rotation * horizontalOffset;
-
-        Vector3 newPosition = target.position + rotatedOffset;
-        newPosition.y = initialHeight;
-
-        transform.position = newPosition;
-        transform.LookAt(new Vector3(target.position.x, initialHeight, target.position.z));
     }
 }
