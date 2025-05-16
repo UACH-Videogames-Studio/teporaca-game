@@ -2308,9 +2308,9 @@ CharacterController:
   m_Radius: 0.4
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.08
+  m_SkinWidth: 0.03
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.9, z: 0}
+  m_Center: {x: 0, y: 0.93, z: 0.08}
 --- !u!114 &2233894274803492855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2431,7 +2431,7 @@ MonoBehaviour:
   meshesToHighlight:
   - {fileID: 1150452764532389360, guid: 84977fa01478e80488b291b6aa8370c3, type: 3}
   originalMaterial: {fileID: 239378781582670930, guid: 84977fa01478e80488b291b6aa8370c3, type: 3}
-  highlightedMaterial: {fileID: 2100000, guid: 4fc7d6ad08b25ef45bdda67b68d7506a, type: 2}
+  highlightedMaterial: {fileID: 2100000, guid: 8160a6026f371e947a14b804da5ac0f4, type: 2}
 --- !u!114 &2920792109545735037
 MonoBehaviour:
   m_ObjectHideFlags: 0
