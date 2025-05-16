@@ -264,11 +264,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b18c8d092fac9142b2706ed2e920d7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Health>k__BackingField: 25
   attacks:
   - {fileID: 11400000, guid: f476ecf1ee597cd4bb3f63ff1d4e5356, type: 2}
   - {fileID: 11400000, guid: 6b61d04f001d5de4e874d0728564eca6, type: 2}
   - {fileID: 11400000, guid: d4fd4aa40c663644abf78a3552b59a76, type: 2}
+  longRangeAttacks: []
+  longRangeAttackThreshold: 1.5
   weapon: {fileID: 2258863532049688893}
+  rotationSpeed: 500
 --- !u!114 &2498632844415347133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -410,6 +414,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 349b1002-ab1b-4e5b-b6e2-90aa39800a6c
     m_ActionName: 'UI/ChargingNext[/Keyboard/space,/DualSenseGamepadHID/buttonNorth]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6074551656682186008}
+        m_TargetAssemblyTypeName: CombatController, Assembly-CSharp
+        m_MethodName: combatModeOn
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 9f0aa1f4-3a26-4338-b734-f805b167ed11
+    m_ActionName: 'Player/LockOn[/Mouse/middleButton,/DualSenseGamepadHID/rightStickPress]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
