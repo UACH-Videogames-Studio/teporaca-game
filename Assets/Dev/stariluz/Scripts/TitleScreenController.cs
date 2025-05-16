@@ -1,3 +1,4 @@
+using Stariluz;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -44,6 +45,7 @@ public class TitleScreenController : MonoBehaviour
     public SceneTransitionManager manager;
     private void StartGame(InputAction.CallbackContext context)
     {
+        UIAudioManager.Instance.PlayConfirmSound();
         manager.LoadScene(sceneToLoad);
     }
 }
