@@ -24,7 +24,7 @@ EditorBuildSettings:
     path: Assets/TeporacaGame/Scenes/Cinematic02.unity
     guid: 284f90cfe58d3f74895bd8c946ed6064
   - enabled: 1
-    path: Assets/TeporacaGame/Scenes/Credits.unity
+    path: Assets/TeporacaGame/Scenes/CreditsScene.unity
     guid: 664454fb7d56456488193845abd6ea6d
   - enabled: 1
     path: Assets/TeporacaGame/Scenes/Cinematic03.unity

@@ -252,6 +252,14 @@ PrefabInstance:
       value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3262659263376392225, guid: afc3aa03cb32e374e9f552b6651eacde, type: 3}
+      propertyPath: m_Padding.m_Left
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 3262659263376392225, guid: afc3aa03cb32e374e9f552b6651eacde, type: 3}
+      propertyPath: m_Padding.m_Right
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 3262659263376392225, guid: afc3aa03cb32e374e9f552b6651eacde, type: 3}
       propertyPath: m_Padding.m_Bottom
       value: 100
       objectReference: {fileID: 0}
@@ -815,16 +823,25 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Cr\xE9ditos\n\nLuz E. Adora Gonz\xE1lez, Programadora principal, l\xEDder
-    t\xE9cnica (github.com/stariluz)\n\nEduardo Granillo, Sistemas de Juego (github.com/eduardoGrDev)\n\nMariam
-    Garc\xEDa. Soporte Administrativo y Creativo, administraci\xF3n del proyecto,
-    guion hist\xF3rico (github.com/Mariam-GC).\n\nOscar D\xB4Oporto, Dise\xF1ador
-    y Creador de mapas.\n\nJonathan G\xE1ndara. Dise\xF1o de Teporaca. \n\nGabriel
-    Peinado, Producci\xF3n de Audio y Banda Sonora\n\nRecursos: Sonidos de samplefocus.com,
-    freesound.org, flstudio native sounds\n\nHerramientas de desarrollo: Unity, Blender,
-    FL Studio 21, 3D Max, VS Code, Mixamo.\n\nAgradecimientos especiales a L. H.
-    Cecilia D\xEDaz Chavez, Historiadora e Investigadora, Directora de Archivo General
-    de Hist\xF3rico de Guachochi\n"
+  m_text: "<b>Cr\xE9ditos</b>\r\n\r\n\r\n\r\n\r\n<b>Adora Gonz\xE1lez</b> (github.com/stariluz) 
+    \r\n<i>Programadora y desarrolladora principal.</i>  \r\nIluminaci\xF3n.\r\nInterfaz
+    de usuario.\r\nSistemas generales y auxiliares.\r\nAnimaci\xF3n de talado de
+    Teporame\r\nDesarrollo y mantenimiento de repositorios.\r\n\r\n<b>Eduardo Granillo</b>
+    (github.com/eduardoGrDev)  \r\n<i>Mec\xE1nicas y sistemas de combate.</i>\r\n\r\n<b>Mariam
+    Garc\xEDa</b> (github.com/Mariam-GC)  \r\n<i>L\xEDder Administrativa y Creativa.</i> 
+    \r\nAdministraci\xF3n del proyecto.\r\nGuion hist\xF3rico.\r\nDise\xF1o de recursos
+    comunicacionales y publicitarios.\r\n\r\n<b>Oscar D\xB4Oporto</b> (instagram.com/do.port)\r\n<i>Modelador
+    de escenarios y personajes. Dise\xF1ador de cinem\xE1ticas.</i>\r\n\r\n<b>Gabriel
+    Peinado</b>  \r\n<i>Producci\xF3n de Audio y Banda Sonora. Gui\xF3n narrativo.</i>\r\n\r\n<b>Rey
+    Gerardo Peinado</b>  \r\n<i>Voz de Teporame.</i>\r\n\r\n<b>Jonathan G\xE1ndara</b>
+    (github.com/JohnTenno)  \r\n<i>Modelo de Teporame.</i>\r\n\r\n<b>Recursos utilizados</b>\r\n\r\n<b>Efectos
+    de sonido</b>  \r\nsamplefocus.com  \r\nfreesound.org  \r\nFL Studio native sounds 
+    \r\nzapsplat.com\r\n\r\n<b>HDRIs obtenidos de Poly Haven</b>  \r\n\r\n<b>Herramientas
+    de desarrollo utilizadas</b>  \r\nUnity\r\nBlender\r\nFL Studio 21\r\n3D Max\r\nVS
+    Code\r\nMixamo\r\nGIMP\r\n\r\n\r\n\r\n\r\n\r\n\r\n<i>Agradecimientos especiales
+    a L. H. Cecilia D\xEDaz Chavez, Historiadora e Investigadora, Directora de Archivo
+    General de Hist\xF3rico de Guachochi</i>\r\n\r\n\r\n\r\n\r\n\r\n\r\n<b>\xA1Gracias
+    por jugar!</b>\r"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4dd046051cb2e7247881edc73e120c61, type: 2}
   m_sharedMaterial: {fileID: -5986000069129446806, guid: 4dd046051cb2e7247881edc73e120c61, type: 2}
@@ -851,12 +868,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 64
+  m_fontSize: 40
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 40
-  m_fontSizeMax: 64
+  m_fontSizeMin: 30
+  m_fontSizeMax: 40
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
@@ -1049,7 +1066,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46d234f001d95c84d89a1258d84a3561, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: TitleScreen
+  sceneToLoad: Cinematic03
   manager: {fileID: 1278981597}
 --- !u!4 &1751324955
 Transform:

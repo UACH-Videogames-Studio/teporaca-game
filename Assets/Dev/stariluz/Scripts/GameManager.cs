@@ -303,6 +303,8 @@ namespace Stariluz
 
         public void ReturnHome()
         {
+            Debug.Log("TitleScreen");
+            Time.timeScale = 1f;
             UIAudioManager.Instance.PlayLeaveSound();
             LoadScene("TitleScreen");
         }
