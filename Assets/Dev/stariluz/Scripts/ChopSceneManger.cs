@@ -15,6 +15,7 @@ namespace Stariluz
         // Lista de estados de árboles
         private List<TreeChop> destroyedTrees = new List<TreeChop>();
         public SceneTransitionManager manager;
+        public int destroyedTreesThreshold=5;
 
         private void Awake()
         {
@@ -41,16 +42,11 @@ namespace Stariluz
 
         public void TreeDestroyed(TreeChop tree)
         {
-            // if (!destroyedTrees.Contains(tree))
-            // {
             destroyedTrees.Add(tree);
-            // }
 
-            // if (!sceneLoading)
-            // {
-            //     sceneLoading = true;
-            //     manager.LoadScene(nextSceneName);
-            // }
+            if(destroyedTrees.Count>=destroyedTreesThreshold){
+                manager.LoadScene(nextSceneName);
+            }
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

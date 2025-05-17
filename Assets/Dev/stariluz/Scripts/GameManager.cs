@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
+using System.Collections;
+
 
 namespace Stariluz
 {
@@ -23,6 +26,16 @@ namespace Stariluz
         public GameObject deathUI;
         public GameObject confirmRebootMenuUI;
         public GameObject confirmExitGameMenuUI;
+
+        [Header("UI First Selected")]
+        public GameObject playUIFirstButton;
+        public GameObject pauseMenuFirstButton;
+        public GameObject settingsMenuFirstButton;
+        public GameObject deathMenuFirstButton;
+        public GameObject confirmRebootFirstButton;
+        public GameObject confirmExitGameFirstButton;
+
+
         private UIState _currentState;
         public UIState CurrentState
         {
@@ -90,7 +103,7 @@ namespace Stariluz
         }
         private void OnDisable()
         {
-            if (inputActions!=null)
+            if (inputActions != null)
             {
                 inputActions.Disable();
                 uiInput.Cancel.performed -= ManageUICancelAction;
@@ -159,6 +172,49 @@ namespace Stariluz
             }
 
             _currentState = newState;
+
+            // Esperar un frame antes de establecer el botón seleccionado
+            StartCoroutine(SetInitialSelectedButton(newState));
+            // RestoreSelectedButton(newState);
+        }
+        private IEnumerator SetInitialSelectedButton(UIState newState)
+        {
+            yield return null; // espera un frame
+
+            GameObject toSelect = null;
+
+            switch (newState)
+            {
+                case UIState.InPlayScreen:
+                    toSelect = playUIFirstButton;
+                    break;
+
+                case UIState.InPauseScreen:
+                    toSelect = pauseMenuFirstButton;
+                    break;
+
+                case UIState.InSettingsScreen:
+                    toSelect = settingsMenuFirstButton;
+                    break;
+
+                case UIState.InDeathScreen:
+                    toSelect = deathMenuFirstButton;
+                    break;
+
+                case UIState.InConfirmRebootScreen:
+                    toSelect = confirmRebootFirstButton;
+                    break;
+
+                case UIState.InConfirmExitGameScreen:
+                    toSelect = confirmExitGameFirstButton;
+                    break;
+            }
+
+            EventSystem.current.SetSelectedGameObject(null); // limpia selección previa
+            if (toSelect != null && toSelect.activeInHierarchy)
+            {
+                EventSystem.current.SetSelectedGameObject(toSelect);
+            }
         }
 
         private void DisableAllUI()
