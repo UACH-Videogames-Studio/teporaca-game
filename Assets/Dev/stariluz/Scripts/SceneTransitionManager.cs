@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class SceneTransitionManager : MonoBehaviour
 {
     [SerializeField] private Image fadeImage;
+    [SerializeField] private float startAfter = 0f;
     [SerializeField] private float fadeDuration = 1f;
     [SerializeField] private bool debugMode = false;
 
@@ -26,6 +27,7 @@ public class SceneTransitionManager : MonoBehaviour
 
     private IEnumerator Transition(string sceneName)
     {
+        yield return StartCoroutine(WaitTime());
         yield return StartCoroutine(FadeOut());
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
         while (!asyncLoad.isDone)
@@ -35,6 +37,10 @@ public class SceneTransitionManager : MonoBehaviour
         yield return StartCoroutine(FadeIn());
     }
 
+    private IEnumerator WaitTime()
+    {
+        yield return new WaitForSeconds(startAfter);
+    }
     private IEnumerator FadeOut()
     {
         SetFadeAlpha(0f);

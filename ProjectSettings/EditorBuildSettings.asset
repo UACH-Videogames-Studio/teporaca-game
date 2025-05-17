@@ -21,8 +21,14 @@ EditorBuildSettings:
     path: Assets/TeporacaGame/Scenes/FightScene2.unity
     guid: 18ed24b32daf8814692a296c79cf7360
   - enabled: 1
+    path: Assets/TeporacaGame/Scenes/Cinematic02.unity
+    guid: 284f90cfe58d3f74895bd8c946ed6064
+  - enabled: 1
     path: Assets/TeporacaGame/Scenes/Credits.unity
     guid: 664454fb7d56456488193845abd6ea6d
+  - enabled: 1
+    path: Assets/TeporacaGame/Scenes/Cinematic03.unity
+    guid: 214e88cfe09093847a463368d798283b
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 // Enumerador para los estados de ataque del personaje.
 public enum AttackStates { Idle, Windup, Impact, Cooldown }
@@ -327,9 +328,20 @@ public class MeeleFighter : MonoBehaviour
         if (Health <= 0) return; 
 
         Health = Mathf.Clamp(Health - damage, 0, maxHealth); 
-        OnHealthChanged?.Invoke(Health, maxHealth); 
-        
-        if (Health <= 0) { PlayDeathAnimation(attacker); }
+        OnHealthChanged?.Invoke(Health, maxHealth);
+
+        if (Health <= 0)
+        {
+            Die(attacker);
+        }
+    }
+
+    public UnityEvent onDieEvent=new UnityEvent();
+
+    public void Die(MeeleFighter attacker = null)
+    {
+        PlayDeathAnimation(attacker);
+        onDieEvent?.Invoke();
     }
 
     IEnumerator PlayHitReaction(MeeleFighter attacker)
