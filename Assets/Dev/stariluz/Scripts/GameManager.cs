@@ -35,6 +35,7 @@ namespace Stariluz
         public GameObject confirmRebootFirstButton;
         public GameObject confirmExitGameFirstButton;
 
+        public UIState cancelState = UIState.InPauseScreen;
 
         private UIState _currentState;
         public UIState CurrentState
@@ -233,7 +234,7 @@ namespace Stariluz
             switch (CurrentState)
             {
                 case UIState.InPlayScreen:
-                    OpenPause();
+                    LoadState(cancelState);
                     break;
 
                 case UIState.InDeathScreen:
