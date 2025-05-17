@@ -8,27 +8,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/TeporacaGame/Scenes/TitleScreen.unity
     guid: 393636315793a2947b5edf6b6d83ee1b
-  - enabled: 0
-    path: Assets/Scenes/Narrative1.unity
-    guid: ff0b35312ff2aeb48af35a70ad1b036a
+  - enabled: 1
+    path: Assets/TeporacaGame/Scenes/Cinematic01.unity
+    guid: 99a2742b52c862547bee9e002e3bcf89
   - enabled: 1
     path: Assets/TeporacaGame/Scenes/ChopScene.unity
     guid: 0d73fd5a64321e5479f012f736ad0389
-  - enabled: 0
-    path: Assets/TeporacaGame/Scenes/Narrative2.unity
-    guid: ca13cafca2d235c4da7a9c7de5edc9ed
-  - enabled: 0
-    path: Assets/TeporacaGame/Scenes/Narrative3.unity
-    guid: 9ac403fdd813ae14fa47599633a9167d
-  - enabled: 0
-    path: Assets/TeporacaGame/Scenes/Narrative4.unity
-    guid: 8442c38060c8a9f4f8fbc229a94dffe8
   - enabled: 1
     path: Assets/TeporacaGame/Scenes/Credits.unity
     guid: 664454fb7d56456488193845abd6ea6d
-  - enabled: 0
-    path: Assets/Scenes/FightScene.unity
-    guid: d5095cc01e8f30240b2afe721b87e881
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
