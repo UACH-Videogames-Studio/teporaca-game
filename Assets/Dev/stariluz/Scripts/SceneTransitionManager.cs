@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class SceneTransitionManager : MonoBehaviour
 {
     [SerializeField] private Image fadeImage;
-    [SerializeField] private float startAfter = 0f;
+    [SerializeField] public float startAfter = 0f;
     [SerializeField] private float fadeDuration = 1f;
     [SerializeField] private bool debugMode = false;
 

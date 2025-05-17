@@ -1176,7 +1176,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6746275833846860875, guid: 7fd7b80380f871f4cb63b512a62bb175, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6746275833846860875, guid: 7fd7b80380f871f4cb63b512a62bb175, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -1189,18 +1189,30 @@ PrefabInstance:
     - target: {fileID: 6746275833846860875, guid: 7fd7b80380f871f4cb63b512a62bb175, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 4003147943996951328}
     - target: {fileID: 6746275833846860875, guid: 7fd7b80380f871f4cb63b512a62bb175, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: LoadNextScene
+      objectReference: {fileID: 0}
+    - target: {fileID: 6746275833846860875, guid: 7fd7b80380f871f4cb63b512a62bb175, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: PlaySuccessSound
       objectReference: {fileID: 0}
     - target: {fileID: 6746275833846860875, guid: 7fd7b80380f871f4cb63b512a62bb175, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: Stariluz.GameManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6746275833846860875, guid: 7fd7b80380f871f4cb63b512a62bb175, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: Stariluz.UIAudioManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 6746275833846860875, guid: 7fd7b80380f871f4cb63b512a62bb175, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6746275833846860875, guid: 7fd7b80380f871f4cb63b512a62bb175, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 6902804546977345125, guid: 7fd7b80380f871f4cb63b512a62bb175, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1414,6 +1426,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7fd7b80380f871f4cb63b512a62bb175, type: 3}
+--- !u!114 &4003147943996951328 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7573507013363444175, guid: 7fd7b80380f871f4cb63b512a62bb175, type: 3}
+  m_PrefabInstance: {fileID: 4003147943996951327}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f64e0f6425527db4eb9ca86d4b63a659, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

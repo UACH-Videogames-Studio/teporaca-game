@@ -285,6 +285,34 @@ PrefabInstance:
       propertyPath: <MaxStamina>k__BackingField
       value: 150
       objectReference: {fileID: 0}
+    - target: {fileID: 492469109787479564, guid: 4c89bdb6d1c1b8d42814bc46b4f585b7, type: 3}
+      propertyPath: onDieEvent.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 492469109787479564, guid: 4c89bdb6d1c1b8d42814bc46b4f585b7, type: 3}
+      propertyPath: onDieEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 492469109787479564, guid: 4c89bdb6d1c1b8d42814bc46b4f585b7, type: 3}
+      propertyPath: onDieEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 568168163}
+    - target: {fileID: 492469109787479564, guid: 4c89bdb6d1c1b8d42814bc46b4f585b7, type: 3}
+      propertyPath: onDieEvent.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 492469109787479564, guid: 4c89bdb6d1c1b8d42814bc46b4f585b7, type: 3}
+      propertyPath: onDieEvent.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: RestartScene
+      objectReference: {fileID: 0}
+    - target: {fileID: 492469109787479564, guid: 4c89bdb6d1c1b8d42814bc46b4f585b7, type: 3}
+      propertyPath: onDieEvent.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Stariluz.GameManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 492469109787479564, guid: 4c89bdb6d1c1b8d42814bc46b4f585b7, type: 3}
+      propertyPath: onDieEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 3155709129591407119, guid: 4c89bdb6d1c1b8d42814bc46b4f585b7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -107.346

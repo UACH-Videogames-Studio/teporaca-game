@@ -16,10 +16,54 @@ public class CameraControllerE : MonoBehaviour
     private float rotationY;
     private Vector2 lookInput; // Variable para almacenar la entrada de movimiento de la cámara
 
+    [HideInInspector]
+    protected InputActions _inputActions;
+    public InputActions inputActions
+    {
+        get
+        {
+            return _inputActions;
+        }
+    }
+
+    [HideInInspector]
+    protected InputActions.PlayerActions _playerInput;
+    public InputActions.PlayerActions playerInput
+    {
+        get
+        {
+            return _playerInput;
+        }
+    }
+
+    private void Awake()
+    {
+        _inputActions = new InputActions();
+        _playerInput = inputActions.Player;
+    }
+
+    private void OnEnable()
+    {
+        inputActions.Enable();
+    }
+
+    private void OnDisable()
+    {
+        inputActions.Disable();
+    }
+
     private void Start()
     {
         Cursor.visible = false; // Oculta el cursor
         Cursor.lockState = CursorLockMode.Locked; // Bloquea el cursor en el centro de la pantalla
+
+
+        Vector3 offset = transform.position - followTarget.position;
+        Vector3 planarOffset = new Vector3(offset.x, 0, offset.z); // Ignorar altura para obtener rotación Y
+        rotationY = Quaternion.LookRotation(planarOffset).eulerAngles.y;
+
+        // Opcional: si quieres también ajustar verticalmente
+        rotationX = Quaternion.LookRotation(offset).eulerAngles.x;
     }
 
     private void Update()
@@ -29,9 +73,11 @@ public class CameraControllerE : MonoBehaviour
         float invertYVal = (invertY) ? -1 : 1;
 
         // Modifica los valores de rotación basados en la entrada del usuario
-        rotationX += lookInput.y * invertYVal * rotationSpeed; 
+
+        lookInput = _playerInput.Look.ReadValue<Vector2>();
+        rotationX += lookInput.y * invertYVal * rotationSpeed;
         rotationX = Mathf.Clamp(rotationX, minVerticalAngle, maxVerticalAngle); // Limita la rotación vertical
-        rotationY += lookInput.x * invertXVal * rotationSpeed; 
+        rotationY += lookInput.x * invertXVal * rotationSpeed;
 
         // Calcula la nueva rotación de la cámara
         Quaternion targetRotation = Quaternion.Euler(rotationX, rotationY, 0);
@@ -42,12 +88,6 @@ public class CameraControllerE : MonoBehaviour
         // Aplica la nueva posición y rotación
         transform.position = focusPosition - targetRotation * new Vector3(0, 0, distance);
         transform.rotation = targetRotation;
-    }
-
-    // Método llamado por el nuevo Input System para recibir la entrada del mouse o joystick
-    public void OnLook(InputAction.CallbackContext context)
-    {
-        lookInput = context.ReadValue<Vector2>(); // Captura la entrada de la cámara
     }
 
     public Quaternion PlanarRotation => Quaternion.Euler(0, rotationY, 0);

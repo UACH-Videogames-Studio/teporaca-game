@@ -175,14 +175,11 @@ namespace Stariluz
             // if (inputCrouch)
             //     isCrouching = !isCrouching;
 
-            if (characterController.isGrounded)
-            {
-                // Run
-                float minimumSpeed = 0.9f;
+            // Run
+            float minimumSpeed = 0.5f;
 
-                // Sprint
-                isSprinting = characterController.velocity.magnitude > minimumSpeed && inputSprint;
-            }
+            // Sprint
+            isSprinting = inputSprint && moveInput.magnitude > minimumSpeed;
 
             if (CanJump())
             {
@@ -341,7 +338,7 @@ namespace Stariluz
 
             _audioSource.pitch = Random.Range(0.9f, 1.1f);
             _audioSource.volume = Random.Range(0.8f, 1.0f); // volumen aleatorio
-            
+
             _audioSource.PlayOneShot(clip);
         }
     }

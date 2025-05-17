@@ -98,13 +98,8 @@ namespace Stariluz
             Vector3 angles = transform.rotation.eulerAngles;
             viewDirection = new Vector2(angles.y, -angles.x); // nota el signo de X por la forma en que se usa más abajo
 
-            
-            // Lock and hide cursor with option isn't checked
-            if (!clickToMoveCamera)
-            {
-                UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-                UnityEngine.Cursor.visible = false;
-            }
+            UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+            UnityEngine.Cursor.visible = false;
 
         }
 

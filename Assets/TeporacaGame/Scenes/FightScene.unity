@@ -3403,12 +3403,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: baseDamage
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: staminaRegenRate
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: <Health>k__BackingField
-      value: 200
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: <maxHealth>k__BackingField
-      value: 200
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: <MaxStamina>k__BackingField
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 2798988830043683756, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3634,12 +3646,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: baseDamage
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: staminaRegenRate
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: <Health>k__BackingField
-      value: 200
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: <maxHealth>k__BackingField
-      value: 200
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: <MaxStamina>k__BackingField
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 2798988830043683756, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: m_LocalPosition.x
@@ -14763,12 +14787,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: baseDamage
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: staminaRegenRate
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: <Health>k__BackingField
-      value: 200
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: <maxHealth>k__BackingField
-      value: 200
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: <MaxStamina>k__BackingField
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 2798988830043683756, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: m_LocalPosition.x
@@ -26304,12 +26340,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: baseDamage
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: staminaRegenRate
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: <Health>k__BackingField
-      value: 200
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: <maxHealth>k__BackingField
-      value: 200
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: <MaxStamina>k__BackingField
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 2798988830043683756, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: m_LocalPosition.x
@@ -27723,12 +27771,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: baseDamage
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: staminaRegenRate
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: <Health>k__BackingField
-      value: 200
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: <maxHealth>k__BackingField
-      value: 200
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: <MaxStamina>k__BackingField
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 2798988830043683756, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: m_LocalPosition.x
@@ -32506,12 +32566,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: baseDamage
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: staminaRegenRate
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: <Health>k__BackingField
-      value: 200
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: <maxHealth>k__BackingField
-      value: 200
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: <MaxStamina>k__BackingField
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 2798988830043683756, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: m_LocalPosition.x
@@ -32845,12 +32917,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: baseDamage
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: staminaRegenRate
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: <Health>k__BackingField
-      value: 200
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: <maxHealth>k__BackingField
-      value: 200
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: <MaxStamina>k__BackingField
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 2798988830043683756, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: m_LocalPosition.x

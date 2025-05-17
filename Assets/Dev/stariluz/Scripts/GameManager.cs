@@ -280,7 +280,14 @@ namespace Stariluz
         {
             UIAudioManager.Instance.PlayRestartSound();
             Time.timeScale = 1f;
-            // SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            transitionManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+        
+        public void RestartSceneInmediatly()
+        {
+            UIAudioManager.Instance.PlayRestartSound();
+            Time.timeScale = 1f;
+            transitionManager.startAfter = 0;
             transitionManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
@@ -297,8 +304,9 @@ namespace Stariluz
 
         public void LoadNextScene()
         {
-            UIAudioManager.Instance.PlaySuccessSound();
-            LoadScene(nextScene);
+            // UIAudioManager.Instance.PlaySuccessSound();
+            Time.timeScale = 1f;
+            transitionManager.LoadScene(nextScene);
         }
 
         public void ReturnHome()
@@ -306,7 +314,7 @@ namespace Stariluz
             Debug.Log("TitleScreen");
             Time.timeScale = 1f;
             UIAudioManager.Instance.PlayLeaveSound();
-            LoadScene("TitleScreen");
+            transitionManager.LoadScene("TitleScreen");
         }
         public void OpenSettings()
         {

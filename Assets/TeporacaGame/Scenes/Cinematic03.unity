@@ -379,7 +379,7 @@ PrefabInstance:
       objectReference: {fileID: 1398946336}
     - target: {fileID: 6510254581694822714, guid: 95a2c5b16a28bfe4b86bd07221c13dd0, type: 3}
       propertyPath: nextScene
-      value: TitleScene
+      value: TitleScreen
       objectReference: {fileID: 0}
     - target: {fileID: 6510254581694822714, guid: 95a2c5b16a28bfe4b86bd07221c13dd0, type: 3}
       propertyPath: sceneTransitionManager
