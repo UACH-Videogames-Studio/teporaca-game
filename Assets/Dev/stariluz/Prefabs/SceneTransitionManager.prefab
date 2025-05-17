@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 6092852162075944158}
   - component: {fileID: 2400375748172640001}
   - component: {fileID: 5775604092254206108}
+  - component: {fileID: 2136243107928013783}
   m_Layer: 5
   m_Name: SceneTransitionManager
   m_TagString: Untagged
@@ -193,3 +194,15 @@ MonoBehaviour:
   fadeImage: {fileID: 160917553120787368}
   fadeDuration: 1
   debugMode: 0
+--- !u!225 &2136243107928013783
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4664392200817176140}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0

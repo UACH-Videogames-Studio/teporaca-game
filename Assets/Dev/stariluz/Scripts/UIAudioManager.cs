@@ -7,11 +7,11 @@ namespace Stariluz
         public static UIAudioManager Instance { get; private set; }
 
         [Header("Audio Clips")]
-        public AudioClip confirmClip;
-        public AudioClip continueClip;
+        public AudioClip successClip;
+        public AudioClip nextClip;
         public AudioClip pauseClip;
         public AudioClip resumeClip;
-        public AudioClip cancelClip;
+        public AudioClip leaveClip;
 
         private AudioSource audioSource;
 
@@ -35,14 +35,14 @@ namespace Stariluz
             }
         }
 
-        public void PlayConfirmSound()
+        public void PlaySuccessSound()
         {
-            PlaySound(confirmClip);
+            PlaySound(successClip);
         }
 
-        public void PlayContinueSound()
+        public void PlayNextSound()
         {
-            PlaySound(continueClip);
+            PlaySound(nextClip);
         }
 
         public void PlayPauseSound()
@@ -55,12 +55,12 @@ namespace Stariluz
             PlaySound(resumeClip);
         }
 
-        public void PlayCancelSound()
+        public void PlayLeaveSound()
         {
-            PlaySound(cancelClip);
+            PlaySound(leaveClip);
         }
 
-        private void PlaySound(AudioClip clip)
+        public void PlaySound(AudioClip clip)
         {
             if (clip != null)
             {
