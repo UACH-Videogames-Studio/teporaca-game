@@ -50,6 +50,7 @@ MonoBehaviour:
   pauseClip: {fileID: 8300000, guid: ea4986abd0c87f7488490a0eda1e61d0, type: 3}
   resumeClip: {fileID: 8300000, guid: da8d5b82acbf2eb4291ba1a406367654, type: 3}
   leaveClip: {fileID: 8300000, guid: 38c05280461834f41bf06a1f79cebb1d, type: 3}
+  restartClip: {fileID: 8300000, guid: b32e96addeb309943b69dd32f6310e3d, type: 3}
 --- !u!82 &26981936029620029
 AudioSource:
   m_ObjectHideFlags: 0

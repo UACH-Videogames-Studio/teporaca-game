@@ -6,7 +6,7 @@ namespace Stariluz
         private int hitCount = 0;
         private Vector3 originalScale;
         private bool canBeHit = true;
-        private float hitCooldown = 0.25f;
+        private float hitCooldown = 0.5f;
         private Coroutine currentCorroutine;
 
         void Start()
@@ -41,6 +41,10 @@ namespace Stariluz
             {
                 NotifyTreeDestroyed();
                 gameObject.SetActive(false);
+                return;
+            }
+            else
+            {
                 return;
             }
 

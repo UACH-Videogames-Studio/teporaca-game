@@ -152,7 +152,7 @@ namespace Stariluz
             }
             else
             {
-                voiceNarrativeManager.AudioSource.Pause();
+                if(voiceNarrativeManager!=null)voiceNarrativeManager.AudioSource.Pause();
                 OnUI?.Invoke();
             }
             switch (newState)
