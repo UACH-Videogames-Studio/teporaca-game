@@ -1277,7 +1277,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2158276221084153471, guid: be46be227a66e874ba4b0dd5293b74e2, type: 3}
       propertyPath: m_Name
-      value: MenuScreenCanvas Variant
+      value: MenuScreenCanvas
       objectReference: {fileID: 0}
     - target: {fileID: 2641875914004038823, guid: be46be227a66e874ba4b0dd5293b74e2, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1630,10 +1630,6 @@ PrefabInstance:
     - target: {fileID: 6531702930394015480, guid: be46be227a66e874ba4b0dd5293b74e2, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -350
-      objectReference: {fileID: 0}
-    - target: {fileID: 6884568790513021974, guid: be46be227a66e874ba4b0dd5293b74e2, type: 3}
-      propertyPath: m_SortingOrder
-      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7352339281869145277, guid: be46be227a66e874ba4b0dd5293b74e2, type: 3}
       propertyPath: m_AnchorMax.y

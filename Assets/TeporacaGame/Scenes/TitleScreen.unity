@@ -582,6 +582,10 @@ PrefabInstance:
       propertyPath: m_text
       value: "\xBFDeseas salir del juego?"
       objectReference: {fileID: 0}
+    - target: {fileID: 575892700466248102, guid: 7fd7b80380f871f4cb63b512a62bb175, type: 3}
+      propertyPath: nextScene
+      value: Cinematic01
+      objectReference: {fileID: 0}
     - target: {fileID: 1030356150317801575, guid: 7fd7b80380f871f4cb63b512a62bb175, type: 3}
       propertyPath: m_Name
       value: GameSystem
