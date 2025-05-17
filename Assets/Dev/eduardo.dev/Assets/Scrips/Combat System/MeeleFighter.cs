@@ -3,315 +3,474 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Estado actual del ataque: reposo, preparación, impacto o recuperación
+// Enumerador para los estados de ataque del personaje.
 public enum AttackStates { Idle, Windup, Impact, Cooldown }
 
+// Gestiona la lógica de combate cuerpo a cuerpo, salud, estamina y reacciones del personaje.
 public class MeeleFighter : MonoBehaviour
 {
-    [field: SerializeField] public float Health { get; private set; } = 25f; // Salud del personaje (por defecto 100)
-    [SerializeField] List<AttackData> attacks; // Lista de ataques posibles (definidos como ScriptableObjects)
-    [SerializeField] List<AttackData> longRangeAttacks; // Lista de ataques a distancia (definidos como ScriptableObjects)
-    [SerializeField] float longRangeAttackThreshold = 1.5f; // Distancia mínima para considerar un ataque a distancia
+    // --- ESTADÍSTICAS DEL PERSONAJE ---
+    [Header("Estadísticas Principales")] 
+    [Tooltip("Salud máxima que puede tener el personaje.")] 
+    [field: SerializeField] public float maxHealth { get; private set; } = 100f; 
+    [Tooltip("Salud actual del personaje. Se inicializa a maxHealth.")]
+    [field: SerializeField] public float Health { get; private set; } 
 
-    [SerializeField] GameObject weapon; // Referencia al arma del personaje (si tiene una)
-    [SerializeField] float rotationSpeed = 500f; // Velocidad de rotación del personaje al atacar
+    [Tooltip("Estamina máxima que puede tener el personaje.")]
+    [field: SerializeField] public float MaxStamina { get; private set; } = 100f; 
+    [Tooltip("Estamina actual del personaje. Se inicializa a MaxStamina.")]
+    [field: SerializeField] public float CurrentStamina { get; private set; } 
+    
+    [Tooltip("Cantidad de estamina regenerada por segundo.")]
+    [SerializeField] private float staminaRegenRate = 15f; 
+    [Tooltip("Tiempo en segundos a esperar después de usar estamina antes de que comience la regeneración.")]
+    [SerializeField] private float staminaRegenDelay = 1.5f; 
+    [Tooltip("Costo de estamina para cada ataque.")]
+    [SerializeField] private float attackStaminaCost = 10f; 
+    [Tooltip("Daño base que inflige este personaje con sus ataques.")]
+    [SerializeField] private float baseDamage = 10f; 
 
-    public bool IsTakingHit { get; private set; } = false; // Indica si el personaje está siendo golpeado
 
-    public event Action<MeeleFighter> OnGotHit; // Evento que se dispara cuando el personaje recibe un golpe (para efectos visuales o de sonido)
-    public event Action OnHitComplete; // Evento que se dispara cuando el ataque impacta (para efectos visuales o de sonido)
+    // --- CONFIGURACIÓN DE COMBATE ---
+    [Header("Configuración de Combate")]
+    [Tooltip("Lista de ataques normales disponibles para el personaje.")]
+    [SerializeField] List<AttackData> attacks; 
+    [Tooltip("Lista de ataques a larga distancia (si aplica).")]
+    [SerializeField] List<AttackData> longRangeAttacks; 
+    [Tooltip("Umbral de distancia para considerar el uso de un ataque a larga distancia.")]
+    [SerializeField] float longRangeAttackThreshold = 1.5f; 
+    [Tooltip("Referencia al GameObject del arma (si el personaje usa una).")]
+    [SerializeField] GameObject weapon; 
+    [Tooltip("Velocidad a la que el personaje rota hacia su objetivo durante un ataque.")]
+    [SerializeField] float rotationSpeed = 500f; 
+    
+    [Header("Nombres de Animaciones (Exactos)")]
+    [Tooltip("Nombre del estado de animación para la reacción al golpe en el Animator.")]
+    [SerializeField] string hitReactionAnimName = "Impact"; 
+    [Tooltip("Nombre del estado de animación para la muerte en el Animator.")]
+    [SerializeField] string deathAnimName = "DeathBackward01";
 
-    // Colliders que se usarán como hitboxes para detectar impactos en distintas partes del cuerpo
-    BoxCollider weaponCollider; // Collider del arma (hacha o espada)
-    SphereCollider leftHandCollider, rightHandCollider, leftFootCollider, rightFootCollider; // Colliders de las manos y pies
+    // --- ESTADOS Y EVENTOS INTERNOS ---
+    public bool IsTakingHit { get; private set; } = false; 
+    public bool IsInvulnerable { get; private set; } = false;
 
-    Animator animator; // Referencia al Animator del personaje para controlar animaciones
+    public event Action<MeeleFighter> OnGotHit; 
+    public event Action OnHitComplete; 
+    public event Action<float, float> OnStaminaChanged;
+    public event Action<float, float> OnHealthChanged;
+
+    BoxCollider weaponCollider; 
+    SphereCollider leftHandCollider, rightHandCollider, leftFootCollider, rightFootCollider; 
+    
+    Animator animator;
+    CharacterController characterController; 
+    
+    Coroutine _playHitReactionCoroutine; 
+    private float lastStaminaUseTime;
+    
+    private const int ACTION_ANIMATOR_LAYER = 1; 
+    private const int BASE_ANIMATOR_LAYER = 0;
+
+    public AttackStates AttackStates { get; private set; }
+    bool doCombo; 
+    int comboCount = 0; 
+    public bool InAction { get; private set; } = false; 
+    public bool InCounter { get; set; } = false;
+
 
     private void Awake()
     {
-        // Obtenemos el Animator del personaje
         animator = GetComponent<Animator>();
+        characterController = GetComponent<CharacterController>(); 
+        
+        if (maxHealth <= 0) maxHealth = 100f; // Asegurar un valor por defecto positivo para maxHealth
+        Health = maxHealth; 
+        CurrentStamina = MaxStamina; 
     }
 
     private void Start()
     {
-        // Si el personaje tiene un hacha asignada
+        // Es crucial que 'animator' se haya obtenido en Awake antes de llamar a InitializeColliders.
+        if (animator == null)
+        {
+            // Log de error eliminado según solicitud, pero esto sería un punto crítico.
+            // Considera añadir un return aquí o desactivar el componente si el animator es esencial.
+        }
+        InitializeColliders();
+        
+        OnHealthChanged?.Invoke(Health, maxHealth);
+        OnStaminaChanged?.Invoke(CurrentStamina, MaxStamina);
+    }
+    
+    /// <summary>
+    /// Inicializa los colliders de las extremidades y el arma.
+    /// </summary>
+    void InitializeColliders()
+    {
         if (weapon != null)
         {
-            // Se obtienen los colliders correspondientes desde el Animator
-            weaponCollider = weapon.GetComponent<BoxCollider>(); // Collider del arma
-
-            // Se accede a los huesos humanos del rig para obtener las manos y pies, y sus colliders
-            leftFootCollider = animator.GetBoneTransform(HumanBodyBones.LeftFoot).GetComponent<SphereCollider>();
-            rightFootCollider = animator.GetBoneTransform(HumanBodyBones.RightFoot).GetComponent<SphereCollider>();
-            leftHandCollider = animator.GetBoneTransform(HumanBodyBones.LeftHand).GetComponent<SphereCollider>();
-            rightHandCollider = animator.GetBoneTransform(HumanBodyBones.RightHand).GetComponent<SphereCollider>();
-
-            // Se desactivan todos los colliders al iniciar (por seguridad)
-            DisableHitboxes();
+            weaponCollider = weapon.GetComponent<BoxCollider>();
         }
-    } 
 
-    // Estado actual del ataque (Idle, Windup, Impact o Cooldown)
-    public AttackStates AttackStates { get; private set; }
+        // Solo intentar obtener colliders de huesos si el animator existe y es humanoide.
+        if (animator != null && animator.isHuman)
+        {
+                Transform leftFoot = animator.GetBoneTransform(HumanBodyBones.LeftFoot);
+                if (leftFoot != null) leftFootCollider = leftFoot.GetComponent<SphereCollider>();
 
-    bool doCombo; // Indica si el jugador presionó para hacer un combo
-    int comboCount = 0; // Contador del combo actual
+                Transform rightFoot = animator.GetBoneTransform(HumanBodyBones.RightFoot);
+                if (rightFoot != null) rightFootCollider = rightFoot.GetComponent<SphereCollider>();
+                
+                Transform leftHand = animator.GetBoneTransform(HumanBodyBones.LeftHand);
+                if (leftHand != null) leftHandCollider = leftHand.GetComponent<SphereCollider>();
 
-    public bool InAction { get; private set; } = false; // Indica si el personaje está actualmente atacando o siendo golpeado
-    public bool InCounter { get; set; } = false; // Indica si el personaje está en medio de un contraataque
+                Transform rightHand = animator.GetBoneTransform(HumanBodyBones.RightHand);
+                if (rightHand != null) rightHandCollider = rightHand.GetComponent<SphereCollider>();
 
-    // Método llamado por el sistema de input cuando se presiona el botón de ataque
-    public void TryToAttack(MeeleFighter target = null)
+        }
+        // else if (animator == null) { /* Animator es null */ }
+        // else { /* Animator no es humanoide */ }
+        
+        DisableHitboxes(); // Desactivar todos al inicio.
+    }
+    
+    private void Update()
     {
-        // Si no está haciendo otra acción, comienza el ataque
-        if (!InAction)
+        if (CurrentStamina < MaxStamina && 
+            Time.time > lastStaminaUseTime + staminaRegenDelay && 
+            Health > 0 &&            
+            !InAction &&             
+            !IsTakingHit &&          
+            !IsInvulnerable)         
         {
-            StartCoroutine(Attack(target)); // Inicia la corrutina de ataque
-        }
-        // Si ya está atacando pero en la fase correcta (impacto o recuperación), se activa el combo
-        else if (AttackStates == AttackStates.Impact || AttackStates == AttackStates.Cooldown)
-        {
-            doCombo = true; // Permite hacer un combo
+            CurrentStamina += staminaRegenRate * Time.deltaTime; 
+            CurrentStamina = Mathf.Clamp(CurrentStamina, 0, MaxStamina); 
+            OnStaminaChanged?.Invoke(CurrentStamina, MaxStamina); 
         }
     }
 
-    // Corrutina que maneja todo el proceso del ataque: animación, tiempos y combos
+    public void SetInvulnerable(bool state)
+    {
+        IsInvulnerable = state;
+    }
+
+    public bool ConsumeStamina(float amount) 
+    {
+        if (CurrentStamina >= amount)
+        {
+            CurrentStamina -= amount;
+            lastStaminaUseTime = Time.time; 
+            OnStaminaChanged?.Invoke(CurrentStamina, MaxStamina);
+            return true;
+        }
+        return false; 
+    }
+
+    public void TryToAttack(MeeleFighter target = null)
+    {
+        if (Health <= 0 || IsInvulnerable) return; 
+        
+        if (InAction)
+        {
+            if (AttackStates == AttackStates.Impact || AttackStates == AttackStates.Cooldown)
+            {
+                doCombo = true; 
+            }
+        }
+        else 
+        {
+            if (ConsumeStamina(attackStaminaCost)) 
+            {
+                comboCount = 0; 
+                StartCoroutine(Attack(target)); 
+            }
+        }
+    }
+
     IEnumerator Attack(MeeleFighter target = null)
     {
-        // Si el personaje está en medio de un ataque, no puede iniciar otro
-        InAction = true; // El personaje está ocupado
-        AttackStates = AttackStates.Windup; // Empieza en fase de preparación
+        InAction = true; 
+        AttackStates = AttackStates.Windup; 
 
-        var attack = attacks[comboCount]; // Obtiene el ataque actual según el contador de combo
-
-        var attackDir = transform.forward; // Dirección del ataque (por defecto hacia adelante)
-        Vector3 startPos = transform.position; // Posición inicial del personaje
-        Vector3 targetPos = Vector3.zero; // Posición del objetivo (inicialmente vacía)
+        var attack = attacks[comboCount]; 
+        var attackDir = transform.forward; 
+        Vector3 startPos = transform.position; 
+        Vector3 targetPos = Vector3.zero; 
 
         if (target != null)
         {
-            // Si hay un objetivo, se calcula la dirección del ataque hacia él
-            var vecToTarget = target.transform.position - transform.position; // Vector de desplazamiento hacia el objetivo
-            //vecToTarget.y = 0; // Mantiene la dirección horizontal
-
-            attackDir = vecToTarget.normalized; // Normaliza el vector para obtener la dirección
-            float distance = vecToTarget.magnitude - attack.DistanceFromTarget; // Calcula la distancia al objetivo menos la distancia de ataque
-
-            if (distance > longRangeAttackThreshold && longRangeAttacks.Count > 0) // Si la distancia es mayor que el umbral
-                attack = longRangeAttacks[0]; // Cambia al ataque a distancia
-
+            var vecToTarget = target.transform.position - transform.position; 
+            attackDir = vecToTarget.normalized; 
+            float distance = vecToTarget.magnitude - attack.DistanceFromTarget; 
+            if (distance > longRangeAttackThreshold && longRangeAttacks != null && longRangeAttacks.Count > 0)
+            {
+                attack = longRangeAttacks[Mathf.Min(comboCount, longRangeAttacks.Count -1)];
+            }
             if (attack.MoveToTarget) 
             {
-                if (distance <= attack.MaxMoveDistance) // Si la distancia es menor o igual a la distancia máxima de movimiento
-                    targetPos = target.transform.position - attackDir * attack.DistanceFromTarget; // Calcula la posición de destino
+                if (distance <= attack.MaxMoveDistance) 
+                    targetPos = target.transform.position - attackDir * attack.DistanceFromTarget; 
                 else
-                    targetPos = startPos + attackDir * attack.MaxMoveDistance; // Si no, se usa la distancia máxima de movimiento             
+                    targetPos = startPos + attackDir * attack.MaxMoveDistance;          
             }
-            
         }
         
-        // Se inicia la animación del ataque actual según el combo
-        animator.CrossFade(attack.AnimName, 0.2f);
-        yield return null; // Espera un frame
+        if (animator != null) animator.CrossFade(attack.AnimName, 0.2f, ACTION_ANIMATOR_LAYER); 
+        yield return null; 
 
-        // Se obtiene el estado siguiente del Animator en la capa 1
-        var animState = animator.GetNextAnimatorStateInfo(1);
+        AnimatorStateInfo animState = animator != null ? animator.GetNextAnimatorStateInfo(ACTION_ANIMATOR_LAYER) : new AnimatorStateInfo(); 
 
-        float timer = 0f; // Temporizador para controlar el tiempo de la animación
+        float timer = 0f; 
+        float animationLength = animState.length > 0.01f ? animState.length : 1f;
 
-        // Se ejecuta mientras la animación esté activa
-        while (timer <= animState.length)
+        while (timer <= animationLength)
         {
-            if (IsTakingHit) break; // Si el personaje está siendo golpeado, se interrumpe el ataque
-            timer += Time.deltaTime; // Incrementa el temporizador
-            float normalizedTime = timer / animState.length; // Normaliza el tiempo de la animación (0 a 1)
-
-            // Mover al atacante hacia el objetivo mientras ataca
-
-            if (target != null && attack.MoveToTarget) 
-            {
-                float percTime = (normalizedTime - attack.MoveStartTime) / (attack.MoveEndTime - attack.MoveStartTime); // Calcula el porcentaje de movimiento
-                transform.position = Vector3.Lerp(startPos, targetPos, percTime); // Interpola la posición entre el inicio y el objetivo
+            if (IsTakingHit || Health <= 0 || IsInvulnerable) { 
+                InAction = false; 
+                AttackStates = AttackStates.Idle; 
+                comboCount = 0; 
+                doCombo = false; 
+                DisableHitboxes(); 
+                yield break; 
             }
+            timer += Time.deltaTime; 
+            float normalizedTime = Mathf.Clamp01(timer / animationLength); 
 
-            //Rotar a la dirección del ataque
-            if (attackDir != null)
+            if (target != null && attack.MoveToTarget && targetPos != Vector3.zero) 
             {
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(attackDir), rotationSpeed * Time.deltaTime); // Rotar hacia la dirección del ataque
-            }
-
-            // Transición de preparación a impacto
-            if (AttackStates == AttackStates.Windup)
-            {
-                if (InCounter) break; // Si está en contraataque, no se activa el impacto
-                if (normalizedTime >= attack.ImpactStartTime) // Si el tiempo normalizado supera el inicio del impacto
+                if (attack.MoveEndTime > attack.MoveStartTime) 
                 {
-                    AttackStates = AttackStates.Impact; // Cambia el estado a impacto
-                    EnableHitBox(attack); // Activar hitbox correspondiente
+                    float percTime = (normalizedTime - attack.MoveStartTime) / (attack.MoveEndTime - attack.MoveStartTime); 
+                    transform.position = Vector3.Lerp(startPos, targetPos, Mathf.Clamp01(percTime)); 
                 }
             }
-            // Transición de impacto a recuperación
-            else if (AttackStates == AttackStates.Impact)
+
+            if (attackDir != Vector3.zero)
+            {
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(attackDir), rotationSpeed * Time.deltaTime); 
+            }
+
+            if (AttackStates == AttackStates.Windup) 
+            {
+                if (InCounter) break; 
+                if (normalizedTime >= attack.ImpactStartTime) 
+                { AttackStates = AttackStates.Impact; EnableHitBox(attack); } 
+            }
+            else if (AttackStates == AttackStates.Impact) 
             {
                 if (normalizedTime >= attack.ImpactEndTime) 
-                {
-                    AttackStates = AttackStates.Cooldown; // Cambia el estado a recuperación
-                    DisableHitboxes(); // Desactiva hitboxes después del golpe
-                }
+                { AttackStates = AttackStates.Cooldown; DisableHitboxes(); } 
             }
-            // Durante la recuperación, verifica si hay combo
-            else if (AttackStates == AttackStates.Cooldown)
+            else if (AttackStates == AttackStates.Cooldown) 
             {
                 if (doCombo)
                 {
-                    doCombo = false; // Reinicia el combo
-                    comboCount = (comboCount + 1) % attacks.Count; // Avanza al siguiente ataque en la lista (ciclo)
-
-                    StartCoroutine(Attack()); // Inicia el siguiente ataque del combo
-                    yield break; // Termina la corrutina actual
+                    doCombo = false; 
+                    comboCount = (comboCount + 1) % attacks.Count; 
+                    if (ConsumeStamina(attackStaminaCost)) 
+                    { 
+                        StartCoroutine(Attack()); 
+                        yield break; 
+                    } 
+                    else 
+                    { 
+                        break; 
+                    }
                 }
             }
-
-            yield return null;
+            yield return null; 
         }
 
-        // Cuando termina la animación del ataque
-        AttackStates = AttackStates.Idle; // Cambia el estado a reposo
-        comboCount = 0; // Reinicia combo
-        InAction = false; // Personaje libre para otras acciones
+        AttackStates = AttackStates.Idle; 
+        comboCount = 0; 
+        InAction = false; 
+        doCombo = false; 
+        DisableHitboxes();
+    }
+    
+    public void RequestCombo()
+    {
+        if (InAction && (AttackStates == AttackStates.Impact || AttackStates == AttackStates.Cooldown))
+        {
+            doCombo = true;
+        }
     }
 
-    // Detecta si este personaje es golpeado por otro (usando colliders con tag "Hitbox")
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Hitbox" && !IsTakingHit && !InCounter)
+        if (IsInvulnerable) return;
+        if (Health <= 0 || InCounter) return; 
+        
+        if (other.CompareTag("Hitbox")) 
         {
-            var attacker = other.GetComponentInParent<MeeleFighter>(); // Obtiene el atacante (si es un personaje)
-            TakeDamage(5f); // Aplica daño al personaje (5 por defecto)
-            OnGotHit?.Invoke(attacker); // Dispara el evento de golpe recibido (para efectos visuales o de sonido)
-
-            if (Health > 0)
-                StartCoroutine(PlayHitReaction(attacker)); // Ejecuta animación de impacto
-            else
-                PlayDeathAnimation(attacker); // Ejecuta animación de muerte
+            MeeleFighter attacker = other.GetComponentInParent<MeeleFighter>(); 
+            if (attacker != null && attacker != this) 
+            {
+                TakeDamage(attacker.baseDamage, attacker); 
+                OnGotHit?.Invoke(attacker); 
+                
+                if (Health > 0) 
+                {
+                    if (_playHitReactionCoroutine != null)
+                    {
+                        StopCoroutine(_playHitReactionCoroutine);
+                    }
+                    _playHitReactionCoroutine = StartCoroutine(PlayHitReaction(attacker)); 
+                }
+            }
         }
     }
 
-    void TakeDamage (float damage)
+    public void TakeDamage(float damage, MeeleFighter attacker = null) 
     {
-        Health = Mathf.Clamp(Health - damage, 0, Health); // Reduce la salud del personaje
+        if (IsInvulnerable) return; 
+        if (Health <= 0) return; 
+
+        Health = Mathf.Clamp(Health - damage, 0, maxHealth); 
+        OnHealthChanged?.Invoke(Health, maxHealth); 
+        
+        if (Health <= 0) { PlayDeathAnimation(attacker); }
     }
 
-    // Reproduce una animación cuando el personaje recibe un golpe
     IEnumerator PlayHitReaction(MeeleFighter attacker)
     {
-        InAction = true; // El personaje está ocupado
-        IsTakingHit = true; // Indica que el personaje está siendo golpeado
+        InAction = true;  
+        IsTakingHit = true; 
 
-        var dispVec = attacker.transform.position - transform.position; // Calcula la dirección del golpe
-        dispVec.y = 0; // Mantiene la dirección horizontal
-        transform.rotation = Quaternion.LookRotation(dispVec); // Orienta el personaje hacia el atacante
-
-        animator.CrossFade("Impact", 0.2f); // Reproduce la animación de impacto
-        yield return null; // Espera un frame
-
-        var animState = animator.GetNextAnimatorStateInfo(1); // Obtiene el estado de la animación actual
-
-        yield return new WaitForSeconds(animState.length * 0.8f); // Espera hasta casi terminar la animación
-
-        OnHitComplete?.Invoke(); // Dispara el evento de golpe completado (para efectos visuales o de sonido)
-
-        InAction = false; // El personaje puede volver a actuar
-        IsTakingHit = false; // Indica que el personaje ya no está siendo golpeado
-    }
-
-    void PlayDeathAnimation(MeeleFighter attacker)
-    {
-        animator.CrossFade("DeathBackward01", 0.2f); // Reproduce la animación de muerte
-    }
-        
-    // Reproduce una animación cuando el personaje recibe un golpe
-    public IEnumerator PerformCounterAttack(EnemyController opponent)
-    {
-        InAction = true; // El personaje está ocupado
-
-        InCounter = true; // Indica que el personaje está en medio de un contraataque
-        opponent.Fighter.InCounter = true; // Indica que el oponente está en medio de un contraataque
-        opponent.ChangeState(EnemyStates.Dead); // Cambia el estado del oponente a muerto
-
-        var dispVec = opponent.transform.position - transform.position; // Calcula la dirección del golpe
-        dispVec.y = 0; // Mantiene la dirección horizontal
-        transform.rotation = Quaternion.LookRotation(dispVec); // Orienta el personaje hacia el oponente
-        opponent.transform.rotation = Quaternion.LookRotation(-dispVec); // Orienta el oponente hacia el personaje
-
-        var targetPos = opponent.transform.position - dispVec.normalized * 1f; // Calcula la posición de destino para el personaje
-
-        animator.CrossFade("CounterAttackA", 0.2f); // Reproduce la animación de impacto
-        opponent.Animator.CrossFade("CounterAttackVictimA", 0.2f); // Reproduce la animación de impacto del oponente
-        yield return null; // Espera un frame
-
-        var animState = animator.GetNextAnimatorStateInfo(1); // Obtiene el estado de la animación actual
-
-        float timer = 0f; // Temporizador para controlar el tiempo de la animación
-        while (timer <= animState.length) // Se ejecuta mientras la animación esté activa
+        UnityEngine.AI.NavMeshAgent agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (agent != null && agent.enabled)
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, 5 * Time.deltaTime); // Mueve el personaje hacia la posición del oponente
-
-            yield return null; // Espera un frame
-            timer += Time.deltaTime; // Incrementa el temporizador
+            agent.isStopped = true; 
         }
 
-        InCounter = false; // Indica que el personaje ya no está en medio de un contraataque
-        opponent.Fighter.InCounter = false; // Indica que el oponente ya no está en medio de un contraataque
+        if (attacker != null) 
+        {
+            var dispVec = attacker.transform.position - transform.position; 
+            dispVec.y = 0; 
+            if (dispVec != Vector3.zero) 
+            {
+                 transform.rotation = Quaternion.LookRotation(dispVec); 
+            }
+        }
+        
+        if(animator != null) animator.CrossFade(hitReactionAnimName, 0.2f); 
+        yield return null; 
 
-        InAction = false; // El personaje puede volver a actuar
+        AnimatorStateInfo animStateLayer1 = animator != null ? animator.GetNextAnimatorStateInfo(ACTION_ANIMATOR_LAYER) : new AnimatorStateInfo(); 
+        
+        float timeToWait = 0.3f; 
+
+        if (animStateLayer1.length > 0.01f) 
+        {
+            timeToWait = animStateLayer1.length * 0.8f; 
+        }
+        
+        yield return new WaitForSeconds(timeToWait); 
+        
+        OnHitComplete?.Invoke(); 
+
+        InAction = false; 
+        IsTakingHit = false; 
+
+        if (agent != null && agent.enabled)
+        {
+            agent.isStopped = false; 
+        }
+        _playHitReactionCoroutine = null; 
     }
 
-    // Activa el collider correspondiente al ataque actual
+    void PlayDeathAnimation(MeeleFighter attacker) 
+    {
+        if (animator == null) return; // Comprobación de nulidad para animator
+
+        if (animator.GetCurrentAnimatorStateInfo(BASE_ANIMATOR_LAYER).IsName(deathAnimName) || 
+            animator.GetNextAnimatorStateInfo(BASE_ANIMATOR_LAYER).IsName(deathAnimName)) { return; }
+
+        InAction = true; IsTakingHit = false; 
+        if (characterController != null) { characterController.enabled = false; }
+        UnityEngine.AI.NavMeshAgent agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (agent != null) { agent.enabled = false; }
+
+        if (attacker != null)
+        {
+            var dispVec = attacker.transform.position - transform.position;
+            dispVec.y = 0;
+            if (dispVec != Vector3.zero) { transform.rotation = Quaternion.LookRotation(dispVec); }
+        }
+        animator.CrossFade(deathAnimName, 0.2f); 
+    }
+        
+    public IEnumerator PerformCounterAttack(EnemyController opponent)
+    {
+        InAction = true; 
+        InCounter = true; 
+        if (opponent != null && opponent.Fighter != null) opponent.Fighter.InCounter = true; 
+        if (opponent != null) opponent.ChangeState(EnemyStates.Dead); 
+
+        var dispVec = opponent.transform.position - transform.position; 
+        dispVec.y = 0; 
+        if (dispVec != Vector3.zero) 
+        {
+            transform.rotation = Quaternion.LookRotation(dispVec); 
+            if (opponent != null) opponent.transform.rotation = Quaternion.LookRotation(-dispVec); 
+        }
+
+        var targetPos = opponent.transform.position - dispVec.normalized * 1f; 
+        
+        if(animator != null) animator.CrossFade("CounterAttackA", 0.2f); 
+        if(opponent != null && opponent.Animator != null) opponent.Animator.CrossFade("CounterAttackVictimA", 0.2f); 
+        yield return null; 
+
+        AnimatorStateInfo animState = animator != null ? animator.GetNextAnimatorStateInfo(ACTION_ANIMATOR_LAYER) : new AnimatorStateInfo();
+
+        float timer = 0f; 
+        float animationLength = animState.length > 0.01f ? animState.length : 1f;
+
+        while (timer <= animationLength) 
+        {
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, 5 * Time.deltaTime); 
+            yield return null; 
+            timer += Time.deltaTime; 
+        }
+
+        InCounter = false; 
+        if (opponent != null && opponent.Fighter != null) opponent.Fighter.InCounter = false; 
+        InAction = false; 
+    }
+
     void EnableHitBox(AttackData attack) 
     {
+        if (attack == null) return; // Comprobación de nulidad para attack
         switch (attack.HitboxToUse)
         {
             case AttackHitbox.LeftHand: 
-                leftHandCollider.enabled = true; // Activa el collider de la mano izquierda
+                if(leftHandCollider) leftHandCollider.enabled = true; 
                 break;
             case AttackHitbox.RightHand:
-                rightHandCollider.enabled = true; // Activa el collider de la mano derecha
+                if(rightHandCollider) rightHandCollider.enabled = true; 
                 break;
             case AttackHitbox.LeftFoot:
-                leftFootCollider.enabled = true; // Activa el collider del pie izquierdo
+                if(leftFootCollider) leftFootCollider.enabled = true; 
                 break;
             case AttackHitbox.RightFoot:
-                rightFootCollider.enabled = true; // Activa el collider del pie derecho
+                if(rightFootCollider) rightFootCollider.enabled = true; 
                 break;
             case AttackHitbox.Axe:
-                weaponCollider.enabled = true; // Activa el collider del hacha
-                break;
-            case AttackHitbox.Sword:
-                weaponCollider.enabled = true; // Activa el collider de la espada
-                break;
-            default:
+            case AttackHitbox.Sword: 
+                if(weaponCollider) weaponCollider.enabled = true; 
                 break;
         }
     }
 
-    // Desactiva todos los colliders de ataque
     void DisableHitboxes()
     {
-        weaponCollider.enabled = false; // Desactiva el collider del arma
-
-        if (leftFootCollider != null)
-            leftFootCollider.enabled = false; // Desactiva el collider del pie izquierdo
-        if (rightFootCollider != null)
-            rightFootCollider.enabled = false; // Desactiva el collider del pie derecho
-        if (leftHandCollider != null)
-            leftHandCollider.enabled = false;  // Desactiva el collider de la mano izquierda
-        if (rightHandCollider != null)
-            rightHandCollider.enabled = false; // Desactiva el collider de la mano derecha
+        if (weaponCollider != null && weaponCollider.enabled) weaponCollider.enabled = false; 
+        if (leftFootCollider != null && leftFootCollider.enabled) leftFootCollider.enabled = false; 
+        if (rightFootCollider != null && rightFootCollider.enabled) rightFootCollider.enabled = false; 
+        if (leftHandCollider != null && leftHandCollider.enabled) leftHandCollider.enabled = false;  
+        if (rightHandCollider != null && rightHandCollider.enabled) rightHandCollider.enabled = false; 
     }
 
-    public List<AttackData> Attacks => attacks; // Propiedad para acceder
-
-    public bool IsCounterable  => AttackStates == AttackStates.Windup && comboCount == 0; // Indica si el ataque puede ser contrarrestado (en fase de preparación y sin combo activo)
+    public List<AttackData> Attacks => attacks; 
+    public bool IsCounterable  => AttackStates == AttackStates.Windup && comboCount == 0 && Health > 0;
 }
