@@ -15,6 +15,13 @@ namespace Stariluz
 
         public GameState OnGame, OnUI;
 
+        [Header("Other Managers")]
+        [SerializeField] VoiceNarrativeManager voiceNarrativeManager;
+
+        [Header("Scene Navigation")]
+        public SceneTransitionManager transitionManager;
+        public string nextScene = "TitleScreen";
+
         [Header("UI Canvas")]
         public GameObject canvas;
         public GameObject UIModeBackground;
@@ -122,6 +129,7 @@ namespace Stariluz
         }
         public void ReturnState()
         {
+            UIAudioManager.Instance.PlayNextSound();
             if (stateHistory.Count > 0)
             {
                 var previousState = stateHistory.Pop();
@@ -138,10 +146,15 @@ namespace Stariluz
 
 
             if (newState == UIState.InPlayScreen)
+            {
+                if(voiceNarrativeManager!=null)voiceNarrativeManager.AudioSource.UnPause();
                 OnGame?.Invoke();
+            }
             else
+            {
+                voiceNarrativeManager.AudioSource.Pause();
                 OnUI?.Invoke();
-
+            }
             switch (newState)
             {
                 case UIState.InPlayScreen:
@@ -178,6 +191,7 @@ namespace Stariluz
             StartCoroutine(SetInitialSelectedButton(newState));
             // RestoreSelectedButton(newState);
         }
+
         private IEnumerator SetInitialSelectedButton(UIState newState)
         {
             yield return null; // espera un frame
@@ -234,11 +248,22 @@ namespace Stariluz
             switch (CurrentState)
             {
                 case UIState.InPlayScreen:
-                    LoadState(cancelState);
+                    switch (cancelState)
+                    {
+                        case UIState.InPauseScreen:
+                            OpenPause();
+                            break;
+                        case UIState.InSettingsScreen:
+                            OpenSettings();
+                            break;
+                        case UIState.InDeathScreen:
+                            // For debug purposes activate death screen sound
+                            break;
+                    }
                     break;
 
                 case UIState.InDeathScreen:
-                    // Navigate to start screen
+                    ReturnHome();
                     break;
 
                 case UIState.InPauseScreen:
@@ -253,8 +278,10 @@ namespace Stariluz
 
         public void RestartScene()
         {
+            UIAudioManager.Instance.PlayRestartSound();
             Time.timeScale = 1f;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            // SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            transitionManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
         public void ExitGame()
@@ -263,12 +290,50 @@ namespace Stariluz
             Application.Quit();
         }
 
-        public void OpenSettings() => LoadState(UIState.InSettingsScreen);
-        public void OpenConfirmReboot() => LoadState(UIState.InConfirmRebootScreen);
-        public void OpenConfirmExitGame() => LoadState(UIState.InConfirmExitGameScreen);
-        public void OpenPause() => LoadState(UIState.InPauseScreen);
-        public void ResumeGame() => ReturnState();
-        public void Die() => ChangeState(UIState.InDeathScreen);
+        public void LoadScene(string sceneName)
+        {
+            transitionManager.LoadScene(sceneName);
+        }
+
+        public void LoadNextScene()
+        {
+            UIAudioManager.Instance.PlaySuccessSound();
+            LoadScene(nextScene);
+        }
+
+        public void ReturnHome()
+        {
+            UIAudioManager.Instance.PlayLeaveSound();
+            LoadScene("TitleScreen");
+        }
+        public void OpenSettings()
+        {
+            UIAudioManager.Instance.PlayNextSound();
+            LoadState(UIState.InSettingsScreen);
+        }
+        public void OpenConfirmReboot()
+        {
+            UIAudioManager.Instance.PlayNextSound();
+            LoadState(UIState.InConfirmRebootScreen);
+        }
+        public void OpenConfirmExitGame()
+        {
+            UIAudioManager.Instance.PlayNextSound();
+            LoadState(UIState.InConfirmExitGameScreen);
+        }
+        public void OpenPause()
+        {
+            UIAudioManager.Instance.PlayPauseSound();
+            LoadState(UIState.InPauseScreen);
+        }
+        public void ResumeGame()
+        {
+            ReturnState();
+        }
+        public void Die()
+        {
+            ChangeState(UIState.InDeathScreen);
+        }
     }
 
 }

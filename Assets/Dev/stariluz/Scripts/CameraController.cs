@@ -94,7 +94,10 @@ namespace Stariluz
             yOffset = transform.position.y;
 
             // Obtener rotación Y inicial del jugador
-            viewDirection = new Vector2(player.eulerAngles.y, 0f);
+            // viewDirection = new Vector2(player.eulerAngles.y, 0f);
+            Vector3 angles = transform.rotation.eulerAngles;
+            viewDirection = new Vector2(angles.y, -angles.x); // nota el signo de X por la forma en que se usa más abajo
+
             
             // Lock and hide cursor with option isn't checked
             if (!clickToMoveCamera)
