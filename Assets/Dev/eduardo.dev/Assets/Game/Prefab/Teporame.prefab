@@ -1073,7 +1073,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
+  runSpeedMultiplier: 1.8
   rotationSpeed: 500
+  jumpForce: 8
+  jumpStaminaCost: 15
+  dodgeStaminaCost: 25
+  dodgeAnimName: Dodge
+  dodgeAnimationDuration: 0.7
+  dodgeInvulnerabilityStartTime: 0.1
+  dodgeInvulnerabilityDuration: 0.4
+  dodgeSpeed: 8
+  dodgeUsesRootMotion: 1
+  runStaminaCostPerSecond: 10
   groundCheckRadius: 0.2
   groundCheckOffset: {x: 0, y: 0.1, z: 0.07}
   groundLayer:
@@ -1159,6 +1170,12 @@ MonoBehaviour:
   longRangeAttackThreshold: 1.5
   weapon: {fileID: 3878961883386313113}
   rotationSpeed: 500
+  maxHealth: 25
+  staminaRegenRate: 15
+  staminaRegenDelay: 1.5
+  attackStaminaCost: 10
+  hitReactionAnimName: Impact
+  deathAnimName: DeathBackward01
 --- !u!114 &26117329240985890
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1316,6 +1333,26 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 9f0aa1f4-3a26-4338-b734-f805b167ed11
     m_ActionName: 'Player/LockOn[/Mouse/middleButton,/DualSenseGamepadHID/rightStickPress]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 8afe6482-c3ba-4029-8afb-795c5658f817
+    m_ActionName: 'Player/Run[/DualSenseGamepadHID/leftStickPress,/Keyboard/shift]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8923823649510667957}
+        m_TargetAssemblyTypeName: PlayerControllerE, Assembly-CSharp
+        m_MethodName: OnDodgeInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: eb108c08-65f4-420c-9740-d1310d1fe7e5
+    m_ActionName: 'Player/Dodge[/DualSenseGamepadHID/buttonEast,/Keyboard/alt]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

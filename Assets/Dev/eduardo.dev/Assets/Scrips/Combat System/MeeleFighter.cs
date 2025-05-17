@@ -3,59 +3,118 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Estado actual del ataque: reposo, preparación, impacto o recuperación
+// Enumerador para los estados de ataque del personaje.
 public enum AttackStates { Idle, Windup, Impact, Cooldown }
 
+// Gestiona la lógica de combate cuerpo a cuerpo, salud, estamina y reacciones del personaje.
 public class MeeleFighter : MonoBehaviour
 {
-    [Header("Stats")]
-    [field: SerializeField] public float Health { get; private set; } = 100f; // Salud inicial del personaje
-    [SerializeField] private float maxHealth = 100f; // Salud máxima del personaje
-    [SerializeField] public float MaxStamina { get; private set; } = 100f; // Estamina máxima del personaje
-    [SerializeField] public float CurrentStamina { get; private set; } // Estamina actual del personaje
-    [SerializeField] private float staminaRegenRate = 15f; // Estamina regenerada por segundo
-    [SerializeField] private float staminaRegenDelay = 1.5f; // Tiempo en segundos antes de que la estamina comience a regenerarse después de usarla
-    [SerializeField] private float attackStaminaCost = 10f; // Costo de estamina por ataque
+    // --- ESTADÍSTICAS DEL PERSONAJE ---
+    [Header("Estadísticas Principales")] 
+    [Tooltip("Salud máxima que puede tener el personaje.")] 
+    [field: SerializeField] public float maxHealth { get; private set; } = 100f; 
+    [Tooltip("Salud actual del personaje. Se inicializa a maxHealth.")]
+    [field: SerializeField] public float Health { get; private set; } 
 
-    [Header("Combat Settings")]
-    [SerializeField] List<AttackData> attacks; // Lista de ataques posibles (definidos como ScriptableObjects)
-    [SerializeField] List<AttackData> longRangeAttacks; // Lista de ataques a distancia (definidos como ScriptableObjects)
-    [SerializeField] float longRangeAttackThreshold = 1.5f; // Distancia mínima para considerar un ataque a distancia
-    [SerializeField] GameObject weapon; // Referencia al arma del personaje (si tiene una)
-    [SerializeField] float rotationSpeed = 500f; // Velocidad de rotación del personaje al atacar
-
-    public bool IsTakingHit { get; private set; } = false; // Indica si el personaje está siendo golpeado
-
-    public event Action<MeeleFighter> OnGotHit; // Evento que se dispara cuando el personaje recibe un golpe
-    public event Action OnHitComplete; // Evento que se dispara cuando el ataque impacta
-    public event Action<float, float> OnStaminaChanged; // Evento para actualizar la UI de estamina (current, max)
-    public event Action<float, float> OnHealthChanged; // Evento para actualizar la UI de vida (current, max)
+    [Tooltip("Estamina máxima que puede tener el personaje.")]
+    [field: SerializeField] public float MaxStamina { get; private set; } = 100f; 
+    [Tooltip("Estamina actual del personaje. Se inicializa a MaxStamina.")]
+    [field: SerializeField] public float CurrentStamina { get; private set; } 
+    
+    [Tooltip("Cantidad de estamina regenerada por segundo.")]
+    [SerializeField] private float staminaRegenRate = 15f; 
+    [Tooltip("Tiempo en segundos a esperar después de usar estamina antes de que comience la regeneración.")]
+    [SerializeField] private float staminaRegenDelay = 1.5f; 
+    [Tooltip("Costo de estamina para cada ataque.")]
+    [SerializeField] private float attackStaminaCost = 10f; 
+    [Tooltip("Daño base que inflige este personaje con sus ataques.")]
+    [SerializeField] private float baseDamage = 10f; 
 
 
-    // Colliders
-    BoxCollider weaponCollider;
-    SphereCollider leftHandCollider, rightHandCollider, leftFootCollider, rightFootCollider;
+    // --- CONFIGURACIÓN DE COMBATE ---
+    [Header("Configuración de Combate")]
+    [Tooltip("Lista de ataques normales disponibles para el personaje.")]
+    [SerializeField] List<AttackData> attacks; 
+    [Tooltip("Lista de ataques a larga distancia (si aplica).")]
+    [SerializeField] List<AttackData> longRangeAttacks; 
+    [Tooltip("Umbral de distancia para considerar el uso de un ataque a larga distancia.")]
+    [SerializeField] float longRangeAttackThreshold = 1.5f; 
+    [Tooltip("Referencia al GameObject del arma (si el personaje usa una).")]
+    [SerializeField] GameObject weapon; 
+    [Tooltip("Velocidad a la que el personaje rota hacia su objetivo durante un ataque.")]
+    [SerializeField] float rotationSpeed = 500f; 
+    
+    [Header("Nombres de Animaciones (Exactos)")]
+    [Tooltip("Nombre del estado de animación para la reacción al golpe en el Animator.")]
+    [SerializeField] string hitReactionAnimName = "Impact"; 
+    [Tooltip("Nombre del estado de animación para la muerte en el Animator.")]
+    [SerializeField] string deathAnimName = "DeathBackward01";
 
+    // --- ESTADOS Y EVENTOS INTERNOS ---
+    public bool IsTakingHit { get; private set; } = false; 
+    public bool IsInvulnerable { get; private set; } = false;
+
+    public event Action<MeeleFighter> OnGotHit; 
+    public event Action OnHitComplete; 
+    public event Action<float, float> OnStaminaChanged;
+    public event Action<float, float> OnHealthChanged;
+
+    BoxCollider weaponCollider; 
+    SphereCollider leftHandCollider, rightHandCollider, leftFootCollider, rightFootCollider; 
+    
     Animator animator;
-    CharacterController characterController; // Añadido para desactivarlo al morir
+    CharacterController characterController; 
+    
+    Coroutine _playHitReactionCoroutine; 
+    private float lastStaminaUseTime;
+    
+    private const int ACTION_ANIMATOR_LAYER = 1; 
+    private const int BASE_ANIMATOR_LAYER = 0;
 
-    private float lastStaminaUseTime; // Para el retraso de regeneración de estamina
+    public AttackStates AttackStates { get; private set; }
+    bool doCombo; 
+    int comboCount = 0; 
+    public bool InAction { get; private set; } = false; 
+    public bool InCounter { get; set; } = false;
+
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
-        characterController = GetComponent<CharacterController>(); // Obtener CharacterController
-        CurrentStamina = MaxStamina; // Iniciar con estamina al máximo
-        Health = maxHealth; // Iniciar con salud al máximo
+        characterController = GetComponent<CharacterController>(); 
+        
+        if (maxHealth <= 0) maxHealth = 100f; // Asegurar un valor por defecto positivo para maxHealth
+        Health = maxHealth; 
+        CurrentStamina = MaxStamina; 
     }
 
     private void Start()
     {
+        // Es crucial que 'animator' se haya obtenido en Awake antes de llamar a InitializeColliders.
+        if (animator == null)
+        {
+            // Log de error eliminado según solicitud, pero esto sería un punto crítico.
+            // Considera añadir un return aquí o desactivar el componente si el animator es esencial.
+        }
+        InitializeColliders();
+        
+        OnHealthChanged?.Invoke(Health, maxHealth);
+        OnStaminaChanged?.Invoke(CurrentStamina, MaxStamina);
+    }
+    
+    /// <summary>
+    /// Inicializa los colliders de las extremidades y el arma.
+    /// </summary>
+    void InitializeColliders()
+    {
         if (weapon != null)
         {
             weaponCollider = weapon.GetComponent<BoxCollider>();
-            if (animator.isHuman) // Asegurarse que es un rig humanoide antes de buscar huesos
-            {
+        }
+
+        // Solo intentar obtener colliders de huesos si el animator existe y es humanoide.
+        if (animator != null && animator.isHuman)
+        {
                 Transform leftFoot = animator.GetBoneTransform(HumanBodyBones.LeftFoot);
                 if (leftFoot != null) leftFootCollider = leftFoot.GetComponent<SphereCollider>();
 
@@ -67,370 +126,351 @@ public class MeeleFighter : MonoBehaviour
 
                 Transform rightHand = animator.GetBoneTransform(HumanBodyBones.RightHand);
                 if (rightHand != null) rightHandCollider = rightHand.GetComponent<SphereCollider>();
-            }
-            DisableHitboxes();
-        }
-        // Invocar eventos iniciales para la UI
-        OnHealthChanged?.Invoke(Health, maxHealth);
-        OnStaminaChanged?.Invoke(CurrentStamina, MaxStamina);
-    }
 
+        }
+        // else if (animator == null) { /* Animator es null */ }
+        // else { /* Animator no es humanoide */ }
+        
+        DisableHitboxes(); // Desactivar todos al inicio.
+    }
+    
     private void Update()
     {
-        // Regeneración de Estamina
-        if (CurrentStamina < MaxStamina && Time.time > lastStaminaUseTime + staminaRegenDelay && Health > 0 && !InAction) // No regenerar si está en acción o muerto
+        if (CurrentStamina < MaxStamina && 
+            Time.time > lastStaminaUseTime + staminaRegenDelay && 
+            Health > 0 &&            
+            !InAction &&             
+            !IsTakingHit &&          
+            !IsInvulnerable)         
         {
-            CurrentStamina += staminaRegenRate * Time.deltaTime;
-            CurrentStamina = Mathf.Clamp(CurrentStamina, 0, MaxStamina);
-            OnStaminaChanged?.Invoke(CurrentStamina, MaxStamina);
+            CurrentStamina += staminaRegenRate * Time.deltaTime; 
+            CurrentStamina = Mathf.Clamp(CurrentStamina, 0, MaxStamina); 
+            OnStaminaChanged?.Invoke(CurrentStamina, MaxStamina); 
         }
     }
 
-    public AttackStates AttackStates { get; private set; }
-    bool doCombo;
-    int comboCount = 0;
-    public bool InAction { get; private set; } = false;
-    public bool InCounter { get; set; } = false;
+    public void SetInvulnerable(bool state)
+    {
+        IsInvulnerable = state;
+    }
 
-    // Método para consumir estamina
-    public bool ConsumeStamina(float amount)
+    public bool ConsumeStamina(float amount) 
     {
         if (CurrentStamina >= amount)
         {
             CurrentStamina -= amount;
-            lastStaminaUseTime = Time.time; // Actualizar el tiempo del último uso de estamina
+            lastStaminaUseTime = Time.time; 
             OnStaminaChanged?.Invoke(CurrentStamina, MaxStamina);
             return true;
         }
-        return false; // No hay suficiente estamina
+        return false; 
     }
 
     public void TryToAttack(MeeleFighter target = null)
     {
-        if (Health <= 0) return; // No atacar si está muerto
-
-        // Verificar si hay suficiente estamina para el ataque
-        if (!ConsumeStamina(attackStaminaCost))
+        if (Health <= 0 || IsInvulnerable) return; 
+        
+        if (InAction)
         {
-            Debug.Log("No hay suficiente estamina para atacar.");
-            // Aquí podrías reproducir un sonido o feedback visual de "sin estamina"
-            return;
+            if (AttackStates == AttackStates.Impact || AttackStates == AttackStates.Cooldown)
+            {
+                doCombo = true; 
+            }
         }
-
-        if (!InAction)
+        else 
         {
-            StartCoroutine(Attack(target));
-        }
-        else if (AttackStates == AttackStates.Impact || AttackStates == AttackStates.Cooldown)
-        {
-            doCombo = true;
+            if (ConsumeStamina(attackStaminaCost)) 
+            {
+                comboCount = 0; 
+                StartCoroutine(Attack(target)); 
+            }
         }
     }
 
     IEnumerator Attack(MeeleFighter target = null)
     {
-        InAction = true;
-        AttackStates = AttackStates.Windup;
+        InAction = true; 
+        AttackStates = AttackStates.Windup; 
 
-        var attack = attacks[comboCount];
-
-        var attackDir = transform.forward;
-        Vector3 startPos = transform.position;
-        Vector3 targetPos = Vector3.zero;
+        var attack = attacks[comboCount]; 
+        var attackDir = transform.forward; 
+        Vector3 startPos = transform.position; 
+        Vector3 targetPos = Vector3.zero; 
 
         if (target != null)
         {
-            var vecToTarget = target.transform.position - transform.position;
-            attackDir = vecToTarget.normalized;
-            float distance = vecToTarget.magnitude - attack.DistanceFromTarget;
-
-            if (distance > longRangeAttackThreshold && longRangeAttacks.Count > 0)
-                attack = longRangeAttacks[0];
-
-            if (attack.MoveToTarget)
+            var vecToTarget = target.transform.position - transform.position; 
+            attackDir = vecToTarget.normalized; 
+            float distance = vecToTarget.magnitude - attack.DistanceFromTarget; 
+            if (distance > longRangeAttackThreshold && longRangeAttacks != null && longRangeAttacks.Count > 0)
             {
-                if (distance <= attack.MaxMoveDistance)
-                    targetPos = target.transform.position - attackDir * attack.DistanceFromTarget;
+                attack = longRangeAttacks[Mathf.Min(comboCount, longRangeAttacks.Count -1)];
+            }
+            if (attack.MoveToTarget) 
+            {
+                if (distance <= attack.MaxMoveDistance) 
+                    targetPos = target.transform.position - attackDir * attack.DistanceFromTarget; 
                 else
-                    targetPos = startPos + attackDir * attack.MaxMoveDistance;
+                    targetPos = startPos + attackDir * attack.MaxMoveDistance;          
             }
         }
+        
+        if (animator != null) animator.CrossFade(attack.AnimName, 0.2f, ACTION_ANIMATOR_LAYER); 
+        yield return null; 
 
-        animator.CrossFade(attack.AnimName, 0.2f, 1); // Usar capa 1 para ataques
-        yield return null;
+        AnimatorStateInfo animState = animator != null ? animator.GetNextAnimatorStateInfo(ACTION_ANIMATOR_LAYER) : new AnimatorStateInfo(); 
 
-        // Esperar a que la animación de ataque comience realmente en la capa 1
-        // Esto es importante si tienes una transición con tiempo de salida en el Animator
-        yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(1).IsName(attack.AnimName));
-        var animState = animator.GetCurrentAnimatorStateInfo(1); // Ahora obtener el estado actual
+        float timer = 0f; 
+        float animationLength = animState.length > 0.01f ? animState.length : 1f;
 
-        float timer = 0f;
-
-        while (timer <= animState.length)
+        while (timer <= animationLength)
         {
-            if (IsTakingHit || Health <= 0) // Interrumpir si es golpeado o muere
-            {
-                InAction = false; // Asegurar que InAction se resetee
-                AttackStates = AttackStates.Idle;
-                DisableHitboxes();
-                yield break;
+            if (IsTakingHit || Health <= 0 || IsInvulnerable) { 
+                InAction = false; 
+                AttackStates = AttackStates.Idle; 
+                comboCount = 0; 
+                doCombo = false; 
+                DisableHitboxes(); 
+                yield break; 
             }
-            timer += Time.deltaTime;
-            float normalizedTime = timer / animState.length;
+            timer += Time.deltaTime; 
+            float normalizedTime = Mathf.Clamp01(timer / animationLength); 
 
-            if (target != null && attack.MoveToTarget)
+            if (target != null && attack.MoveToTarget && targetPos != Vector3.zero) 
             {
-                // Asegurarse que MoveStartTime no sea igual o mayor que MoveEndTime para evitar división por cero
-                if (attack.MoveEndTime > attack.MoveStartTime) {
-                    float percTime = Mathf.Clamp01((normalizedTime - attack.MoveStartTime) / (attack.MoveEndTime - attack.MoveStartTime));
-                    transform.position = Vector3.Lerp(startPos, targetPos, percTime);
-                }
-            }
-
-            if (attackDir != Vector3.zero) // Evitar LookRotation con vector cero
-            {
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(attackDir), rotationSpeed * Time.deltaTime);
-            }
-
-            if (AttackStates == AttackStates.Windup)
-            {
-                if (InCounter) break;
-                if (normalizedTime >= attack.ImpactStartTime)
+                if (attack.MoveEndTime > attack.MoveStartTime) 
                 {
-                    AttackStates = AttackStates.Impact;
-                    EnableHitBox(attack);
+                    float percTime = (normalizedTime - attack.MoveStartTime) / (attack.MoveEndTime - attack.MoveStartTime); 
+                    transform.position = Vector3.Lerp(startPos, targetPos, Mathf.Clamp01(percTime)); 
                 }
             }
-            else if (AttackStates == AttackStates.Impact)
+
+            if (attackDir != Vector3.zero)
             {
-                if (normalizedTime >= attack.ImpactEndTime)
-                {
-                    AttackStates = AttackStates.Cooldown;
-                    DisableHitboxes();
-                }
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(attackDir), rotationSpeed * Time.deltaTime); 
             }
-            else if (AttackStates == AttackStates.Cooldown)
+
+            if (AttackStates == AttackStates.Windup) 
+            {
+                if (InCounter) break; 
+                if (normalizedTime >= attack.ImpactStartTime) 
+                { AttackStates = AttackStates.Impact; EnableHitBox(attack); } 
+            }
+            else if (AttackStates == AttackStates.Impact) 
+            {
+                if (normalizedTime >= attack.ImpactEndTime) 
+                { AttackStates = AttackStates.Cooldown; DisableHitboxes(); } 
+            }
+            else if (AttackStates == AttackStates.Cooldown) 
             {
                 if (doCombo)
                 {
-                    doCombo = false;
-                    comboCount = (comboCount + 1) % attacks.Count;
-                    
-                    // Verificar estamina para el siguiente ataque del combo
-                    if (ConsumeStamina(attackStaminaCost))
-                    {
-                        StartCoroutine(Attack(target)); // Pasar el target al siguiente ataque del combo
-                    }
-                    else
-                    {
-                        Debug.Log("No hay suficiente estamina para el combo.");
-                        // Si no hay estamina para el combo, terminar la acción
-                        AttackStates = AttackStates.Idle;
-                        comboCount = 0;
-                        InAction = false;
+                    doCombo = false; 
+                    comboCount = (comboCount + 1) % attacks.Count; 
+                    if (ConsumeStamina(attackStaminaCost)) 
+                    { 
+                        StartCoroutine(Attack()); 
                         yield break; 
+                    } 
+                    else 
+                    { 
+                        break; 
                     }
-                    yield break;
                 }
             }
-            yield return null;
+            yield return null; 
         }
 
-        AttackStates = AttackStates.Idle;
-        comboCount = 0;
-        InAction = false;
-        DisableHitboxes(); // Asegurarse de desactivar hitboxes al final
+        AttackStates = AttackStates.Idle; 
+        comboCount = 0; 
+        InAction = false; 
+        doCombo = false; 
+        DisableHitboxes();
+    }
+    
+    public void RequestCombo()
+    {
+        if (InAction && (AttackStates == AttackStates.Impact || AttackStates == AttackStates.Cooldown))
+        {
+            doCombo = true;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (Health <= 0) return; // No procesar si ya está muerto
-
-        if (other.CompareTag("Hitbox") && !IsTakingHit && !InCounter) // Usar CompareTag para eficiencia
+        if (IsInvulnerable) return;
+        if (Health <= 0 || InCounter) return; 
+        
+        if (other.CompareTag("Hitbox")) 
         {
-            var attacker = other.GetComponentInParent<MeeleFighter>();
-            if (attacker == this) return; // No golpearse a sí mismo
-
-            TakeDamage(5f, attacker); // Pasar el atacante
-            OnGotHit?.Invoke(attacker);
-
-            if (Health > 0)
-                StartCoroutine(PlayHitReaction(attacker));
-            else
-                PlayDeathAnimation(attacker);
+            MeeleFighter attacker = other.GetComponentInParent<MeeleFighter>(); 
+            if (attacker != null && attacker != this) 
+            {
+                TakeDamage(attacker.baseDamage, attacker); 
+                OnGotHit?.Invoke(attacker); 
+                
+                if (Health > 0) 
+                {
+                    if (_playHitReactionCoroutine != null)
+                    {
+                        StopCoroutine(_playHitReactionCoroutine);
+                    }
+                    _playHitReactionCoroutine = StartCoroutine(PlayHitReaction(attacker)); 
+                }
+            }
         }
     }
 
-    public void TakeDamage(float damage, MeeleFighter attacker = null) // Añadir parámetro attacker
+    public void TakeDamage(float damage, MeeleFighter attacker = null) 
     {
-        if (Health <= 0) return; // Ya está muerto
+        if (IsInvulnerable) return; 
+        if (Health <= 0) return; 
 
-        Health = Mathf.Clamp(Health - damage, 0, maxHealth);
-        OnHealthChanged?.Invoke(Health, maxHealth);
-        Debug.Log(gameObject.name + " recibió daño. Salud restante: " + Health);
-
-        if (Health <= 0)
-        {
-            PlayDeathAnimation(attacker);
-        }
+        Health = Mathf.Clamp(Health - damage, 0, maxHealth); 
+        OnHealthChanged?.Invoke(Health, maxHealth); 
+        
+        if (Health <= 0) { PlayDeathAnimation(attacker); }
     }
 
     IEnumerator PlayHitReaction(MeeleFighter attacker)
     {
-        if (Health <= 0) yield break; // No reaccionar si muere
+        InAction = true;  
+        IsTakingHit = true; 
 
-        InAction = true;
-        IsTakingHit = true;
-
-        if (attacker != null)
-        {
-            var dispVec = attacker.transform.position - transform.position;
-            dispVec.y = 0;
-            if (dispVec != Vector3.zero) // Evitar LookRotation con vector cero
-            {
-                transform.rotation = Quaternion.LookRotation(dispVec);
-            }
-        }
-        
-        animator.CrossFade("Impact", 0.2f, 1); // Usar capa 1 para reacciones
-        yield return null;
-
-        // Esperar a que la animación de impacto comience realmente en la capa 1
-        yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(1).IsName("Impact"));
-        var animState = animator.GetCurrentAnimatorStateInfo(1);
-
-        yield return new WaitForSeconds(animState.length * 0.8f);
-
-        OnHitComplete?.Invoke();
-
-        InAction = false;
-        IsTakingHit = false;
-    }
-
-    void PlayDeathAnimation(MeeleFighter attacker)
-    {
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("DeathBackward01")) return; // Evitar reproducir múltiples veces
-
-        Debug.Log(gameObject.name + " ha muerto.");
-        InAction = true; // Evitar otras acciones
-        IsTakingHit = false; // Ya no está "tomando un golpe", está muerto
-
-        // Desactivar CharacterController para que no interfiera con la animación de muerte (ragdoll si lo hubiera)
-        if (characterController != null)
-        {
-            characterController.enabled = false;
-        }
-        
-        // Detener cualquier movimiento del NavMeshAgent si es un enemigo
         UnityEngine.AI.NavMeshAgent agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-        if (agent != null)
+        if (agent != null && agent.enabled)
         {
-            agent.enabled = false;
+            agent.isStopped = true; 
         }
 
-        // Orientarse hacia el atacante si existe
+        if (attacker != null) 
+        {
+            var dispVec = attacker.transform.position - transform.position; 
+            dispVec.y = 0; 
+            if (dispVec != Vector3.zero) 
+            {
+                 transform.rotation = Quaternion.LookRotation(dispVec); 
+            }
+        }
+        
+        if(animator != null) animator.CrossFade(hitReactionAnimName, 0.2f); 
+        yield return null; 
+
+        AnimatorStateInfo animStateLayer1 = animator != null ? animator.GetNextAnimatorStateInfo(ACTION_ANIMATOR_LAYER) : new AnimatorStateInfo(); 
+        
+        float timeToWait = 0.3f; 
+
+        if (animStateLayer1.length > 0.01f) 
+        {
+            timeToWait = animStateLayer1.length * 0.8f; 
+        }
+        
+        yield return new WaitForSeconds(timeToWait); 
+        
+        OnHitComplete?.Invoke(); 
+
+        InAction = false; 
+        IsTakingHit = false; 
+
+        if (agent != null && agent.enabled)
+        {
+            agent.isStopped = false; 
+        }
+        _playHitReactionCoroutine = null; 
+    }
+
+    void PlayDeathAnimation(MeeleFighter attacker) 
+    {
+        if (animator == null) return; // Comprobación de nulidad para animator
+
+        if (animator.GetCurrentAnimatorStateInfo(BASE_ANIMATOR_LAYER).IsName(deathAnimName) || 
+            animator.GetNextAnimatorStateInfo(BASE_ANIMATOR_LAYER).IsName(deathAnimName)) { return; }
+
+        InAction = true; IsTakingHit = false; 
+        if (characterController != null) { characterController.enabled = false; }
+        UnityEngine.AI.NavMeshAgent agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (agent != null) { agent.enabled = false; }
+
         if (attacker != null)
         {
             var dispVec = attacker.transform.position - transform.position;
             dispVec.y = 0;
-            if (dispVec != Vector3.zero)
-            {
-                transform.rotation = Quaternion.LookRotation(dispVec);
-            }
+            if (dispVec != Vector3.zero) { transform.rotation = Quaternion.LookRotation(dispVec); }
         }
-
-        animator.CrossFade("DeathBackward01", 0.2f, 0); // Usar capa base (0) para muerte
-        // Aquí podrías añadir lógica para desactivar el GameObject después de un tiempo,
-        // o notificar a un GameManager, etc.
+        animator.CrossFade(deathAnimName, 0.2f); 
     }
-
+        
     public IEnumerator PerformCounterAttack(EnemyController opponent)
     {
-        if (Health <= 0 || opponent == null || opponent.Fighter == null || opponent.Fighter.Health <= 0) yield break; // Chequeos de seguridad
+        InAction = true; 
+        InCounter = true; 
+        if (opponent != null && opponent.Fighter != null) opponent.Fighter.InCounter = true; 
+        if (opponent != null) opponent.ChangeState(EnemyStates.Dead); 
 
-        InAction = true;
-        InCounter = true;
-        opponent.Fighter.InCounter = true; // El oponente también está en un contraataque (recibiéndolo)
-        
-        // No cambiar el estado del oponente a Dead aquí, la animación de víctima lo manejará o se hará después.
-        // opponent.ChangeState(EnemyStates.Dead); // Esto podría ser prematuro
-
-        var dispVec = opponent.transform.position - transform.position;
-        dispVec.y = 0;
-        if (dispVec != Vector3.zero)
+        var dispVec = opponent.transform.position - transform.position; 
+        dispVec.y = 0; 
+        if (dispVec != Vector3.zero) 
         {
-            transform.rotation = Quaternion.LookRotation(dispVec);
-            opponent.transform.rotation = Quaternion.LookRotation(-dispVec);
+            transform.rotation = Quaternion.LookRotation(dispVec); 
+            if (opponent != null) opponent.transform.rotation = Quaternion.LookRotation(-dispVec); 
         }
 
-        var targetPos = opponent.transform.position - dispVec.normalized * 1f;
-
-        animator.CrossFade("CounterAttackA", 0.2f, 1);
-        opponent.Animator.CrossFade("CounterAttackVictimA", 0.2f, 1); // Asumiendo capa 1 para animaciones de combate
-        yield return null;
-
-        yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(1).IsName("CounterAttackA"));
-        var animState = animator.GetCurrentAnimatorStateInfo(1);
-
-        float timer = 0f;
-        while (timer <= animState.length)
-        {
-            // Mover al personaje hacia la posición del oponente durante el contraataque
-            // Solo si el character controller está activo
-            if (characterController != null && characterController.enabled)
-            {
-                 transform.position = Vector3.MoveTowards(transform.position, targetPos, 5 * Time.deltaTime);
-            }
-            yield return null;
-            timer += Time.deltaTime;
-        }
+        var targetPos = opponent.transform.position - dispVec.normalized * 1f; 
         
-        // El daño y la muerte del oponente deberían manejarse como resultado del contraataque,
-        // por ejemplo, activando un hitbox especial o llamando a TakeDamage en el oponente.
-        // Por ahora, asumimos que la animación "CounterAttackVictimA" implica la derrota.
-        // Si no, aquí deberías aplicar el daño:
-        opponent.Fighter.TakeDamage(100f, this); // Ejemplo de daño masivo por contraataque
+        if(animator != null) animator.CrossFade("CounterAttackA", 0.2f); 
+        if(opponent != null && opponent.Animator != null) opponent.Animator.CrossFade("CounterAttackVictimA", 0.2f); 
+        yield return null; 
 
-        InCounter = false;
-        opponent.Fighter.InCounter = false;
-        InAction = false;
+        AnimatorStateInfo animState = animator != null ? animator.GetNextAnimatorStateInfo(ACTION_ANIMATOR_LAYER) : new AnimatorStateInfo();
+
+        float timer = 0f; 
+        float animationLength = animState.length > 0.01f ? animState.length : 1f;
+
+        while (timer <= animationLength) 
+        {
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, 5 * Time.deltaTime); 
+            yield return null; 
+            timer += Time.deltaTime; 
+        }
+
+        InCounter = false; 
+        if (opponent != null && opponent.Fighter != null) opponent.Fighter.InCounter = false; 
+        InAction = false; 
     }
 
-    void EnableHitBox(AttackData attack)
+    void EnableHitBox(AttackData attack) 
     {
-        // Verificar que los colliders no sean null antes de usarlos
+        if (attack == null) return; // Comprobación de nulidad para attack
         switch (attack.HitboxToUse)
         {
-            case AttackHitbox.LeftHand:
-                if (leftHandCollider != null) leftHandCollider.enabled = true;
+            case AttackHitbox.LeftHand: 
+                if(leftHandCollider) leftHandCollider.enabled = true; 
                 break;
             case AttackHitbox.RightHand:
-                if (rightHandCollider != null) rightHandCollider.enabled = true;
+                if(rightHandCollider) rightHandCollider.enabled = true; 
                 break;
             case AttackHitbox.LeftFoot:
-                if (leftFootCollider != null) leftFootCollider.enabled = true;
+                if(leftFootCollider) leftFootCollider.enabled = true; 
                 break;
             case AttackHitbox.RightFoot:
-                if (rightFootCollider != null) rightFootCollider.enabled = true;
+                if(rightFootCollider) rightFootCollider.enabled = true; 
                 break;
             case AttackHitbox.Axe:
-            case AttackHitbox.Sword: // Agrupado ya que ambos usan weaponCollider
-                if (weaponCollider != null) weaponCollider.enabled = true;
-                break;
-            default:
+            case AttackHitbox.Sword: 
+                if(weaponCollider) weaponCollider.enabled = true; 
                 break;
         }
     }
 
     void DisableHitboxes()
     {
-        if (weaponCollider != null) weaponCollider.enabled = false;
-        if (leftFootCollider != null) leftFootCollider.enabled = false;
-        if (rightFootCollider != null) rightFootCollider.enabled = false;
-        if (leftHandCollider != null) leftHandCollider.enabled = false;
-        if (rightHandCollider != null) rightHandCollider.enabled = false;
+        if (weaponCollider != null && weaponCollider.enabled) weaponCollider.enabled = false; 
+        if (leftFootCollider != null && leftFootCollider.enabled) leftFootCollider.enabled = false; 
+        if (rightFootCollider != null && rightFootCollider.enabled) rightFootCollider.enabled = false; 
+        if (leftHandCollider != null && leftHandCollider.enabled) leftHandCollider.enabled = false;  
+        if (rightHandCollider != null && rightHandCollider.enabled) rightHandCollider.enabled = false; 
     }
 
-    public List<AttackData> Attacks => attacks;
-    public bool IsCounterable => AttackStates == AttackStates.Windup && comboCount == 0 && Health > 0; // Solo contraatacable si está vivo
+    public List<AttackData> Attacks => attacks; 
+    public bool IsCounterable  => AttackStates == AttackStates.Windup && comboCount == 0 && Health > 0;
 }
