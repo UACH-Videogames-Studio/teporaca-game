@@ -257,6 +257,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4c89bdb6d1c1b8d42814bc46b4f585b7, type: 3}
+--- !u!114 &217407730 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 108522082918434117, guid: edc185f8f7c4f1e46ab0afcc9cb7832a, type: 3}
+  m_PrefabInstance: {fileID: 4445128320864229011}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08a3c3f76dec9f44eac80a1828666984, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &237464363
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -807,11 +818,19 @@ PrefabInstance:
     - target: {fileID: 347653557440722065, guid: edc185f8f7c4f1e46ab0afcc9cb7832a, type: 3}
       propertyPath: enemy
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 217407730}
     - target: {fileID: 1891282182146495281, guid: edc185f8f7c4f1e46ab0afcc9cb7832a, type: 3}
       propertyPath: m_Name
       value: PadreBeduin
       objectReference: {fileID: 0}
+    - target: {fileID: 2482067815680035683, guid: edc185f8f7c4f1e46ab0afcc9cb7832a, type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 9000000, guid: 04f68437eaca035458ae0060643a9149, type: 3}
+    - target: {fileID: 7515009363279607374, guid: edc185f8f7c4f1e46ab0afcc9cb7832a, type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 9000000, guid: 04f68437eaca035458ae0060643a9149, type: 3}
     - target: {fileID: 8319444864984324981, guid: edc185f8f7c4f1e46ab0afcc9cb7832a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.701
