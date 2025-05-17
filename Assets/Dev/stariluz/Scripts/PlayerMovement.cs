@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -32,8 +33,6 @@ namespace Stariluz
         [Tooltip("Force that pulls the player down. Changing this value causes all movement, jumping and falling to be changed as well.")]
         public float gravity = 9.8f;
 
-        public AudioSource cesped;
-
         protected float jumpElapsedTime = 0;
 
         // Player states
@@ -60,6 +59,18 @@ namespace Stariluz
         private bool isChopping = false;
         [SerializeField] private Collider axeCollider;
         [SerializeField] private float frameRate = 24f; // Asume que el juego corre a 60 fps
+
+        [HideInInspector]
+        protected AudioSource _audioSource;
+        public AudioSource audioSource
+        {
+            get
+            {
+                return _audioSource;
+            }
+        }
+        public AudioClip[] steps;
+        private int _lastStepIndex = -1;
 
         [HideInInspector]
         protected Animator _animator;
@@ -118,6 +129,7 @@ namespace Stariluz
         {
             characterController = GetComponent<CharacterController>();
             _animator = GetComponent<Animator>();
+            _audioSource = GetComponent<AudioSource>();
             ACzMovementHash = Animator.StringToHash("zMovement");
             ACchopHash = Animator.StringToHash("chop");
 
@@ -150,7 +162,7 @@ namespace Stariluz
             characterController.Move(movement);
             UpdateAnimation();
         }
-        
+
         void UpdateOnGame()
         {
             // Input checkers
@@ -312,6 +324,25 @@ namespace Stariluz
             yield return new WaitForSeconds(duration);
 
             axeCollider.enabled = false;
+        }
+        public void PlayStepSound()
+        {
+            if (steps == null || steps.Length == 0 || _audioSource == null)
+                return;
+
+            int index;
+            do
+            {
+                index = Random.Range(0, steps.Length);
+            } while (index == _lastStepIndex && steps.Length > 1);
+
+            _lastStepIndex = index;
+            AudioClip clip = steps[index];
+
+            _audioSource.pitch = Random.Range(0.9f, 1.1f);
+            _audioSource.volume = Random.Range(0.8f, 1.0f); // volumen aleatorio
+            
+            _audioSource.PlayOneShot(clip);
         }
     }
 

@@ -9,17 +9,12 @@ namespace Stariluz
     {
         public static ChopSceneManger Instance { get; private set; }
 
-        [SerializeField] private string nextSceneName = "Narrative2"; // Cambia esto por el nombre real
-
-
         // Lista de estados de árboles
         private List<TreeChop> destroyedTrees = new List<TreeChop>();
-        public SceneTransitionManager manager;
-        public int destroyedTreesThreshold=5;
+        public int destroyedTreesThreshold = 3;
 
         private void Awake()
         {
-            // Singleton pattern
             if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
@@ -42,10 +37,14 @@ namespace Stariluz
 
         public void TreeDestroyed(TreeChop tree)
         {
-            destroyedTrees.Add(tree);
-
-            if(destroyedTrees.Count>=destroyedTreesThreshold){
-                manager.LoadScene(nextSceneName);
+            if (!destroyedTrees.Contains(tree))
+            {
+                destroyedTrees.Add(tree);
+                Debug.Log(destroyedTrees.Count);
+                if (destroyedTrees.Count >= destroyedTreesThreshold)
+                {
+                    GameManager.Instance.LoadNextScene();
+                }
             }
         }
 

@@ -45,7 +45,7 @@ public class TitleScreenController : MonoBehaviour
     public SceneTransitionManager manager;
     private void StartGame(InputAction.CallbackContext context)
     {
-        UIAudioManager.Instance.PlayConfirmSound();
+        UIAudioManager.Instance.PlaySuccessSound();
         manager.LoadScene(sceneToLoad);
     }
 }
