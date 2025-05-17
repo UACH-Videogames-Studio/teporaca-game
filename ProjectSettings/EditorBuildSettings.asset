@@ -13,7 +13,7 @@ EditorBuildSettings:
     guid: ff0b35312ff2aeb48af35a70ad1b036a
   - enabled: 1
     path: Assets/TeporacaGame/Scenes/ChopScene.unity
-    guid: 1a8c693d9878d3e45924eaabd5bb2344
+    guid: 0d73fd5a64321e5479f012f736ad0389
   - enabled: 0
     path: Assets/TeporacaGame/Scenes/Narrative2.unity
     guid: ca13cafca2d235c4da7a9c7de5edc9ed

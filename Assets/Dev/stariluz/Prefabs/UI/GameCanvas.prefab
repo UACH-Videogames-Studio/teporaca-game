@@ -1528,7 +1528,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ceaa4e48964de84f902a2c8c2f57332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  volumeType: 2
+  volumeType: 3
   backgroundImage: {fileID: 2248380763538803802}
   fillImage: {fileID: 7361347328593601229}
   normalColor: {r: 0.6150943, g: 0.6150943, b: 0.6150943, a: 0.39215687}

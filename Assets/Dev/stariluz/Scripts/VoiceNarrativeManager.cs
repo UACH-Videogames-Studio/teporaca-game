@@ -35,15 +35,7 @@ namespace Stariluz
 
         IEnumerator PlayNarrativeAtGameTime(float gameTime)
         {
-            // Espera hasta que el tiempo del juego alcance el tiempo deseado
-            while (Time.time < gameTime)
-            {
-                // Si el juego está pausado, espera sin avanzar
-                while (Time.timeScale == 0f)
-                    yield return null;
-
-                yield return null;
-            }
+            yield return new WaitForSeconds(gameTime);
 
             _audioSource.Play();
         }

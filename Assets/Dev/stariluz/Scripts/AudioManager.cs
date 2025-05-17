@@ -95,7 +95,7 @@ namespace Stariluz
 
         public void SetVoicesVolume(float volume)
         {
-            SetVolume(sfxVolumeParam, sfxVolumePrefKey, volume);
+            SetVolume(voicesVolumeParam, voicesVolumePrefKey, volume);
         }
 
         private void SetVolume(string parameter, string volumePrefkey, float volume)
