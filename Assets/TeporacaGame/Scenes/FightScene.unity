@@ -2449,6 +2449,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: <Health>k__BackingField
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: <maxHealth>k__BackingField
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 2233894274803492855, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: <AlertRange>k__BackingField
       value: 20
@@ -3556,6 +3564,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: <Health>k__BackingField
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: <maxHealth>k__BackingField
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 2798988830043683756, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: m_LocalPosition.x
       value: 81.58
@@ -9389,6 +9405,14 @@ PrefabInstance:
       propertyPath: m_ActionEvents.Array.data[25].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 492469109787479564, guid: 4c89bdb6d1c1b8d42814bc46b4f585b7, type: 3}
+      propertyPath: <Health>k__BackingField
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 492469109787479564, guid: 4c89bdb6d1c1b8d42814bc46b4f585b7, type: 3}
+      propertyPath: <maxHealth>k__BackingField
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 3155709129591407119, guid: 4c89bdb6d1c1b8d42814bc46b4f585b7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 105.71
@@ -14800,6 +14824,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: <Health>k__BackingField
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: <maxHealth>k__BackingField
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 2798988830043683756, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: m_LocalPosition.x
       value: 83.240005
@@ -26253,6 +26285,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: <Health>k__BackingField
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: <maxHealth>k__BackingField
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 2798988830043683756, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: m_LocalPosition.x
       value: 79.46001
@@ -32494,6 +32534,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: <Health>k__BackingField
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: <maxHealth>k__BackingField
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 2798988830043683756, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: m_LocalPosition.x
       value: 79.340004
@@ -32825,6 +32873,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: <Health>k__BackingField
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2020590469925116709, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
+      propertyPath: <maxHealth>k__BackingField
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 2798988830043683756, guid: 4264e9bb1ac6ddc4a8fbdb60ca66db05, type: 3}
       propertyPath: m_LocalPosition.x
       value: 81.58
