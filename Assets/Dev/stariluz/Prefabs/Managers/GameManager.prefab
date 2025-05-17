@@ -44,9 +44,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df8b8ad8d8d32da41af072ebe01cf50e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiCanvas: {fileID: 0}
+  transitionManager: {fileID: 0}
+  nextScene: FightScene
+  canvas: {fileID: 0}
+  UIModeBackground: {fileID: 0}
   playUI: {fileID: 0}
   pauseMenuUI: {fileID: 0}
   settingsMenuUI: {fileID: 0}
   deathUI: {fileID: 0}
-  confirmMenuUI: {fileID: 0}
+  confirmRebootMenuUI: {fileID: 0}
+  confirmExitGameMenuUI: {fileID: 0}
+  playUIFirstButton: {fileID: 0}
+  pauseMenuFirstButton: {fileID: 0}
+  settingsMenuFirstButton: {fileID: 0}
+  deathMenuFirstButton: {fileID: 0}
+  confirmRebootFirstButton: {fileID: 0}
+  confirmExitGameFirstButton: {fileID: 0}
+  cancelState: 1

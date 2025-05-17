@@ -14,15 +14,18 @@ namespace Stariluz
         public string masterVolumeParam = "MasterVolume";
         public string musicVolumeParam = "MusicVolume";
         public string sfxVolumeParam = "SFXVolume";
+        public string voicesVolumeParam = "VoicesVolume";
 
         [Header("Sliders")]
         public Slider masterSlider;
         public Slider musicSlider;
         public Slider sfxSlider;
+        public Slider voicesSlider;
 
         private string masterVolumePrefKey = "Volume_Master";
         private string musicVolumePrefKey = "Volume_Music";
         private string sfxVolumePrefKey = "Volume_SFX";
+        private string voicesVolumePrefKey = "Volume_Voices";
 
         private void Awake()
         {
@@ -47,9 +50,11 @@ namespace Stariluz
             SetupSlider(masterSlider, PlayerPrefs.GetFloat(masterVolumePrefKey, 1f));
             SetupSlider(musicSlider, PlayerPrefs.GetFloat(musicVolumePrefKey, 1f));
             SetupSlider(sfxSlider, PlayerPrefs.GetFloat(sfxVolumePrefKey, 1f));
+            SetupSlider(voicesSlider, PlayerPrefs.GetFloat(voicesVolumePrefKey, 1f));
             SetVolume(VolumeType.Master, PlayerPrefs.GetFloat(masterVolumePrefKey, 1f));
             SetVolume(VolumeType.Music, PlayerPrefs.GetFloat(musicVolumePrefKey, 1f));
             SetVolume(VolumeType.SFX, PlayerPrefs.GetFloat(sfxVolumePrefKey, 1f));
+            SetVolume(VolumeType.Voices, PlayerPrefs.GetFloat(voicesVolumePrefKey, 1f));
         }
 
         public void SetVolume(VolumeType volumeType, float value)
@@ -64,6 +69,9 @@ namespace Stariluz
                     break;
                 case VolumeType.SFX:
                     Instance.SetSFXVolume(value);
+                    break;
+                case VolumeType.Voices:
+                    Instance.SetVoicesVolume(value);
                     break;
             }
         }
@@ -81,6 +89,11 @@ namespace Stariluz
         }
 
         public void SetSFXVolume(float volume)
+        {
+            SetVolume(sfxVolumeParam, sfxVolumePrefKey, volume);
+        }
+
+        public void SetVoicesVolume(float volume)
         {
             SetVolume(sfxVolumeParam, sfxVolumePrefKey, volume);
         }

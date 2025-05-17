@@ -4,6 +4,7 @@ namespace Stariluz
     {
         Master,
         Music,
-        SFX
+        SFX,
+        Voices
     };
 }

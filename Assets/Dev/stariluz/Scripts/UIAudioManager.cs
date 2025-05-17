@@ -12,6 +12,7 @@ namespace Stariluz
         public AudioClip pauseClip;
         public AudioClip resumeClip;
         public AudioClip leaveClip;
+        public AudioClip restartClip;
 
         private AudioSource audioSource;
 
@@ -60,6 +61,10 @@ namespace Stariluz
             PlaySound(leaveClip);
         }
 
+        public void PlayRestartSound()
+        {
+            PlaySound(restartClip);
+        }
         public void PlaySound(AudioClip clip)
         {
             if (clip != null)

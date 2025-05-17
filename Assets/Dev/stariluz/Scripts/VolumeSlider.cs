@@ -35,8 +35,8 @@ namespace Stariluz
             if (backgroundImage != null)
                 backgroundImage.color = isSelected ?  selectedColorBackground : normalColorBackground;
 
-            if (fillImage != null)
-                fillImage.color = isSelected ? selectedColor : normalColor;
+            // if (fillImage != null)
+            //     fillImage.color = isSelected ? selectedColor : normalColor;
         }
 
         private void OnSliderValueChanged(float value)
