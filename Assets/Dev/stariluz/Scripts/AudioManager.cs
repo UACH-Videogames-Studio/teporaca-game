@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.UI;
 namespace Stariluz
 {
     public class AudioManager : MonoBehaviour
@@ -14,6 +15,15 @@ namespace Stariluz
         public string musicVolumeParam = "MusicVolume";
         public string sfxVolumeParam = "SFXVolume";
 
+        [Header("Sliders")]
+        public Slider masterSlider;
+        public Slider musicSlider;
+        public Slider sfxSlider;
+
+        private string masterVolumePrefKey = "Volume_Master";
+        private string musicVolumePrefKey = "Volume_Music";
+        private string sfxVolumePrefKey = "Volume_SFX";
+
         private void Awake()
         {
             if (Instance == null)
@@ -27,20 +37,19 @@ namespace Stariluz
             }
         }
 
-        // volume va de 0.0001f a 1.0f
-        public void SetMasterVolume(float volume)
+        private void Start()
         {
-            SetVolume(masterVolumeParam, volume);
+            SetupStartVolume();
         }
-
-        public void SetMusicVolume(float volume)
+        
+        public void SetupStartVolume()
         {
-            SetVolume(musicVolumeParam, volume);
-        }
-
-        public void SetSFXVolume(float volume)
-        {
-            SetVolume(sfxVolumeParam, volume);
+            SetupSlider(masterSlider, PlayerPrefs.GetFloat(masterVolumePrefKey, 1f));
+            SetupSlider(musicSlider, PlayerPrefs.GetFloat(musicVolumePrefKey, 1f));
+            SetupSlider(sfxSlider, PlayerPrefs.GetFloat(sfxVolumePrefKey, 1f));
+            SetVolume(VolumeType.Master, PlayerPrefs.GetFloat(masterVolumePrefKey, 1f));
+            SetVolume(VolumeType.Music, PlayerPrefs.GetFloat(musicVolumePrefKey, 1f));
+            SetVolume(VolumeType.SFX, PlayerPrefs.GetFloat(sfxVolumePrefKey, 1f));
         }
 
         public void SetVolume(VolumeType volumeType, float value)
@@ -48,22 +57,47 @@ namespace Stariluz
             switch (volumeType)
             {
                 case VolumeType.Master:
-                    AudioManager.Instance.SetMasterVolume(value);
+                    Instance.SetMasterVolume(value);
                     break;
                 case VolumeType.Music:
-                    AudioManager.Instance.SetMusicVolume(value);
+                    Instance.SetMusicVolume(value);
                     break;
                 case VolumeType.SFX:
-                    AudioManager.Instance.SetSFXVolume(value);
+                    Instance.SetSFXVolume(value);
                     break;
             }
         }
 
-        private void SetVolume(string parameter, float volume)
+        // volume va de 0.0001f a 1.0f
+        public void SetMasterVolume(float volume)
         {
-            // Convierte el valor lineal a decibelios: 0.0001 -> -80 dB, 1.0 -> 0 dB
+            PlayerPrefs.SetFloat(masterVolumePrefKey, volume);
+            SetVolume(masterVolumeParam, masterVolumePrefKey, volume);
+        }
+
+        public void SetMusicVolume(float volume)
+        {
+            SetVolume(musicVolumeParam, musicVolumePrefKey, volume);
+        }
+
+        public void SetSFXVolume(float volume)
+        {
+            SetVolume(sfxVolumeParam, sfxVolumePrefKey, volume);
+        }
+
+        private void SetVolume(string parameter, string volumePrefkey, float volume)
+        {
+            PlayerPrefs.SetFloat(volumePrefkey, volume);
+            
             float dB = Mathf.Log10(Mathf.Clamp(volume, 0.0001f, 1f)) * 20f;
             audioMixer.SetFloat(parameter, dB);
+            Debug.Log((parameter, volume, dB));
+        }
+
+        private void SetupSlider(Slider slider, float value)
+        {
+            if (slider == null) return;
+            slider.SetValueWithoutNotify(value);
         }
     }
 }
