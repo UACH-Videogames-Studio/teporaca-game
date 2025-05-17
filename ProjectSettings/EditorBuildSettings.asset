@@ -15,6 +15,9 @@ EditorBuildSettings:
     path: Assets/TeporacaGame/Scenes/ChopScene.unity
     guid: 0d73fd5a64321e5479f012f736ad0389
   - enabled: 1
+    path: Assets/TeporacaGame/Scenes/FightScene.unity
+    guid: 4cbbefeacb3342c479594e652af0f0fa
+  - enabled: 1
     path: Assets/TeporacaGame/Scenes/Credits.unity
     guid: 664454fb7d56456488193845abd6ea6d
   m_configObjects:

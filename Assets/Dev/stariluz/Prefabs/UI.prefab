@@ -188,10 +188,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Canvas
       objectReference: {fileID: 0}
-    - target: {fileID: 8249550467198414647, guid: be46be227a66e874ba4b0dd5293b74e2, type: 3}
-      propertyPath: m_text
-      value: 'Objetivo: tala 3 arboles'
-      objectReference: {fileID: 0}
     - target: {fileID: 8303611322510023688, guid: be46be227a66e874ba4b0dd5293b74e2, type: 3}
       propertyPath: m_Pivot.x
       value: 0
