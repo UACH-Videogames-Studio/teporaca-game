@@ -11,15 +11,41 @@ namespace Stariluz
         public float startTimeInSeconds = 10f;  // Cuándo empezar la reproducción (en tiempo del juego)
 
         private AudioSource _audioSource;
-        public AudioSource AudioSource=>_audioSource;
+        public AudioSource AudioSource => _audioSource;
+        private Coroutine narrativeCoroutine;
 
-        void Start()
+        void Awake()
         {
             _audioSource = GetComponent<AudioSource>();
+        }
+        void Start()
+        {
             _audioSource.clip = narrativeClip;
             _audioSource.playOnAwake = false;
-            _audioSource.PlayScheduled(10);
+            
+            if (narrativeClip != null)
+            {
+                narrativeCoroutine = StartCoroutine(PlayNarrativeAtGameTime(startTimeInSeconds));
+            }
+            else
+            {
+                Debug.LogWarning("NarrativeManager: No se ha asignado ningún AudioClip.");
+            }
+        }
 
+        IEnumerator PlayNarrativeAtGameTime(float gameTime)
+        {
+            // Espera hasta que el tiempo del juego alcance el tiempo deseado
+            while (Time.time < gameTime)
+            {
+                // Si el juego está pausado, espera sin avanzar
+                while (Time.timeScale == 0f)
+                    yield return null;
+
+                yield return null;
+            }
+
+            _audioSource.Play();
         }
     }
 }

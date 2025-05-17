@@ -11,7 +11,7 @@ namespace Stariluz
 
         // Lista de estados de árboles
         private List<TreeChop> destroyedTrees = new List<TreeChop>();
-        public int destroyedTreesThreshold=5;
+        public int destroyedTreesThreshold = 3;
 
         private void Awake()
         {
@@ -37,10 +37,14 @@ namespace Stariluz
 
         public void TreeDestroyed(TreeChop tree)
         {
-            destroyedTrees.Add(tree);
-
-            if(destroyedTrees.Count>=destroyedTreesThreshold){
-                GameManager.Instance.LoadNextScene();
+            if (!destroyedTrees.Contains(tree))
+            {
+                destroyedTrees.Add(tree);
+                Debug.Log(destroyedTrees.Count);
+                if (destroyedTrees.Count >= destroyedTreesThreshold)
+                {
+                    GameManager.Instance.LoadNextScene();
+                }
             }
         }
 

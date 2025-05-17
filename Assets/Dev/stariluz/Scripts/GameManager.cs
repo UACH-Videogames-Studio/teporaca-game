@@ -147,7 +147,7 @@ namespace Stariluz
 
             if (newState == UIState.InPlayScreen)
             {
-                voiceNarrativeManager.AudioSource.UnPause();
+                if(voiceNarrativeManager!=null)voiceNarrativeManager.AudioSource.UnPause();
                 OnGame?.Invoke();
             }
             else

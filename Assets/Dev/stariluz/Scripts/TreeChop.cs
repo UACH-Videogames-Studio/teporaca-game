@@ -24,6 +24,8 @@ namespace Stariluz
 
         void HandleHit()
         {
+            TreeChopAudioManager.Instance?.PlayRandomChopSound(); // Añadido aquí
+
             hitCount++;
 
             float newScaleFactor = 1f;
@@ -35,7 +37,7 @@ namespace Stariluz
             {
                 newScaleFactor = 0.25f;
             }
-            else if (hitCount >= 3)
+            else if (hitCount == 3)
             {
                 NotifyTreeDestroyed();
                 gameObject.SetActive(false);
