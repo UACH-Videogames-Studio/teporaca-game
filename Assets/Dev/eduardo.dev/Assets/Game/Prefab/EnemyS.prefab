@@ -2828,6 +2828,10 @@ GameObject:
   - component: {fileID: 7415637333268395740}
   - component: {fileID: 8475151586292977146}
   - component: {fileID: 4058026495651345121}
+  - component: {fileID: 1187628614233933026}
+  - component: {fileID: 200643859213761079}
+  - component: {fileID: 2130196837778188972}
+  - component: {fileID: 5896711248941069335}
   m_Layer: 8
   m_Name: EnemyS
   m_TagString: Untagged
@@ -2893,6 +2897,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 29996441eb07d0e45957f69e22c42839, type: 2}
   - {fileID: 11400000, guid: e5c01ce1148768d43bee9100084b06b6, type: 2}
   weapon: {fileID: 121453220983969585}
+  rotationSpeed: 500
 --- !u!143 &7738111895948010438
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2931,6 +2936,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Fov>k__BackingField: 180
+  <Weapon>k__BackingField: 1
 --- !u!114 &3401981457401374895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2995,6 +3001,62 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackDistance: 1
+--- !u!114 &1187628614233933026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7872815249376549929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4b68696e3852db4ca2c9d45028d139f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backwardWalkSpeed: 1.5
+  distanceToRetreat: 3
+--- !u!114 &200643859213761079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7872815249376549929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c798385310792594fb6471178a43c8c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2130196837778188972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7872815249376549929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8086af8873e80844f9e2d90ffb4d7a87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshesToHighlight:
+  - {fileID: 6062535520413291781}
+  - {fileID: 5881340469803341500}
+  originalMaterial: {fileID: 1106563633393636324, guid: 29d7f5a9aa9a1ff4fb5019742696656b, type: 3}
+  highlightedMaterial: {fileID: 2100000, guid: 53eb191150802484585482905d83d933, type: 2}
+--- !u!114 &5896711248941069335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7872815249376549929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e2b9bbabf5888443b6c52b537452a87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stunnTime: 0.5
 --- !u!1 &7923852780906576294
 GameObject:
   m_ObjectHideFlags: 0

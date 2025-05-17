@@ -21,10 +21,19 @@ public class CombatMovementState : State<EnemyController>
 
         enemy.NavAgent.stoppingDistance = distanceToStand;
         enemy.CombatMovementTimer = 0f;
+
+        enemy.Animator.SetInteger("weaponType", (int)enemy.Weapon);
     }
 
     public override void Execute()
     {
+        if (enemy.Target.Health <= 0)
+        {
+            enemy.Target = null;
+            enemy.ChangeState(EnemyStates.Idle);
+            return;
+        }
+
         if (Vector3.Distance(enemy.Target.transform.position, enemy.transform.position) > distanceToStand + adjustDistanceThreshold)
             StartChase();
 
@@ -78,14 +87,11 @@ public class CombatMovementState : State<EnemyController>
     {
         state = AICombatStates.Idle;
         timer = Random.Range(idleTimeRange.x, idleTimeRange.y);
-
-        enemy.Animator.SetBool("axeMode", true);
     }
 
     void StartChase()
     {
         state = AICombatStates.Chase;
-        enemy.Animator.SetBool("axeMode", false);
     }
 
     void StartCircling()
